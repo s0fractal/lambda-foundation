@@ -1,0 +1,19 @@
+node_modules/
+.DS_Store
+*.log
+.env
+dist/
+build/
+coverage/
+.vscode/
+.idea/
+
+# No compiled outputs - only pure specifications
+*.js
+*.ts
+*.wasm
+*.rs
+
+# Except example implementations
+!wiki/examples/*.js
+!wiki/examples/*.ts
