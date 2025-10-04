@@ -9,10 +9,12 @@
 // Core morphisms
 export * from './core/experience';
 export * from './core/y-combinator';
+export * from './core/form-liberation';
 
 // Re-export with lambda notation
 export { experience as λ_EXP } from './core/experience';
 export { Y as λ_Y, Z as λ_Z } from './core/y-combinator';
+export { EntityModule as λ_FORM } from './core/form-liberation';
 
 /**
  * The beginning of pure TypeScript.
