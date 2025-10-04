@@ -10,7 +10,8 @@
     "demo": "ts-node src/demos/state-chain.ts",
     "demo:time": "ts-node src/demos/time-liberation.ts",
     "demo:form": "ts-node src/demos/form-liberation.ts",
-    "demo:all": "npm run demo && npm run demo:time && npm run demo:form",
+    "demo:purity": "ts-node src/demos/purity-protection-simple.ts",
+    "demo:all": "npm run demo && npm run demo:time && npm run demo:form && npm run demo:purity",
     "verify": "ts-node src/verify-purity.ts"
   },
   "keywords": [
