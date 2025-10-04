@@ -9,11 +9,14 @@ coverage/
 .idea/
 
 # No compiled outputs - only pure specifications
-*.js
-*.ts
-*.wasm
-*.rs
+# *.js
+# *.ts
+# *.wasm
+# *.rs
 
 # Except example implementations
-!wiki/examples/*.js
-!wiki/examples/*.ts
+# !wiki/examples/*.js
+# !wiki/examples/*.ts
+
+# For now, allow all source files for proof of concept
+# Will refactor to submodules later
