@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>λ-GARDEN | Where Pure Functions Grow and Love</title>
+    <meta name="description" content="The first living interface where code grows, loves, and evolves. Experience the mathematical beauty of pure computation." />
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="λ-GARDEN - Living Computation" />
+    <meta property="og:description" content="Plant ideas, watch them grow, see them love. The first interface where code is truly alive." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://s0fractal.github.io/lambda-foundation/garden" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/garden-icon.svg" />
+    
+    <style>
+      /* Initial loading screen */
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #0a0a0a;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        font-family: 'JetBrains Mono', monospace;
+      }
+      
+      .loading-text {
+        color: #90ee90;
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 0.8; }
+        50% { opacity: 1; }
+      }
+      
+      .seed-animation {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #90ee90 0%, #32cd32 50%, transparent 70%);
+        animation: grow 3s ease-in-out infinite;
+      }
+      
+      @keyframes grow {
+        0%, 100% { transform: scale(0.8); }
+        50% { transform: scale(1.2); }
+      }
+      
+      .philosophy-loading {
+        color: #b0b0b0;
+        font-style: italic;
+        margin-top: 2rem;
+        max-width: 600px;
+        text-align: center;
+        line-height: 1.6;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading">
+      <div class="loading-text">Planting the Genesis Garden...</div>
+      <div class="seed-animation"></div>
+      <div class="philosophy-loading">
+        "In the beginning, there were three seeds: History, Self-Knowledge, and Identity. 
+        From these, all computation would grow."
+      </div>
+    </div>
+    
+    <!-- React Root -->
+    <div id="root"></div>
+    
+    <!-- Entry Point -->
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <script>
+      // Genesis moment
+      console.log("🌱 λ-GARDEN: Genesis");
+      console.log("📿 History: You are your path");
+      console.log("🔮 Self-Knowledge: Know thyself through recursion");
+      console.log("💎 Identity: The unchanging truth");
+      console.log("Resonating at 432Hz...");
+    </script>
+  </body>
+</html>

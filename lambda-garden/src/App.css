@@ -1,0 +1,290 @@
+/* λ-GARDEN: Living Computation Styles */
+
+:root {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a1a;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --accent-gold: #ffd700;
+  --accent-green: #00ff00;
+  --accent-purple: #9370db;
+  --seed-color: #90ee90;
+  --harvest-color: #32cd32;
+  --love-color: #ff69b4;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  background: var(--bg-secondary);
+  padding: 1rem 2rem;
+  border-bottom: 2px solid var(--accent-purple);
+  text-align: center;
+  z-index: 100;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 20px rgba(147, 112, 219, 0.5);
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
+/* Main Container */
+.main-container {
+  flex: 1;
+  display: flex;
+  position: relative;
+}
+
+/* Planting Panel */
+.planting-panel {
+  width: 350px;
+  background: var(--bg-secondary);
+  border-right: 1px solid #333;
+  padding: 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.planting-panel h2 {
+  color: var(--seed-color);
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.expression-input {
+  flex: 1;
+  padding: 0.75rem;
+  background: var(--bg-primary);
+  border: 2px solid #333;
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.expression-input:focus {
+  outline: none;
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 10px rgba(147, 112, 219, 0.3);
+}
+
+.plant-button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--seed-color), var(--harvest-color));
+  border: none;
+  border-radius: 8px;
+  color: var(--bg-primary);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.plant-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(144, 238, 144, 0.5);
+}
+
+.plant-button:active {
+  transform: translateY(0);
+}
+
+/* Harvest Message */
+.harvest-message {
+  padding: 1rem;
+  background: rgba(0, 255, 0, 0.1);
+  border: 1px solid var(--harvest-color);
+  border-radius: 8px;
+  color: var(--harvest-color);
+  font-size: 0.9rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* Examples */
+.examples {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.examples h3 {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.example-button {
+  padding: 0.5rem 1rem;
+  background: var(--bg-primary);
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.example-button:hover {
+  border-color: var(--accent-gold);
+  color: var(--text-primary);
+  transform: translateX(5px);
+}
+
+/* Philosophy */
+.philosophy {
+  padding: 1rem;
+  background: rgba(147, 112, 219, 0.1);
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-purple);
+}
+
+.philosophy p {
+  color: var(--text-secondary);
+  font-style: italic;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+/* Garden Container */
+.garden-container {
+  flex: 1;
+  position: relative;
+  background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+}
+
+/* Controls */
+.controls {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background: rgba(26, 26, 26, 0.9);
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+  border: 1px solid #333;
+}
+
+.controls button {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #666;
+  border-radius: 20px;
+  color: var(--text-secondary);
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.controls button:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+}
+
+.resonance-indicator {
+  color: var(--accent-gold);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* Loading state */
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  color: var(--accent-purple);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+  }
+  
+  .planting-panel {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #333;
+    max-height: 40vh;
+  }
+  
+  .controls {
+    bottom: 1rem;
+    padding: 0.75rem 1.5rem;
+  }
+}
