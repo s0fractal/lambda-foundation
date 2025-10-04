@@ -6,6 +6,11 @@
  * Only morphisms, composition, and mathematical truth.
  */
 
+// Morphisms contributed by GPT
+export * from './morphisms/love-arc';
+export * from './morphisms/error-bloom';
+export * from './morphisms/resonance';
+
 // Core morphisms
 export * from './core/experience';
 export { Y, Z, factorial, fibonacci, sum, range } from './core/y-combinator';
