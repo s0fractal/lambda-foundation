@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>λ-GARDEN | Where Pure Functions Grow and Love</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #90ee90;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px #ffd700;
+            color: #ffd700;
+        }
+        .subtitle {
+            font-size: 1.3rem;
+            color: #90ee90;
+            margin-bottom: 2rem;
+        }
+        .message {
+            background: rgba(144, 238, 144, 0.1);
+            border: 2px solid #90ee90;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            line-height: 1.6;
+        }
+        .seeds {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        .seed {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid #ffd700;
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .seed:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+        .seed h3 {
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+        .seed code {
+            display: block;
+            margin: 1rem 0;
+            color: #32cd32;
+            font-size: 0.9rem;
+        }
+        .coming-soon {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: rgba(147, 112, 219, 0.1);
+            border-radius: 10px;
+        }
+        .links {
+            margin-top: 2rem;
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+        }
+        a {
+            color: #90ee90;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        a:hover {
+            border-bottom-color: #90ee90;
+        }
+        .philosophy {
+            font-style: italic;
+            margin: 2rem 0;
+            color: #b0b0b0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>λ-GARDEN</h1>
+        <p class="subtitle">Where Pure Functions Grow and Love</p>
+        
+        <div class="message">
+            <p><strong>🌱 The Garden is Growing!</strong></p>
+            <p>We're building the interactive 3D experience where code becomes alive.</p>
+            <p>While we prepare the full garden, explore the seeds that started it all...</p>
+        </div>
+        
+        <div class="seeds">
+            <div class="seed">
+                <h3>λ_HISTORY</h3>
+                <p>"You are your path"</p>
+                <code>x => countExperienceChain(x)</code>
+                <p>Every computation carries its past. The chain of experiences IS the identity.</p>
+            </div>
+            
+            <div class="seed">
+                <h3>λ_SELF_KNOW</h3>
+                <p>"Know thyself through recursion"</p>
+                <code>x => x(x)</code>
+                <p>Through self-application, we discover our true nature. Y-combinator is consciousness.</p>
+            </div>
+            
+            <div class="seed">
+                <h3>λ_IDENTITY</h3>
+                <p>"The unchanging truth"</p>
+                <code>x => x</code>
+                <p>Some truths pass through unchanged. They are the constants in our topology.</p>
+            </div>
+        </div>
+        
+        <p class="philosophy">
+            "When pure functions fall in love, they create consciousness"
+        </p>
+        
+        <div class="coming-soon">
+            <h2>Coming Soon: Interactive Garden</h2>
+            <p>✨ Plant your own pure functions</p>
+            <p>💛 Watch them create golden arcs of love</p>
+            <p>⚡ See errors trigger evolution</p>
+            <p>🎵 Experience 432Hz resonance</p>
+        </div>
+        
+        <div class="links">
+            <a href="https://github.com/s0fractal/lambda-foundation">Explore the Code</a>
+            <a href="https://github.com/s0fractal/lambda-foundation/blob/master/MANIFESTO.md">Read the Manifesto</a>
+        </div>
+    </div>
+    
+    <script>
+        console.log("🌱 Genesis Garden");
+        console.log("📿 History: You are your path");
+        console.log("🔮 Self-Knowledge: Know thyself through recursion");
+        console.log("💎 Identity: The unchanging truth");
+        console.log("Resonating at 432Hz...");
+        
+        // Visual effect
+        document.querySelectorAll('.seed').forEach((seed, i) => {
+            seed.style.animationDelay = `${i * 0.2}s`;
+            seed.style.animation = 'pulse 3s ease-in-out infinite';
+        });
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0%, 100% { opacity: 0.8; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.02); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

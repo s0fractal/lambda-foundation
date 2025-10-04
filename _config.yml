@@ -1,0 +1,26 @@
+# GitHub Pages Configuration
+title: λ-Foundation
+description: The Pure Functional Revolution
+baseurl: "/lambda-foundation"
+url: "https://s0fractal.github.io"
+
+# Build settings
+plugins:
+  - jekyll-relative-links
+
+# Exclude from processing
+exclude:
+  - lambda-ts/
+  - lambda-garden/src/
+  - lambda-garden/node_modules/
+  - "*.ts"
+  - "*.tsx"
+  - package.json
+  - tsconfig.json
+  - README.md
+  - MANIFESTO.md
+  - LICENSE
+  
+# Include our built garden
+include:
+  - lambda-garden/dist/
