@@ -47,6 +47,9 @@ jobs:
           cd lambda-garden
           pnpm build
           
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
