@@ -1,0 +1,366 @@
+/**
+ * λ-WIKI Styles: Pure Visual Computation
+ */
+
+:root {
+  --cyan: #00ffff;
+  --magenta: #ff00ff;
+  --green: #00ff00;
+  --yellow: #ffff00;
+  --white: #ffffff;
+  --bg: #0a0a0a;
+  --bg-lighter: #1a1a1a;
+  --text: #ffffff;
+  --text-dim: #888888;
+  --error: #ff4444;
+  --success: #44ff44;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Courier New', monospace;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation */
+.lambda-nav {
+  background: var(--bg-lighter);
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--cyan);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+}
+
+.lambda-nav h1 {
+  margin: 0;
+  display: inline-block;
+}
+
+.logo {
+  color: var(--cyan);
+  text-decoration: none;
+  font-size: 2rem;
+  text-shadow: 0 0 10px var(--cyan);
+}
+
+.tagline {
+  color: var(--text-dim);
+  font-style: italic;
+  margin: 0.5rem 0;
+}
+
+.nav-links {
+  margin-top: 1rem;
+}
+
+.nav-links a {
+  margin-right: 2rem;
+}
+
+/* Links */
+.lambda-link {
+  color: var(--cyan);
+  text-decoration: none;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.lambda-link:hover {
+  color: var(--white);
+  text-shadow: 0 0 5px var(--cyan);
+}
+
+.lambda-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--cyan);
+  transition: width 0.3s;
+}
+
+.lambda-link:hover::after {
+  width: 100%;
+}
+
+/* Main content */
+.lambda-main {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Morphism page */
+.morphism-page h1 {
+  color: var(--magenta);
+  text-shadow: 0 0 10px var(--magenta);
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.description {
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  margin-bottom: 2rem;
+  white-space: pre-wrap;
+}
+
+.philosophy {
+  background: var(--bg-lighter);
+  padding: 1.5rem;
+  border-left: 3px solid var(--yellow);
+  margin: 2rem 0;
+}
+
+.philosophy blockquote {
+  margin: 0;
+  font-style: italic;
+  white-space: pre-wrap;
+}
+
+.examples, .implementation, .experience-chain, .related {
+  margin: 2rem 0;
+}
+
+.examples h2, .implementation h2, .experience-chain h2, .related h2 {
+  color: var(--green);
+  border-bottom: 1px solid var(--green);
+  padding-bottom: 0.5rem;
+}
+
+.examples ul, .related ul {
+  list-style: none;
+  padding: 0;
+}
+
+.examples li, .related li {
+  margin: 0.5rem 0;
+}
+
+.examples code {
+  background: var(--bg-lighter);
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--text-dim);
+  display: inline-block;
+}
+
+.implementation pre {
+  background: var(--bg-lighter);
+  padding: 1rem;
+  overflow-x: auto;
+  border: 1px solid var(--text-dim);
+}
+
+/* Experience chain */
+.history {
+  list-style: decimal;
+  padding-left: 2rem;
+}
+
+.history li {
+  margin: 0.5rem 0;
+  color: var(--text-dim);
+}
+
+.history .context {
+  color: var(--text);
+}
+
+.history .current {
+  color: var(--green);
+  font-weight: bold;
+  margin-left: 1rem;
+}
+
+/* Compute interface */
+.compute-interface {
+  background: var(--bg-lighter);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--cyan);
+}
+
+.compute-box {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.lambda-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--cyan);
+  color: var(--text);
+  padding: 0.75rem;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+}
+
+.lambda-input:focus {
+  outline: none;
+  border-color: var(--white);
+  box-shadow: 0 0 5px var(--cyan);
+}
+
+.compute-btn {
+  background: var(--cyan);
+  color: var(--bg);
+  border: none;
+  padding: 0.75rem 2rem;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.compute-btn:hover {
+  background: var(--white);
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+.compute-result {
+  margin-top: 1rem;
+  min-height: 100px;
+}
+
+.compute-result .success {
+  color: var(--success);
+}
+
+.compute-result .error {
+  color: var(--error);
+}
+
+.compute-result pre {
+  background: var(--bg);
+  padding: 1rem;
+  margin: 0.5rem 0;
+  overflow-x: auto;
+}
+
+/* Morphism list */
+.morphism-list {
+  margin: 2rem 0;
+}
+
+.morphism-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.morphism-card {
+  background: var(--bg-lighter);
+  padding: 1rem;
+  border: 1px solid var(--text-dim);
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.morphism-card:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* Computation result */
+.computation-result, .error-page {
+  background: var(--bg-lighter);
+  padding: 2rem;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.url-display {
+  background: var(--bg);
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid var(--cyan);
+}
+
+.result-display pre {
+  background: var(--bg);
+  padding: 1rem;
+  border: 1px solid var(--green);
+  color: var(--green);
+  overflow-x: auto;
+}
+
+.error-page .error {
+  color: var(--error);
+  display: block;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: var(--bg);
+  border: 1px solid var(--error);
+}
+
+/* Footer */
+.lambda-footer {
+  background: var(--bg-lighter);
+  padding: 2rem;
+  text-align: center;
+  border-top: 1px solid var(--cyan);
+  color: var(--text-dim);
+}
+
+.lambda-footer code {
+  color: var(--yellow);
+  display: block;
+  margin-top: 1rem;
+}
+
+/* Meta text */
+.meta {
+  color: var(--text-dim);
+  font-style: italic;
+  margin-top: 2rem;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px var(--cyan);
+  }
+  50% { 
+    box-shadow: 0 0 20px var(--cyan), 0 0 40px var(--cyan);
+  }
+}
+
+/* Loading state */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 24px;
+  color: var(--cyan);
+  animation: pulse 2s infinite;
+}
+
+/**
+ * The visual language of pure computation.
+ * Every style is a morphism applied to the DOM.
+ */

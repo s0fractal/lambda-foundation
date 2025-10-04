@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>λ-WIKI: The Living Knowledge</title>
+    <style>
+      :root {
+        --cyan: #00ffff;
+        --magenta: #ff00ff;
+        --green: #00ff00;
+        --yellow: #ffff00;
+        --bg: #0a0a0a;
+        --text: #ffffff;
+      }
+      
+      body {
+        margin: 0;
+        font-family: 'Courier New', monospace;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
+      
+      #app {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        font-size: 24px;
+        color: var(--cyan);
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+      }
+      
+      .loading::after {
+        content: " λ";
+        animation: pulse 2s infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="loading">Computing</div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
