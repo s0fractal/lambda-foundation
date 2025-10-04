@@ -8,9 +8,9 @@
 
 // Core morphisms
 export * from './core/experience';
-export * from './core/y-combinator';
+export { Y, Z, factorial, fibonacci, sum, range } from './core/y-combinator';
 export * from './core/form-liberation';
-export * from './core/lambda-bridge';
+export { IO, runIO, pipe, map, flatMap } from './core/lambda-bridge';
 
 // Re-export with lambda notation
 export { experience as λ_EXP } from './core/experience';

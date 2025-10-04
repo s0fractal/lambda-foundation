@@ -193,13 +193,17 @@ console.log();
 // 8. The Philosophy in Practice
 console.log("8. The Philosophy of λBRIDGE:\n");
 
-const philosophicalProgram = pipe(
+const philosophicalProgram1 = pipe(
   IO.log("   'To transform the world, we must touch it without becoming contaminated.'"),
   flatMap(() => IO.log("   ")),
   flatMap(() => IO.log("   Traditional approach: Effects everywhere, purity nowhere")),
   flatMap(() => IO.log("   λBRIDGE approach: Effects at the boundary, purity everywhere else")),
   flatMap(() => IO.log("   ")),
-  flatMap(() => IO.log("   We don't avoid reality - we control how we touch it")),
+  flatMap(() => IO.log("   We don't avoid reality - we control how we touch it"))
+);
+
+const philosophicalProgram = pipe(
+  philosophicalProgram1,
   flatMap(() => IO.log("   Every effect is described, tracked, and executed with precision")),
   flatMap(() => IO.log("   ")),
   flatMap(() => IO.log("   The result: Total purity with total power"))
@@ -227,12 +231,16 @@ console.log("   The business logic remains 100% testable\n");
 // 10. The Final Proof
 console.log("10. The Final Proof - Purity Maintained:\n");
 
-const finalProof = pipe(
+const finalProof1 = pipe(
   IO.log("   λ-Foundation remains pure because:"),
   flatMap(() => IO.log("   1. Effects are values, not executions")),
   flatMap(() => IO.log("   2. Composition doesn't trigger side effects")),
   flatMap(() => IO.log("   3. The VOID boundary is explicit and controlled")),
-  flatMap(() => IO.log("   4. All effects can be mocked, tracked, and audited")),
+  flatMap(() => IO.log("   4. All effects can be mocked, tracked, and audited"))
+);
+
+const finalProof = pipe(
+  finalProof1,
   flatMap(() => IO.log("   5. Business logic never directly touches the impure world")),
   flatMap(() => IO.log("   ")),
   flatMap(() => IO.log("   λBRIDGE: The guardian of our purity 🛡️"))
