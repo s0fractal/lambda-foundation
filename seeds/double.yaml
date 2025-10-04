@@ -1,0 +1,4 @@
+id: seed-double
+morphism: lambda-double
+fn: "x => x + x"
+samples: [0, 1, 2, 3, 4, 5]

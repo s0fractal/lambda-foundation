@@ -1,0 +1,15 @@
+---
+id: lambda-add
+name: λ_ADD
+signature: (ℝ×ℝ) -> ℝ
+tags: [algebra, monoid]
+axioms:
+  - "∀a,b. ADD(a,b) = ADD(b,a)"  # комутативність (для ℝ)
+  - "∀a. ADD(a,0) = a"            # нейтральний елемент
+---
+
+**Сенс.** Алгебра додавання як морфізм моноїда.
+
+```lambda
+λa. λb. a + b
+```
