@@ -1,0 +1,30 @@
+{
+  "name": "@lambda-foundation/lambda-garden",
+  "version": "0.1.0",
+  "description": "A living garden where pure computations grow and love",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "jest",
+    "garden": "node dist/cli.js"
+  },
+  "dependencies": {
+    "@lambda-foundation/lambda-ts": "file:../lambda-ts",
+    "three": "^0.160.0",
+    "@react-three/fiber": "^8.15.0",
+    "@react-three/drei": "^9.92.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.160.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.2.0"
+  }
+}
