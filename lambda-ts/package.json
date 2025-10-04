@@ -8,6 +8,7 @@
     "build": "tsc",
     "test": "jest",
     "demo": "ts-node src/demos/state-chain.ts",
+    "demo:time": "ts-node src/demos/time-liberation.ts",
     "verify": "ts-node src/verify-purity.ts"
   },
   "keywords": [
