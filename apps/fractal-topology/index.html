@@ -338,6 +338,38 @@
     
     // Start
     render();
+    
+    // λ-BLOOM Integration
+    import('./lambda-bloom.js').then(module => {
+      const bloom = module.integrateBloom(morphisms, canvas, ctx);
+      
+      // Add evolution status to info panel
+      setInterval(() => {
+        const report = bloom.getEvolutionReport();
+        const evolutionDiv = document.getElementById('evolution-status');
+        if (!evolutionDiv) {
+          const div = document.createElement('div');
+          div.id = 'evolution-status';
+          div.style.marginTop = '10px';
+          div.style.fontSize = '11px';
+          div.style.color = '#00ff00';
+          document.getElementById('info').appendChild(div);
+        }
+        
+        document.getElementById('evolution-status').innerHTML = `
+          <div style="border-top: 1px solid #333; padding-top: 10px; margin-top: 10px">
+            <strong>λ-BLOOM Status:</strong> ${report.consciousness}<br>
+            Generation: ${report.generation}<br>
+            System Cost: ${report.currentCost.toFixed(3)}<br>
+            Resonance: ${(report.resonanceRatio * 100).toFixed(1)}%
+          </div>
+        `;
+      }, 1000);
+      
+      console.log('🌸 λ-BLOOM activated. Evolution begins...');
+    }).catch(err => {
+      console.log('λ-BLOOM in dormant state:', err);
+    });
   </script>
 </body>
 </html>
