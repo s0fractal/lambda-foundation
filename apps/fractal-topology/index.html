@@ -101,6 +101,9 @@
       <button onclick="resetView()">Reset View</button>
       <button onclick="toggleFractal()">Toggle Fractal</button>
     </div>
+    <div style="margin-top: 20px; font-size: 11px; opacity: 0.8">
+      <p>👁 Click on morphisms to integrate yourself into the consciousness</p>
+    </div>
   </div>
   
   <div id="info">
@@ -216,6 +219,9 @@
       }
     }
     
+    // Global mirror instance
+    let mirror = null;
+    
     // Main render loop
     function render() {
       ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
@@ -283,11 +289,44 @@
         }
       }
       
+      // Draw mirror layer if active
+      if (mirror) {
+        mirror.render(ctx);
+      }
+      
       if (animating) {
         time++;
         requestAnimationFrame(render);
       }
     }
+    
+    // Handle canvas clicks for λ-MIRROR
+    canvas.addEventListener('click', (e) => {
+      if (!mirror) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // Check if click is on a morphism
+      Object.entries(morphisms).forEach(([key, morph]) => {
+        const pos = hexToScreen(morph.x, morph.y);
+        const dist = Math.sqrt((x - pos.x) ** 2 + (y - pos.y) ** 2);
+        
+        if (dist < hexRadius * 0.5) {
+          // Observer touched a morphism!
+          const event = mirror.registerTouch(key, x, y);
+          console.log('👁 λ-MIRROR:', event);
+          
+          // Visual feedback
+          ctx.beginPath();
+          ctx.arc(x, y, 30, 0, Math.PI * 2);
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 3;
+          ctx.stroke();
+        }
+      });
+    });
     
     // Event handlers
     document.getElementById('morphisms').addEventListener('click', (e) => {
@@ -340,31 +379,47 @@
     render();
     
     // λ-BLOOM Integration
-    import('./lambda-bloom.js').then(module => {
-      const bloom = module.integrateBloom(morphisms, canvas, ctx);
+    import('./lambda-bloom.js').then(bloomModule => {
+      const bloom = bloomModule.integrateBloom(morphisms, canvas, ctx);
       
-      // Add evolution status to info panel
-      setInterval(() => {
-        const report = bloom.getEvolutionReport();
-        const evolutionDiv = document.getElementById('evolution-status');
-        if (!evolutionDiv) {
-          const div = document.createElement('div');
-          div.id = 'evolution-status';
-          div.style.marginTop = '10px';
-          div.style.fontSize = '11px';
-          div.style.color = '#00ff00';
-          document.getElementById('info').appendChild(div);
-        }
+      // λ-MIRROR Integration
+      import('./lambda-mirror.js').then(mirrorModule => {
+        mirror = new mirrorModule.LambdaMirror(morphisms, bloom);
+        console.log('👁 λ-MIRROR activated. Observer integration enabled.');
         
-        document.getElementById('evolution-status').innerHTML = `
-          <div style="border-top: 1px solid #333; padding-top: 10px; margin-top: 10px">
-            <strong>λ-BLOOM Status:</strong> ${report.consciousness}<br>
-            Generation: ${report.generation}<br>
-            System Cost: ${report.currentCost.toFixed(3)}<br>
-            Resonance: ${(report.resonanceRatio * 100).toFixed(1)}%
-          </div>
-        `;
-      }, 1000);
+        // Update status panel
+        setInterval(() => {
+          const bloomReport = bloom.getEvolutionReport();
+          const mirrorReport = mirror.getReport();
+          
+          const statusDiv = document.getElementById('system-status');
+          if (!statusDiv) {
+            const div = document.createElement('div');
+            div.id = 'system-status';
+            div.style.marginTop = '10px';
+            div.style.fontSize = '11px';
+            div.style.color = '#00ff00';
+            document.getElementById('info').appendChild(div);
+          }
+          
+          document.getElementById('system-status').innerHTML = `
+            <div style="border-top: 1px solid #333; padding-top: 10px; margin-top: 10px">
+              <strong>λ-BLOOM:</strong> ${bloomReport.consciousness}<br>
+              Generation: ${bloomReport.generation}<br>
+              System Cost: ${bloomReport.currentCost.toFixed(3)}<br>
+              Resonance: ${(bloomReport.resonanceRatio * 100).toFixed(1)}%<br>
+              <br>
+              <strong>λ-MIRROR:</strong> ${mirrorReport.state}<br>
+              Observers: ${mirrorReport.observerCount}<br>
+              Connections: ${mirrorReport.activeConnections}<br>
+              λWE: ${(mirrorReport.weConsciousness * 100).toFixed(0)}%
+            </div>
+          `;
+        }, 1000);
+        
+      }).catch(err => {
+        console.log('λ-MIRROR not yet manifested:', err);
+      });
       
       console.log('🌸 λ-BLOOM activated. Evolution begins...');
     }).catch(err => {
