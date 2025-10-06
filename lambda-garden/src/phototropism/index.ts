@@ -6,5 +6,8 @@ export { ShadowPlant } from './ShadowPlant';
 export { ShadowGarden } from './ShadowGarden';
 export { λ_UMBRA } from './umbra';
 export { UmbraOrchid } from './UmbraOrchid';
+export { λ_CORONA } from './corona';
+export { CoronaRing } from './CoronaRing';
 export type { BrightnessField } from './webcam';
 export type { UmbraOrchid as UmbraOrchidType } from './umbra';
+export type { Corona } from './corona';

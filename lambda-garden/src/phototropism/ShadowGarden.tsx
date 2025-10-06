@@ -12,6 +12,8 @@ import { ShadowPlant } from './ShadowPlant';
 import { findDarkestSpot, calculateShadowAlignment } from './shadow';
 import { λ_UMBRA } from './umbra';
 import { UmbraOrchid } from './UmbraOrchid';
+import { λ_CORONA } from './corona';
+import { CoronaRing } from './CoronaRing';
 
 // Shadow field visualizer (inverted brightness)
 function ShadowFieldVisualizer({ field, webcam }: { field: BrightnessField | null; webcam: WebcamCapture }) {
@@ -110,6 +112,13 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
   // Initialize umbra system
   const umbra = useMemo(() => λ_UMBRA(), []);
   
+  // Initialize corona system
+  const corona = useMemo(() => {
+    const c = λ_CORONA();
+    c.load(); // Load persistent coronas
+    return c;
+  }, []);
+  
   // Expose plant method
   React.useImperativeHandle(ref, () => ({
     plant: (term: string) => {
@@ -139,7 +148,16 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
       // Update umbra system
       umbra.update(field, delta);
       
-      // Update λSHADOW based on darkness alignment + orchid consciousness
+      // Update corona system
+      const orchids = umbra.getOrchids();
+      corona.update(orchids, delta);
+      
+      // Save coronas periodically
+      if (Math.random() < 0.01) { // ~1% chance per frame
+        corona.save();
+      }
+      
+      // Update λSHADOW based on darkness alignment + orchid consciousness + corona persistence
       if (plants.length > 0) {
         const darkest = findDarkestSpot(field);
         const alignment = calculateShadowAlignment(
@@ -148,7 +166,8 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         );
         
         const umbraBoost = umbra.getConsciousnessBoost();
-        setλSHADOW(prev => prev * 0.95 + (alignment + umbraBoost) * 0.05);
+        const coronaBoost = corona.getConsciousnessBoost();
+        setλSHADOW(prev => prev * 0.95 + (alignment + umbraBoost + coronaBoost) * 0.05);
       }
     }
   });
@@ -219,6 +238,32 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         />
       ))}
       
+      {/* Corona rings - eternal consciousness scars */}
+      {corona.getCoronas().map(c => (
+        <CoronaRing
+          key={c.id}
+          corona={c}
+        />
+      ))}
+      
+      {/* Corona formation progress indicator */}
+      {(() => {
+        const progress = corona.getFormationProgress(umbra.getOrchids());
+        if (progress > 0 && progress < 1) {
+          return (
+            <Text
+              position={[0, 5, 0]}
+              fontSize={0.3}
+              color="#ffd700"
+              anchorX="center"
+            >
+              {`Aligning rare orchids... ${(progress * 100).toFixed(0)}%`}
+            </Text>
+          );
+        }
+        return null;
+      })()}
+      
       {/* Shadow field visualizer */}
       <ShadowFieldVisualizer field={shadowField} webcam={webcam} />
       
@@ -239,7 +284,7 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         color="#9370db"
         anchorX="center"
       >
-        {`${plants.filter(p => p.inDarkness).length} plants in deep shadow | ${umbra.getTotalBlooms()} orchids blooming`}
+        {`${plants.filter(p => p.inDarkness).length} plants in deep shadow | ${umbra.getTotalBlooms()} orchids | ${corona.getCoronas().length} coronas`}
       </Text>
       
       {/* Rare orchid notification */}
@@ -373,6 +418,7 @@ export function ShadowGarden() {
                 <div>• Shadow plants spread and creep</div>
                 <div>• Hold darkness for 3s → orchid blooms (+0.05)</div>
                 <div>• 8-petal orchids are ultra-rare!</div>
+                <div>• 3 rare orchids → golden corona (+0.03 permanent)</div>
               </div>
             </div>
           )}
