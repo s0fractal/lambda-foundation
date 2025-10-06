@@ -14,6 +14,8 @@ import { λ_UMBRA } from './umbra';
 import { UmbraOrchid } from './UmbraOrchid';
 import { λ_CORONA } from './corona';
 import { CoronaRing } from './CoronaRing';
+import { λ_VOID_CRYSTAL } from './voidCrystal';
+import { VoidCrystalMesh } from './VoidCrystalMesh';
 
 // Shadow field visualizer (inverted brightness)
 function ShadowFieldVisualizer({ field, webcam }: { field: BrightnessField | null; webcam: WebcamCapture }) {
@@ -119,6 +121,13 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
     return c;
   }, []);
   
+  // Initialize void crystal system
+  const voidCrystal = useMemo(() => {
+    const vc = λ_VOID_CRYSTAL();
+    vc.load(); // Load crystal states
+    return vc;
+  }, []);
+  
   // Expose plant method
   React.useImperativeHandle(ref, () => ({
     plant: (term: string) => {
@@ -152,9 +161,23 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
       const orchids = umbra.getOrchids();
       corona.update(orchids, delta);
       
-      // Save coronas periodically
+      // Calculate average brightness
+      let avgBrightness = 0;
+      if (field) {
+        for (let i = 0; i < field.data.length; i++) {
+          avgBrightness += field.data[i];
+        }
+        avgBrightness /= field.data.length;
+      }
+      
+      // Update void crystal system
+      const coronas = corona.getCoronas();
+      voidCrystal.update(coronas, avgBrightness, delta);
+      
+      // Save systems periodically
       if (Math.random() < 0.01) { // ~1% chance per frame
         corona.save();
+        voidCrystal.save();
       }
       
       // Update λSHADOW based on darkness alignment + orchid consciousness + corona persistence
@@ -167,7 +190,8 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         
         const umbraBoost = umbra.getConsciousnessBoost();
         const coronaBoost = corona.getConsciousnessBoost();
-        setλSHADOW(prev => prev * 0.95 + (alignment + umbraBoost + coronaBoost) * 0.05);
+        const voidPower = voidCrystal.getVoidPower(avgBrightness);
+        setλSHADOW(prev => prev * 0.95 + (alignment + umbraBoost + coronaBoost + voidPower) * 0.05);
       }
     }
   });
@@ -246,6 +270,19 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         />
       ))}
       
+      {/* Void crystals */}
+      {voidCrystal.getCrystals().map(crystal => (
+        <VoidCrystalMesh
+          key={crystal.id}
+          crystal={crystal}
+          isVoid={voidCrystal.isVoidPowered(
+            shadowField ? 
+            Array.from(shadowField.data).reduce((a, b) => a + b, 0) / shadowField.data.length : 
+            1
+          )}
+        />
+      ))}
+      
       {/* Corona formation progress indicator */}
       {(() => {
         const progress = corona.getFormationProgress(umbra.getOrchids());
@@ -284,7 +321,7 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         color="#9370db"
         anchorX="center"
       >
-        {`${plants.filter(p => p.inDarkness).length} plants in deep shadow | ${umbra.getTotalBlooms()} orchids | ${corona.getCoronas().length} coronas`}
+        {`${plants.filter(p => p.inDarkness).length} shadow plants | ${umbra.getTotalBlooms()} orchids | ${corona.getCoronas().length} coronas | ${voidCrystal.getCrystals().length} crystals`}
       </Text>
       
       {/* Rare orchid notification */}
@@ -299,6 +336,28 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
               anchorX="center"
             >
               {`✨ Rare ${rarest.petals}-petal orchid discovered! +${(rarest.petals * 0.01).toFixed(2)} consciousness ✨`}
+            </Text>
+          );
+        }
+        return null;
+      })()}
+      
+      {/* Void power indicator */}
+      {(() => {
+        const avgBright = shadowField ? 
+          Array.from(shadowField.data).reduce((a, b) => a + b, 0) / shadowField.data.length : 
+          1;
+        const voidPower = voidCrystal.getVoidPower(avgBright);
+        
+        if (voidPower > 0) {
+          return (
+            <Text
+              position={[0, 6, 0]}
+              fontSize={0.25}
+              color="#ffdd00"
+              anchorX="center"
+            >
+              {`⚡ Void powered! +${(voidPower * 100).toFixed(1)}% consciousness from crystals ⚡`}
             </Text>
           );
         }
@@ -419,6 +478,8 @@ export function ShadowGarden() {
                 <div>• Hold darkness for 3s → orchid blooms (+0.05)</div>
                 <div>• 8-petal orchids are ultra-rare!</div>
                 <div>• 3 rare orchids → golden corona (+0.03 permanent)</div>
+                <div>• Corona + 10s → crystal forms above</div>
+                <div>• In total darkness, crystals release stored λ!</div>
               </div>
             </div>
           )}
