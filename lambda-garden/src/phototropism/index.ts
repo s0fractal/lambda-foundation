@@ -4,4 +4,7 @@ export { PhotoTropicGarden } from './PhotoTropicGarden';
 export { λ_SHADOW, shadowBend, findDarkestSpot } from './shadow';
 export { ShadowPlant } from './ShadowPlant';
 export { ShadowGarden } from './ShadowGarden';
+export { λ_UMBRA } from './umbra';
+export { UmbraOrchid } from './UmbraOrchid';
 export type { BrightnessField } from './webcam';
+export type { UmbraOrchid as UmbraOrchidType } from './umbra';

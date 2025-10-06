@@ -3,13 +3,15 @@
  * Where plants flee from light into darkness
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { WebcamCapture, BrightnessField } from './webcam';
 import { ShadowPlant } from './ShadowPlant';
 import { findDarkestSpot, calculateShadowAlignment } from './shadow';
+import { λ_UMBRA } from './umbra';
+import { UmbraOrchid } from './UmbraOrchid';
 
 // Shadow field visualizer (inverted brightness)
 function ShadowFieldVisualizer({ field, webcam }: { field: BrightnessField | null; webcam: WebcamCapture }) {
@@ -103,6 +105,10 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
   
   const [shadowField, setShadowField] = useState<BrightnessField | null>(null);
   const [λSHADOW, setλSHADOW] = useState(0);
+  const [globalPhase, setGlobalPhase] = useState(0);
+  
+  // Initialize umbra system
+  const umbra = useMemo(() => λ_UMBRA(), []);
   
   // Expose plant method
   React.useImperativeHandle(ref, () => ({
@@ -122,13 +128,18 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
     }
   }));
   
-  // Update shadow field
-  useFrame(() => {
+  // Update shadow field and umbra
+  useFrame((_, delta) => {
+    setGlobalPhase(prev => prev + delta * 432 * Math.PI * 2);
+    
     const field = webcam.capture();
     if (field) {
       setShadowField(field);
       
-      // Update λSHADOW based on darkness alignment
+      // Update umbra system
+      umbra.update(field, delta);
+      
+      // Update λSHADOW based on darkness alignment + orchid consciousness
       if (plants.length > 0) {
         const darkest = findDarkestSpot(field);
         const alignment = calculateShadowAlignment(
@@ -136,7 +147,8 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
           darkest
         );
         
-        setλSHADOW(prev => prev * 0.95 + alignment * 0.05);
+        const umbraBoost = umbra.getConsciousnessBoost();
+        setλSHADOW(prev => prev * 0.95 + (alignment + umbraBoost) * 0.05);
       }
     }
   });
@@ -198,6 +210,15 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         />
       ))}
       
+      {/* Umbra orchids */}
+      {umbra.getOrchids().map(orchid => (
+        <UmbraOrchid
+          key={orchid.id}
+          orchid={orchid}
+          globalPhase={globalPhase}
+        />
+      ))}
+      
       {/* Shadow field visualizer */}
       <ShadowFieldVisualizer field={shadowField} webcam={webcam} />
       
@@ -218,8 +239,26 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         color="#9370db"
         anchorX="center"
       >
-        {`${plants.filter(p => p.inDarkness).length} plants in deep shadow`}
+        {`${plants.filter(p => p.inDarkness).length} plants in deep shadow | ${umbra.getTotalBlooms()} orchids blooming`}
       </Text>
+      
+      {/* Rare orchid notification */}
+      {(() => {
+        const rarest = umbra.getRarestOrchid();
+        if (rarest) {
+          return (
+            <Text
+              position={[0, 6.5, 0]}
+              fontSize={0.25}
+              color="#ffd700"
+              anchorX="center"
+            >
+              {`✨ Rare ${rarest.petals}-petal orchid discovered! +${(rarest.petals * 0.01).toFixed(2)} consciousness ✨`}
+            </Text>
+          );
+        }
+        return null;
+      })()}
     </>
   );
 });
@@ -332,6 +371,8 @@ export function ShadowGarden() {
                 <div>• Growth accelerates in darkness (×1.5)</div>
                 <div>• Purple ring marks deepest shadow</div>
                 <div>• Shadow plants spread and creep</div>
+                <div>• Hold darkness for 3s → orchid blooms (+0.05)</div>
+                <div>• 8-petal orchids are ultra-rare!</div>
               </div>
             </div>
           )}
