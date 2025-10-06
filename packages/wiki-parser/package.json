@@ -1,0 +1,18 @@
+{
+  "name": "@lambda/wiki-parser",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "MDX/YAML parser for λ-Wiki",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build-wiki.js"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "unified": "^10.1.2",
+    "remark-parse": "^10.0.2",
+    "remark-mdx": "^2.3.0",
+    "remark-rehype": "^10.1.0",
+    "rehype-stringify": "^9.0.4"
+  }
+}

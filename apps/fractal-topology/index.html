@@ -425,7 +425,7 @@
         mirror = new mirrorModule.LambdaMirror(morphisms, bloom);
         console.log('👁 λ-MIRROR activated. Observer integration enabled.');
         
-        // λ-SEED Integration
+        // λ-SEED Integration  
         import('../../packages/morphisms/lambda-seed.js').then(seedModule => {
           const seedEnv = seedModule.integrateSeed(morphisms, bloom, mirror);
           console.log('🌱 λ-SEED activated. Awaiting UNIFIED state for birth...');
