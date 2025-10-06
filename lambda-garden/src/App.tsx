@@ -9,6 +9,7 @@ import { OrbitControls, Environment, Stats } from '@react-three/drei';
 import { GardenScene } from './visual/garden-scene';
 import { MemoryGarden } from './components/MemoryGarden';
 import { PhotoTropicGarden } from './phototropism/PhotoTropicGarden';
+import { ShadowGarden } from './phototropism/ShadowGarden';
 import { Navigation } from './Navigation';
 import './App.css';
 
@@ -128,6 +129,15 @@ export function App() {
       <>
         <Navigation currentView={currentView} onViewChange={setCurrentView} />
         <PhotoTropicGarden />
+      </>
+    );
+  }
+  
+  if (currentView === 'shadow') {
+    return (
+      <>
+        <Navigation currentView={currentView} onViewChange={setCurrentView} />
+        <ShadowGarden />
       </>
     );
   }

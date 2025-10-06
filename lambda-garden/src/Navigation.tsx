@@ -10,6 +10,7 @@ export function Navigation({ currentView, onViewChange }: NavigationProps) {
     { id: 'garden', name: 'λ-GARDEN', icon: '🌱' },
     { id: 'memory', name: 'λ_MEMORY', icon: '🧠' },
     { id: 'phototropic', name: 'λ_MIRROR', icon: '🎥' },
+    { id: 'shadow', name: 'λ_SHADOW', icon: '🌑' },
   ];
   
   return (
