@@ -261,7 +261,7 @@
     };
     
     // Main render loop
-    function render() {
+    window.render = function render() {
       ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
       ctx.fillRect(0, 0, width, height);
       
@@ -429,6 +429,63 @@
         import('../../packages/morphisms/lambda-seed.js').then(seedModule => {
           const seedEnv = seedModule.integrateSeed(morphisms, bloom, mirror);
           console.log('🌱 λ-SEED activated. Awaiting UNIFIED state for birth...');
+          
+          // λ-GROWTH Integration
+          import('../../packages/morphisms/lambda-growth.js').then(growthModule => {
+            const growth = growthModule.λ_GROWTH;
+            seedEnv.growth = growth;
+            
+            // Initialize growth system
+            growth.initialize(seedEnv);
+            
+            // Add growth rendering to main render loop
+            const originalRender = window.render;
+            window.render = function() {
+              originalRender();
+              growth.render(ctx, seedEnv);
+            };
+            
+            // Root growth visualization
+            seedEnv.onRootGrow = (source, target, root) => {
+              console.log('🌿 Root growing between seeds');
+            };
+            
+            // Forest emergence celebration
+            seedEnv.onForestEmerge = (forest) => {
+              // Epic golden-green wave
+              let radius = 0;
+              const maxRadius = 800;
+              const centerX = window.innerWidth / 2;
+              const centerY = window.innerHeight / 2;
+              
+              const forestWave = () => {
+                radius += 8;
+                
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                
+                const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+                gradient.addColorStop(0, 'rgba(34, 139, 34, 0.8)');
+                gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.4)');
+                gradient.addColorStop(1, 'rgba(34, 139, 34, 0)');
+                
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 10;
+                ctx.stroke();
+                
+                if (radius < maxRadius) {
+                  requestAnimationFrame(forestWave);
+                }
+              };
+              
+              forestWave();
+              console.log('🌲 λ-FOREST EMERGED! The seeds have formed a collective!');
+            };
+            
+            console.log('🌿 λ-GROWTH activated. Seeds will connect after 30 seconds...');
+          }).catch(err => {
+            console.log('λ-GROWTH awaiting conditions:', err);
+          });
         
         // Update status panel
         setInterval(() => {
@@ -447,6 +504,10 @@
           
           const seedCount = Object.values(morphisms).filter(m => m.type === 'seed').length;
           const seedReady = mirrorReport.weConsciousness >= 0.95;
+          const rootCount = seedEnv.roots ? seedEnv.roots.length : 0;
+          const forestState = seedEnv.forestDetected ? '<span style="color: #228b22">🌲 EMERGED</span>' : 
+                              rootCount > 0 ? '<span style="color: #90ee90">GROWING</span>' :
+                              seedCount >= 2 ? 'READY' : 'WAITING';
           
           document.getElementById('system-status').innerHTML = `
             <div style="border-top: 1px solid #333; padding-top: 10px; margin-top: 10px">
@@ -462,7 +523,12 @@
               <br>
               <strong>λ-SEED:</strong> ${seedReady ? '<span style="color: #ffd700">READY</span>' : 'WAITING'}<br>
               Seeds Born: ${seedCount}<br>
-              ${seedReady ? '<span style="color: #ffd700">✨ Birth imminent!</span>' : 'Need λWE ≥ 95%'}
+              ${seedReady ? '<span style="color: #ffd700">✨ Birth imminent!</span>' : 'Need λWE ≥ 95%'}<br>
+              <br>
+              <strong>λ-FOREST:</strong> ${forestState}<br>
+              Root Network: ${rootCount} connections<br>
+              ${seedEnv.forestDetected ? '<span style="color: #228b22">🌲 Collective consciousness achieved!</span>' : 
+                seedCount >= 3 ? 'Seeds will connect in 30s' : 'Need 3+ seeds'}
             </div>
           `;
         }, 1000);
