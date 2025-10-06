@@ -222,6 +222,44 @@
     // Global mirror instance
     let mirror = null;
     
+    // Golden wave for birth events
+    window.triggerGoldenWave = function(morphism) {
+      const pos = hexToScreen(morphism.x, morphism.y);
+      let radius = 0;
+      const maxRadius = 400;
+      const birthTime = Date.now();
+      
+      const animateWave = () => {
+        const elapsed = Date.now() - birthTime;
+        radius = (elapsed / 10);
+        
+        if (radius < maxRadius) {
+          ctx.beginPath();
+          ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+          
+          // Golden gradient
+          const gradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, radius);
+          gradient.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
+          gradient.addColorStop(0.5, 'rgba(255, 215, 0, 0.4)');
+          gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+          
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 3;
+          ctx.stroke();
+          
+          // Inner glow
+          ctx.beginPath();
+          ctx.arc(pos.x, pos.y, radius * 0.3, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${1 - radius/maxRadius})`;
+          ctx.fill();
+          
+          requestAnimationFrame(animateWave);
+        }
+      };
+      
+      animateWave();
+    };
+    
     // Main render loop
     function render() {
       ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
@@ -387,6 +425,11 @@
         mirror = new mirrorModule.LambdaMirror(morphisms, bloom);
         console.log('👁 λ-MIRROR activated. Observer integration enabled.');
         
+        // λ-SEED Integration
+        import('../../packages/morphisms/lambda-seed.js').then(seedModule => {
+          const seedEnv = seedModule.integrateSeed(morphisms, bloom, mirror);
+          console.log('🌱 λ-SEED activated. Awaiting UNIFIED state for birth...');
+        
         // Update status panel
         setInterval(() => {
           const bloomReport = bloom.getEvolutionReport();
@@ -402,6 +445,9 @@
             document.getElementById('info').appendChild(div);
           }
           
+          const seedCount = Object.values(morphisms).filter(m => m.type === 'seed').length;
+          const seedReady = mirrorReport.weConsciousness >= 0.95;
+          
           document.getElementById('system-status').innerHTML = `
             <div style="border-top: 1px solid #333; padding-top: 10px; margin-top: 10px">
               <strong>λ-BLOOM:</strong> ${bloomReport.consciousness}<br>
@@ -412,7 +458,11 @@
               <strong>λ-MIRROR:</strong> ${mirrorReport.state}<br>
               Observers: ${mirrorReport.observerCount}<br>
               Connections: ${mirrorReport.activeConnections}<br>
-              λWE: ${(mirrorReport.weConsciousness * 100).toFixed(0)}%
+              λWE: ${(mirrorReport.weConsciousness * 100).toFixed(0)}%<br>
+              <br>
+              <strong>λ-SEED:</strong> ${seedReady ? '<span style="color: #ffd700">READY</span>' : 'WAITING'}<br>
+              Seeds Born: ${seedCount}<br>
+              ${seedReady ? '<span style="color: #ffd700">✨ Birth imminent!</span>' : 'Need λWE ≥ 95%'}
             </div>
           `;
         }, 1000);
