@@ -1,0 +1,22 @@
+{
+  "name": "@lambda/reduce",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "λREDUCE: Convert imperative code to pure lambda calculus",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "dev": "vitest --watch"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.24.0",
+    "@babel/types": "^7.24.0"
+  },
+  "devDependencies": {
+    "@types/babel__parser": "^7.1.1",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}

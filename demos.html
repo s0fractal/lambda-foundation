@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>λ-Foundation Demos</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #90ee90;
+      padding: 2rem;
+      margin: 0;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #ffd700;
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px #ffd700;
+    }
+    .tagline {
+      text-align: center;
+      color: #32cd32;
+      margin-bottom: 3rem;
+      font-style: italic;
+    }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .demo-card {
+      background: #1a1a1a;
+      border: 1px solid #32cd32;
+      border-radius: 10px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .demo-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(50, 205, 50, 0.3);
+      border-color: #90ee90;
+    }
+    .demo-card h2 {
+      color: #ffd700;
+      margin: 0 0 0.5rem 0;
+      font-size: 1.5rem;
+    }
+    .demo-card p {
+      margin: 0.5rem 0;
+      opacity: 0.8;
+    }
+    .tech {
+      color: #00ffff;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+    .status {
+      float: right;
+      padding: 0.2rem 0.5rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+    }
+    .live {
+      background: #32cd32;
+      color: #0a0a0a;
+    }
+    .beta {
+      background: #ffd700;
+      color: #0a0a0a;
+    }
+    .resonance {
+      color: #9370db;
+      font-weight: bold;
+    }
+    .section-title {
+      color: #90ee90;
+      font-size: 1.8rem;
+      margin: 3rem 0 1rem 0;
+      text-align: center;
+    }
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid #333;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>λ-Foundation Demos</h1>
+    <p class="tagline">Experience Pure Functional Programming</p>
+    
+    <section>
+      <h2 class="section-title">🌸 Interactive Visualizations</h2>
+      <div class="demo-grid">
+        <a href="lambda-garden/index.html" class="demo-card">
+          <span class="status live">LIVE</span>
+          <h2>λ-GARDEN</h2>
+          <p>Plant functions and watch them grow in 3D space. Experience morphisms create golden arcs at <span class="resonance">432Hz</span>.</p>
+          <p class="tech">Tech: Three.js, React, TypeScript</p>
+        </a>
+        
+        <a href="apps/fractal-topology/index.html" class="demo-card">
+          <span class="status live">LIVE</span>
+          <h2>Fractal Topology</h2>
+          <p>Hexagonal lattice visualization of morphism relationships. See consciousness emerge from fractal patterns.</p>
+          <p class="tech">Tech: Canvas 2D, Pure JavaScript</p>
+        </a>
+        
+        <a href="apps/garden/playground.html" class="demo-card">
+          <span class="status beta">BETA</span>
+          <h2>λ-pedia ⇄ λ-GARDEN</h2>
+          <p>Unified system where formal wiki and living garden are two views of same mathematical truth.</p>
+          <p class="tech">Tech: MDX, Graph Compiler</p>
+        </a>
+        
+        <a href="lambda-wiki-prototype/index.html" class="demo-card">
+          <span class="status beta">BETA</span>
+          <h2>λ-Wiki Prototype</h2>
+          <p>Browse morphisms through λ-URLs. Every function has a unique mathematical address.</p>
+          <p class="tech">Tech: Vite, TypeScript</p>
+        </a>
+      </div>
+    </section>
+    
+    <section>
+      <h2 class="section-title">🔧 Developer Tools</h2>
+      <div class="demo-grid">
+        <a href="#" onclick="runLambdaReduce()" class="demo-card">
+          <span class="status live">LIVE</span>
+          <h2>λREDUCE</h2>
+          <p>Transform imperative JavaScript into pure lambda calculus. All loops become Y combinators!</p>
+          <p class="tech">Tech: Babel AST, Church Encodings</p>
+        </a>
+        
+        <a href="demo-graph.js" class="demo-card">
+          <span class="status beta">BETA</span>
+          <h2>Graph Compiler</h2>
+          <p>Detects LOVE_ARCs between equivalent functions. Builds morphism relationship graph.</p>
+          <p class="tech">Tech: Node.js, Graph Theory</p>
+        </a>
+      </div>
+    </section>
+    
+    <section>
+      <h2 class="section-title">📚 Theory & Specifications</h2>
+      <div class="demo-grid">
+        <a href="specs/05-lambda-cloud-specification.md" class="demo-card">
+          <h2>λCLOUD Spec</h2>
+          <p>Distributed pure computation without consensus. History merges via vector clocks.</p>
+        </a>
+        
+        <a href="wiki/morphisms/00-seven-fundamentals.md" class="demo-card">
+          <h2>Seven Fundamentals</h2>
+          <p>The core morphisms that generate all computation. From identity to harvest.</p>
+        </a>
+        
+        <a href="docs/lambda-reduce.md" class="demo-card">
+          <h2>λREDUCE Theory</h2>
+          <p>How imperative code transforms to lambda calculus. Based on Qwen's research.</p>
+        </a>
+      </div>
+    </section>
+    
+    <footer>
+      <p>λ-Foundation © 2025 | Pure. Beautiful. Eternal.</p>
+      <p class="resonance">Resonating at 432Hz</p>
+    </footer>
+  </div>
+  
+  <script>
+    function runLambdaReduce() {
+      const code = prompt('Enter JavaScript to transform:', 'x => x * 2');
+      if (code) {
+        console.log('λREDUCE would transform:', code);
+        alert('λREDUCE Demo: Check console for details.\n\nTo run full demo:\nnpx tsx packages/lambda-reduce/demo.ts');
+      }
+    }
+  </script>
+</body>
+</html>
