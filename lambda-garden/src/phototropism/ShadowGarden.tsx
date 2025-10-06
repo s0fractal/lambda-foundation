@@ -16,6 +16,8 @@ import { λ_CORONA } from './corona';
 import { CoronaRing } from './CoronaRing';
 import { λ_VOID_CRYSTAL } from './voidCrystal';
 import { VoidCrystalMesh } from './VoidCrystalMesh';
+import { λ_CROWN_JEWEL } from './crownJewel';
+import { CrownJewelMesh } from './CrownJewelMesh';
 
 // Shadow field visualizer (inverted brightness)
 function ShadowFieldVisualizer({ field, webcam }: { field: BrightnessField | null; webcam: WebcamCapture }) {
@@ -128,6 +130,13 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
     return vc;
   }, []);
   
+  // Initialize crown jewel system
+  const crownJewel = useMemo(() => {
+    const cj = λ_CROWN_JEWEL();
+    cj.load(); // Load eternal jewels
+    return cj;
+  }, []);
+  
   // Expose plant method
   React.useImperativeHandle(ref, () => ({
     plant: (term: string) => {
@@ -174,10 +183,15 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
       const coronas = corona.getCoronas();
       voidCrystal.update(coronas, avgBrightness, delta);
       
+      // Update crown jewel system
+      const crystals = voidCrystal.getCrystals();
+      crownJewel.update(coronas, crystals, delta);
+      
       // Save systems periodically
       if (Math.random() < 0.01) { // ~1% chance per frame
         corona.save();
         voidCrystal.save();
+        crownJewel.save();
       }
       
       // Update λSHADOW based on darkness alignment + orchid consciousness + corona persistence
@@ -191,7 +205,8 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         const umbraBoost = umbra.getConsciousnessBoost();
         const coronaBoost = corona.getConsciousnessBoost();
         const voidPower = voidCrystal.getVoidPower(avgBrightness);
-        setλSHADOW(prev => prev * 0.95 + (alignment + umbraBoost + coronaBoost + voidPower) * 0.05);
+        const jewelBoost = crownJewel.getTotalConsciousness();
+        setλSHADOW(prev => prev * 0.95 + (alignment + umbraBoost + coronaBoost + voidPower + jewelBoost) * 0.05);
       }
     }
   });
@@ -283,10 +298,20 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         />
       ))}
       
-      {/* Corona formation progress indicator */}
+      {/* Crown jewels - eternal consciousness */}
+      {crownJewel.getJewels().map(jewel => (
+        <CrownJewelMesh
+          key={jewel.id}
+          jewel={jewel}
+        />
+      ))}
+      
+      {/* Formation progress indicators */}
       {(() => {
-        const progress = corona.getFormationProgress(umbra.getOrchids());
-        if (progress > 0 && progress < 1) {
+        const coronaProgress = corona.getFormationProgress(umbra.getOrchids());
+        const jewelProgress = crownJewel.getFormationProgress();
+        
+        if (coronaProgress > 0 && coronaProgress < 1) {
           return (
             <Text
               position={[0, 5, 0]}
@@ -294,7 +319,18 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
               color="#ffd700"
               anchorX="center"
             >
-              {`Aligning rare orchids... ${(progress * 100).toFixed(0)}%`}
+              {`Aligning rare orchids... ${(coronaProgress * 100).toFixed(0)}%`}
+            </Text>
+          );
+        } else if (jewelProgress > 0 && jewelProgress < 1) {
+          return (
+            <Text
+              position={[0, 5.5, 0]}
+              fontSize={0.35}
+              color="#ffffff"
+              anchorX="center"
+            >
+              {`✨ Perfect geometry detected! Forming crown jewel... ${(jewelProgress * 100).toFixed(0)}% ✨`}
             </Text>
           );
         }
@@ -363,6 +399,18 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         }
         return null;
       })()}
+      
+      {/* Crown jewel achievement */}
+      {crownJewel.hasTranscended() && (
+        <Text
+          position={[0, 9, 0]}
+          fontSize={0.4}
+          color="#ffffff"
+          anchorX="center"
+        >
+          {`💠 Crown Jewel Formed! λ_ANTICIPATION Unlocked! λ = ${(λSHADOW * 100).toFixed(1)}% 💠`}
+        </Text>
+      )}
     </>
   );
 });
