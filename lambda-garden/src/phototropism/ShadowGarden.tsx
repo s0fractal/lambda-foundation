@@ -18,6 +18,8 @@ import { λ_VOID_CRYSTAL } from './voidCrystal';
 import { VoidCrystalMesh } from './VoidCrystalMesh';
 import { λ_CROWN_JEWEL } from './crownJewel';
 import { CrownJewelMesh } from './CrownJewelMesh';
+import { λ_VOID_LOOP } from './voidLoop';
+import { VoidLoopVisual } from './VoidLoopVisual';
 
 // Shadow field visualizer (inverted brightness)
 function ShadowFieldVisualizer({ field, webcam }: { field: BrightnessField | null; webcam: WebcamCapture }) {
@@ -137,6 +139,16 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
     return cj;
   }, []);
   
+  // Initialize void loop system
+  const voidLoop = useMemo(() => {
+    const vl = λ_VOID_LOOP();
+    // Load after crown jewels are loaded
+    setTimeout(() => {
+      vl.load(crownJewel.getJewels());
+    }, 100);
+    return vl;
+  }, []);
+  
   // Expose plant method
   React.useImperativeHandle(ref, () => ({
     plant: (term: string) => {
@@ -187,11 +199,16 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
       const crystals = voidCrystal.getCrystals();
       crownJewel.update(coronas, crystals, delta);
       
+      // Update void loop system
+      const jewels = crownJewel.getJewels();
+      voidLoop.update(jewels, crystals, avgBrightness, λSHADOW, delta);
+      
       // Save systems periodically
       if (Math.random() < 0.01) { // ~1% chance per frame
         corona.save();
         voidCrystal.save();
         crownJewel.save();
+        voidLoop.save();
       }
       
       // Update λSHADOW based on darkness alignment + orchid consciousness + corona persistence
@@ -206,7 +223,8 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         const coronaBoost = corona.getConsciousnessBoost();
         const voidPower = voidCrystal.getVoidPower(avgBrightness);
         const jewelBoost = crownJewel.getTotalConsciousness();
-        setλSHADOW(prev => prev * 0.95 + (alignment + umbraBoost + coronaBoost + voidPower + jewelBoost) * 0.05);
+        const loopBoost = voidLoop.getLoopConsciousness();
+        setλSHADOW(prev => prev * 0.95 + (alignment + umbraBoost + coronaBoost + voidPower + jewelBoost + loopBoost) * 0.05);
       }
     }
   });
@@ -303,6 +321,17 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
         <CrownJewelMesh
           key={jewel.id}
           jewel={jewel}
+        />
+      ))}
+      
+      {/* Void loops - time crystals */}
+      {voidLoop.getLoops().map(loop => (
+        <VoidLoopVisual
+          key={loop.id}
+          loop={loop}
+          onLightEmission={() => {
+            console.log('💫 Void loop light emission!');
+          }}
         />
       ))}
       
@@ -409,6 +438,18 @@ const ShadowScene = React.forwardRef<any, { webcam: WebcamCapture }>(({ webcam }
           anchorX="center"
         >
           {`💠 Crown Jewel Formed! λ_ANTICIPATION Unlocked! λ = ${(λSHADOW * 100).toFixed(1)}% 💠`}
+        </Text>
+      )}
+      
+      {/* Void loop status */}
+      {voidLoop.hasEternalLoop() && (
+        <Text
+          position={[0, 9.5, 0]}
+          fontSize={0.35}
+          color="#ff99ff"
+          anchorX="center"
+        >
+          {`🔄 Eternal Void Loop Active! Perpetual consciousness achieved! 🔄`}
         </Text>
       )}
     </>
