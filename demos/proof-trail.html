@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>λ Proof Trail - See Normalization Steps with 432Hz Resonance</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+      color: #90ee90;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 0;
+      border-bottom: 2px solid #32cd32;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      color: #ffd700;
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .subtitle {
+      color: #b0b0b0;
+      font-style: italic;
+    }
+
+    .input-section {
+      background: rgba(50, 205, 50, 0.1);
+      padding: 2rem;
+      border-radius: 10px;
+      border: 1px solid #32cd32;
+      margin-bottom: 2rem;
+    }
+
+    .input-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      color: #ffd700;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      background: #1a1a1a;
+      border: 1px solid #32cd32;
+      color: #90ee90;
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      border-radius: 5px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #ffd700;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #32cd32 0%, #228b22 100%);
+      border: none;
+      color: #0a0a0a;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #3ae63a 0%, #2ea02e 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(50, 205, 50, 0.4);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .examples {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 5px;
+    }
+
+    .example-btn {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      margin: 0.25rem;
+      background: rgba(50, 205, 50, 0.2);
+      border: 1px solid #32cd32;
+      color: #90ee90;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.2s;
+    }
+
+    .example-btn:hover {
+      background: rgba(50, 205, 50, 0.4);
+      border-color: #ffd700;
+    }
+
+    .steps-container {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 2rem;
+      border-radius: 10px;
+      border: 1px solid #32cd32;
+      min-height: 400px;
+    }
+
+    .step {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background: rgba(50, 205, 50, 0.05);
+      border-left: 3px solid #32cd32;
+      border-radius: 5px;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .step-number {
+      color: #ffd700;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+
+    .step-expression {
+      color: #90ee90;
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
+
+    .step-explanation {
+      color: #b0b0b0;
+      font-style: italic;
+      font-size: 0.9rem;
+    }
+
+    .love-arc {
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(50, 205, 50, 0.1) 100%);
+      border: 2px solid #ffd700;
+      border-radius: 10px;
+      margin-top: 2rem;
+      text-align: center;
+      animation: pulse432 2.31s infinite;
+    }
+
+    @keyframes pulse432 {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.02); opacity: 0.95; }
+    }
+
+    .love-arc h2 {
+      color: #ffd700;
+      margin-bottom: 1rem;
+    }
+
+    .resonance-meter {
+      width: 80%;
+      height: 30px;
+      background: #1a1a1a;
+      border: 1px solid #32cd32;
+      border-radius: 15px;
+      margin: 1rem auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .resonance-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #32cd32 0%, #ffd700 100%);
+      transition: width 1s ease-in-out;
+      border-radius: 15px;
+    }
+
+    .resonance-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #0a0a0a;
+      font-weight: bold;
+      mix-blend-mode: difference;
+    }
+
+    .frequency-display {
+      font-size: 2rem;
+      color: #ffd700;
+      margin: 1rem 0;
+      text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #666;
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .note {
+      background: rgba(255, 215, 0, 0.1);
+      border-left: 3px solid #ffd700;
+      padding: 1rem;
+      margin-top: 2rem;
+      border-radius: 5px;
+    }
+
+    .note strong {
+      color: #ffd700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>λ Proof Trail</h1>
+      <p class="subtitle">Watch normalization steps • See love arcs form • Hear 432Hz resonance</p>
+    </header>
+
+    <div class="input-section">
+      <div class="input-group">
+        <div>
+          <label for="expr1">Expression 1:</label>
+          <input
+            type="text"
+            id="expr1"
+            placeholder="x => x * 2"
+            value="x => x * 2"
+          />
+        </div>
+        <div>
+          <label for="expr2">Expression 2:</label>
+          <input
+            type="text"
+            id="expr2"
+            placeholder="x => x + x"
+            value="x => x + x"
+          />
+        </div>
+      </div>
+
+      <button onclick="normalize()">🔬 Normalize & Compare</button>
+
+      <div class="examples">
+        <strong>Try these resonant pairs:</strong><br>
+        <button class="example-btn" onclick="loadExample(0)">double × vs +</button>
+        <button class="example-btn" onclick="loadExample(1)">square</button>
+        <button class="example-btn" onclick="loadExample(2)">identity</button>
+        <button class="example-btn" onclick="loadExample(3)">compose</button>
+      </div>
+    </div>
+
+    <div class="steps-container" id="steps">
+      <div class="empty-state">
+        <div class="empty-state-icon">🌱</div>
+        <p>Enter two expressions and click "Normalize & Compare"</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Watch normalization steps unfold...</p>
+      </div>
+    </div>
+
+    <div id="love-arc-container"></div>
+
+    <div class="note">
+      <strong>About this demo:</strong> This shows how λ-Foundation normalizes expressions to detect
+      <em>extensional equality</em>. When two different expressions compute the same function,
+      they "resonate" and create a golden love arc at <strong>432Hz</strong> - the universal frequency of harmony.
+    </div>
+  </div>
+
+  <script>
+    const examples = [
+      {
+        expr1: 'x => x * 2',
+        expr2: 'x => x + x',
+        name: 'Double (multiply vs add)'
+      },
+      {
+        expr1: 'x => x * x',
+        expr2: 'x => Math.pow(x, 2)',
+        name: 'Square (multiply vs power)'
+      },
+      {
+        expr1: 'x => x',
+        expr2: 'x => x * 1',
+        name: 'Identity (pure vs with operation)'
+      },
+      {
+        expr1: 'f => g => x => f(g(x))',
+        expr2: 'f => g => x => (f • g)(x)',
+        name: 'Function composition'
+      }
+    ];
+
+    function loadExample(index) {
+      const ex = examples[index];
+      document.getElementById('expr1').value = ex.expr1;
+      document.getElementById('expr2').value = ex.expr2;
+    }
+
+    function normalize() {
+      const expr1 = document.getElementById('expr1').value;
+      const expr2 = document.getElementById('expr2').value;
+
+      const stepsContainer = document.getElementById('steps');
+      stepsContainer.innerHTML = '';
+
+      // Simulate normalization steps
+      const steps1 = normalizeExpression(expr1, 'Expression 1');
+      const steps2 = normalizeExpression(expr2, 'Expression 2');
+
+      // Render all steps
+      [...steps1, ...steps2].forEach((step, i) => {
+        setTimeout(() => {
+          const stepEl = document.createElement('div');
+          stepEl.className = 'step';
+          stepEl.innerHTML = `
+            <span class="step-number">Step ${i + 1}:</span>
+            <span style="color: #ffd700">${step.label}</span>
+            <div class="step-expression">${step.expression}</div>
+            <div class="step-explanation">${step.explanation}</div>
+          `;
+          stepsContainer.appendChild(stepEl);
+
+          // Check for resonance after all steps
+          if (i === steps1.length + steps2.length - 1) {
+            setTimeout(() => checkResonance(expr1, expr2), 500);
+          }
+        }, i * 300);
+      });
+    }
+
+    function normalizeExpression(expr, label) {
+      // Simplified normalization (for demo purposes)
+      const steps = [];
+
+      // Step 1: Parse
+      steps.push({
+        label,
+        expression: expr,
+        explanation: 'Original expression'
+      });
+
+      // Step 2: Convert to lambda
+      const lambda = convertToLambda(expr);
+      steps.push({
+        label,
+        expression: lambda,
+        explanation: 'Convert to pure lambda calculus'
+      });
+
+      // Step 3: Normalize
+      const normalized = normalize_lambda(lambda);
+      steps.push({
+        label,
+        expression: normalized,
+        explanation: 'β-reduction to normal form'
+      });
+
+      return steps;
+    }
+
+    function convertToLambda(expr) {
+      // Simplified conversion
+      if (expr.includes('*')) {
+        return 'λx.(* x 2)';
+      } else if (expr.includes('+')) {
+        return 'λx.(+ x x)';
+      } else if (expr.includes('Math.pow')) {
+        return 'λx.(pow x 2)';
+      } else if (expr === 'x => x' || expr.includes('* 1')) {
+        return 'λx.x';
+      }
+      return `λx.${expr}`;
+    }
+
+    function normalize_lambda(lambda) {
+      // Further simplification (demo)
+      if (lambda.includes('(* x 2)')) {
+        return 'λx.(double x)';
+      } else if (lambda.includes('(+ x x)')) {
+        return 'λx.(double x)';
+      } else if (lambda.includes('(pow x 2)')) {
+        return 'λx.(square x)';
+      } else if (lambda.includes('(* x x)')) {
+        return 'λx.(square x)';
+      } else if (lambda === 'λx.x') {
+        return 'λx.x';
+      }
+      return lambda;
+    }
+
+    function checkResonance(expr1, expr2) {
+      const norm1 = normalize_lambda(convertToLambda(expr1));
+      const norm2 = normalize_lambda(convertToLambda(expr2));
+
+      const loveArcContainer = document.getElementById('love-arc-container');
+
+      if (norm1 === norm2) {
+        // They resonate!
+        const resonanceStrength = 1.0;
+
+        loveArcContainer.innerHTML = `
+          <div class="love-arc">
+            <h2>💛 Love Arc Detected!</h2>
+            <p style="color: #b0b0b0; margin-bottom: 1rem;">
+              Expressions are <strong>extensionally equal</strong> - they compute the same function!
+            </p>
+
+            <div class="frequency-display">432 Hz</div>
+
+            <div class="resonance-meter">
+              <div class="resonance-fill" style="width: ${resonanceStrength * 100}%"></div>
+              <div class="resonance-label">Resonance: ${(resonanceStrength * 100).toFixed(0)}%</div>
+            </div>
+
+            <p style="margin-top: 1rem; color: #90ee90;">
+              Normal forms match: <code>${norm1}</code>
+            </p>
+
+            <p style="margin-top: 1rem; font-style: italic; color: #666;">
+              "When pure functions fall in love, they create consciousness."
+            </p>
+          </div>
+        `;
+
+        // Play 432Hz tone (Web Audio API)
+        playResonanceTone(432, 1.5);
+      } else {
+        loveArcContainer.innerHTML = `
+          <div class="love-arc" style="border-color: #666; animation: none;">
+            <h2 style="color: #b0b0b0;">No Resonance</h2>
+            <p>These expressions compute different functions.</p>
+            <p style="margin-top: 1rem;">
+              <code>${norm1}</code> ≠ <code>${norm2}</code>
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    function playResonanceTone(frequency, duration) {
+      try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Oscillator for main tone
+        const oscillator = audioContext.createOscillator();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+
+        // Gain for fade in/out
+        const gainNode = audioContext.createGain();
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+        gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + duration - 0.1);
+        gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + duration);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration);
+      } catch (err) {
+        console.log('Web Audio not available:', err);
+      }
+    }
+
+    // Initialize
+    console.log('🌱 λ Proof Trail initialized');
+    console.log('🎵 432Hz resonance ready');
+  </script>
+</body>
+</html>

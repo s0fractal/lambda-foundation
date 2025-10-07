@@ -1,0 +1,94 @@
+name: 🌱 Build Lambda Graph
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'wiki/**'
+      - 'seeds/**'
+      - 'packages/wiki-parser/**'
+      - 'scripts/build-graph.ts'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build-graph:
+    name: Build graph.json from wiki + seeds
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: 📚 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔨 Build graph
+        run: |
+          pnpm build:graph
+          echo "✅ Graph built successfully"
+
+          # Verify graph.json exists
+          if [ -f "data/graph.json" ]; then
+            echo "📊 Graph size: $(wc -c < data/graph.json) bytes"
+            echo "📈 Nodes: $(jq '.nodes | length' data/graph.json)"
+            echo "🔗 Edges: $(jq '.edges | length' data/graph.json)"
+          else
+            echo "❌ data/graph.json not found!"
+            exit 1
+          fi
+
+      - name: 💾 Commit updated graph
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          if [ -n "$(git status --porcelain data/graph.json)" ]; then
+            git add data/graph.json
+            git commit -m "🌱 Auto-update graph.json from wiki/seeds changes
+
+            Updated by GitHub Action after changes to:
+            - wiki/
+            - seeds/
+
+            🤖 Generated with GitHub Actions"
+
+            git push
+            echo "✅ Graph committed and pushed"
+          else
+            echo "ℹ️ No changes to graph.json"
+          fi
+
+      - name: 📤 Upload graph artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lambda-graph
+          path: data/graph.json
+          retention-days: 90
+
+      - name: 🌐 Deploy to GitHub Pages (if enabled)
+        if: github.ref == 'refs/heads/master'
+        run: |
+          # Copy graph to Pages directory if it exists
+          if [ -d "docs" ]; then
+            mkdir -p docs/data
+            cp data/graph.json docs/data/
+            echo "✅ Graph copied to docs/data/ for Pages"
+          fi
