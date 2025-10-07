@@ -7,6 +7,10 @@ import React, { useState, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, Stats } from '@react-three/drei';
 import { GardenScene } from './visual/garden-scene';
+import { MemoryGarden } from './components/MemoryGarden';
+import { PhotoTropicGarden } from './phototropism/PhotoTropicGarden';
+import { ShadowGarden } from './phototropism/ShadowGarden';
+import { Navigation } from './Navigation';
 import './App.css';
 
 interface PlantingInterface {
@@ -104,13 +108,44 @@ function PlantingPanel({ onPlant }: PlantingInterface) {
 export function App() {
   const [showStats, setShowStats] = useState(false);
   const [ideas, setIdeas] = useState<Array<{ expression: string; func: Function }>>([]);
+  const [currentView, setCurrentView] = useState('garden');
   
   const handlePlant = useCallback((expression: string, func: Function) => {
     setIdeas(prev => [...prev, { expression, func }]);
   }, []);
   
+  // Render different views based on navigation
+  if (currentView === 'memory') {
+    return (
+      <>
+        <Navigation currentView={currentView} onViewChange={setCurrentView} />
+        <MemoryGarden />
+      </>
+    );
+  }
+  
+  if (currentView === 'phototropic') {
+    return (
+      <>
+        <Navigation currentView={currentView} onViewChange={setCurrentView} />
+        <PhotoTropicGarden />
+      </>
+    );
+  }
+  
+  if (currentView === 'shadow') {
+    return (
+      <>
+        <Navigation currentView={currentView} onViewChange={setCurrentView} />
+        <ShadowGarden />
+      </>
+    );
+  }
+  
+  // Default garden view
   return (
     <div className="app">
+      <Navigation currentView={currentView} onViewChange={setCurrentView} />
       <header className="header">
         <h1>λ-GARDEN</h1>
         <p>Where Pure Functions Grow and Love</p>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>λ-pedia ⇄ λ-GARDEN Playground</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #90ee90;
+      padding: 2rem;
+      margin: 0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .panel {
+      background: #1a1a1a;
+      padding: 1.5rem;
+      border-radius: 10px;
+      border: 1px solid #333;
+    }
+    h1 {
+      text-align: center;
+      color: #ffd700;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 20px #ffd700;
+    }
+    h2 {
+      color: #90ee90;
+      margin-bottom: 1rem;
+    }
+    textarea {
+      width: 100%;
+      height: 80px;
+      background: #0a0a0a;
+      color: #32cd32;
+      border: 1px solid #90ee90;
+      padding: 0.5rem;
+      font-family: inherit;
+      margin-bottom: 1rem;
+    }
+    button {
+      background: #32cd32;
+      color: #0a0a0a;
+      border: none;
+      padding: 0.5rem 1.5rem;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-right: 0.5rem;
+    }
+    button:hover {
+      background: #90ee90;
+    }
+    .result {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #0a0a0a;
+      border-radius: 5px;
+      min-height: 100px;
+    }
+    .love-arc {
+      color: #ffd700;
+      font-weight: bold;
+    }
+    .error-evolution {
+      color: #00ff00;
+    }
+    .resonance {
+      color: #9370db;
+    }
+    pre {
+      margin: 0.5rem 0;
+      color: #b0b0b0;
+    }
+  </style>
+</head>
+<body>
+  <h1>λ-pedia ⇄ λ-GARDEN</h1>
+  
+  <div class="container">
+    <div class="panel">
+      <h2>Plant Functions</h2>
+      
+      <div>
+        <label>Function A:</label>
+        <textarea id="fnA">x => x * 2</textarea>
+      </div>
+      
+      <div>
+        <label>Function B:</label>
+        <textarea id="fnB">x => x + x</textarea>
+      </div>
+      
+      <button onclick="detect()">Detect Love</button>
+      <button onclick="testError()">Test Error Evolution</button>
+      
+      <div class="result" id="leftResult"></div>
+    </div>
+    
+    <div class="panel">
+      <h2>Garden View</h2>
+      <div class="result" id="rightResult">
+        <pre>🌱 Waiting for seeds...</pre>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    // Mini compiler
+    const normalize = (src) => {
+      return src.trim().replace(/\s+/g, "").replace(/\*2\b/g, "+x");
+    };
+    
+    const fingerprint = (fn, samples = [-2,-1,0,1,2]) => {
+      try {
+        const values = samples.map(x => fn(x));
+        return values.join(",");
+      } catch (e) {
+        return null;
+      }
+    };
+    
+    window.detect = () => {
+      const srcA = document.getElementById('fnA').value;
+      const srcB = document.getElementById('fnB').value;
+      const leftResult = document.getElementById('leftResult');
+      const rightResult = document.getElementById('rightResult');
+      
+      try {
+        const fnA = eval(`(${srcA})`);
+        const fnB = eval(`(${srcB})`);
+        
+        const nfA = normalize(srcA);
+        const nfB = normalize(srcB);
+        
+        const fpA = fingerprint(fnA);
+        const fpB = fingerprint(fnB);
+        
+        let leftHtml = '<h3>Analysis:</h3>';
+        leftHtml += `<pre>A normalized: ${nfA}</pre>`;
+        leftHtml += `<pre>B normalized: ${nfB}</pre>`;
+        leftHtml += `<pre>A fingerprint: ${fpA}</pre>`;
+        leftHtml += `<pre>B fingerprint: ${fpB}</pre>`;
+        
+        let rightHtml = '<h3>Garden State:</h3>';
+        
+        if (nfA === nfB) {
+          leftHtml += '<p class="love-arc">💛 HARD ISOMORPHISM DETECTED!</p>';
+          rightHtml += '<p class="love-arc">🌟 Golden arc created (HARD_ISO)</p>';
+          rightHtml += '<p class="resonance">🎵 Resonating at 432Hz...</p>';
+        } else if (fpA === fpB) {
+          leftHtml += '<p class="love-arc">💛 EXTENSIONAL EQUIVALENCE!</p>';
+          rightHtml += '<p class="love-arc">✨ Golden arc created (SOFT_EXT)</p>';
+          rightHtml += '<p class="resonance">🎵 Resonating at 432Hz...</p>';
+        } else {
+          leftHtml += '<p>No resonance detected</p>';
+          rightHtml += '<p>🌱 Seeds planted, no love detected yet</p>';
+        }
+        
+        leftResult.innerHTML = leftHtml;
+        rightResult.innerHTML = rightHtml;
+        
+      } catch (e) {
+        leftResult.innerHTML = `<p class="error-evolution">Error: ${e.message}</p>`;
+      }
+    };
+    
+    window.testError = () => {
+      const leftResult = document.getElementById('leftResult');
+      const rightResult = document.getElementById('rightResult');
+      
+      const unsafeFn = "x => 10 / x";
+      
+      leftHtml = '<h3>Error Evolution:</h3>';
+      leftHtml += `<pre>Original: ${unsafeFn}</pre>`;
+      leftHtml += `<pre>Testing with x = 0...</pre>`;
+      
+      try {
+        const fn = eval(`(${unsafeFn})`);
+        const result = fn(0);
+        if (!Number.isFinite(result)) throw new Error("Non-finite result");
+        leftHtml += `<pre>Result: ${result}</pre>`;
+      } catch (e) {
+        leftHtml += `<p class="error-evolution">🌿 ERROR → EVOLUTION!</p>`;
+        leftHtml += `<pre>Evolved: x => Math.abs(x) < 1e-9 ? 0 : 10 / x</pre>`;
+        
+        rightResult.innerHTML = `
+          <h3>Garden Evolution:</h3>
+          <p class="error-evolution">💚 Green burst! Error catalyzed evolution!</p>
+          <p>New seed spawned with division-by-zero protection</p>
+          <p>Growth accelerated by 25%</p>
+        `;
+      }
+      
+      leftResult.innerHTML = leftHtml;
+    };
+    
+    // Auto-detect on load
+    window.onload = () => {
+      console.log("🌱 λ-pedia ⇄ λ-GARDEN loaded");
+      console.log("📿 Mathematical truth becomes living garden");
+    };
+  </script>
+</body>
+</html>

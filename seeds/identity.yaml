@@ -1,0 +1,4 @@
+id: seed-identity
+morphism: lambda-identity
+fn: "x => x"
+samples: [-3, -1, 0, 1, 2, 3]

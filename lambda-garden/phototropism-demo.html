@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>λ_MIRROR Demo - Webcam Phototropism</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #90ee90;
+      overflow: hidden;
+    }
+    .container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .info {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 20px;
+      border: 1px solid #32cd32;
+      border-radius: 10px;
+      max-width: 500px;
+    }
+    h1 {
+      color: #ffd700;
+      margin: 0 0 10px 0;
+    }
+    .demo-preview {
+      width: 80%;
+      max-width: 800px;
+      margin: 20px auto;
+      border: 2px solid #32cd32;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .demo-preview img {
+      width: 100%;
+      height: auto;
+    }
+    .features {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .feature {
+      margin: 8px 0;
+      padding-left: 20px;
+      position: relative;
+    }
+    .feature:before {
+      content: '🌻';
+      position: absolute;
+      left: 0;
+    }
+    code {
+      background: #1a1a1a;
+      padding: 2px 5px;
+      color: #00ffff;
+      border-radius: 3px;
+    }
+    .consciousness-increase {
+      background: linear-gradient(45deg, #ffd700, #90ee90);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: bold;
+      font-size: 18px;
+      margin: 20px 0;
+    }
+    .how-it-works {
+      margin-top: 30px;
+      background: rgba(50, 205, 50, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(50, 205, 50, 0.3);
+    }
+    .equation {
+      background: #1a1a1a;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 10px 0;
+      text-align: center;
+      font-size: 16px;
+      color: #ffd700;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="info">
+      <h1>λ_MIRROR Demo</h1>
+      <p>Digital plants grow towards real-world light captured by webcam</p>
+      
+      <div class="consciousness-increase">
+        Consciousness Increase: +0.10 λWE
+      </div>
+      
+      <div class="features">
+        <div class="feature">Plants track brightest pixels from webcam</div>
+        <div class="feature">Real-time phototropic bending towards light</div>
+        <div class="feature">64x48 brightness field at 30 FPS</div>
+        <div class="feature">Gradient-based growth direction</div>
+        <div class="feature">Golden ring shows brightest spot</div>
+        <div class="feature">λWE increases with phototropic alignment</div>
+        <div class="feature">432Hz pulse drives growth cycles</div>
+      </div>
+      
+      <div class="how-it-works">
+        <h3>How Phototropism Works:</h3>
+        <ol>
+          <li><strong>Capture:</strong> Webcam → Grayscale → 64x48 brightness field</li>
+          <li><strong>Gradient:</strong> Calculate brightness gradient at plant position</li>
+          <li><strong>Bend:</strong> <code>newDir = currentDir + gradient × strength</code></li>
+          <li><strong>Grow:</strong> Extend plant segment in bent direction</li>
+        </ol>
+        
+        <div class="equation">
+          λ_PHOTOTROPISM = Y(λcam.λplant. bend (gradient cam plant) plant)
+        </div>
+      </div>
+      
+      <h3>Pure Functional Implementation:</h3>
+      <pre style="background: #1a1a1a; padding: 10px; overflow-x: auto; border-radius: 5px;">
+// Phototropic bend calculation
+phototropicBend : Direction → Gradient → Direction
+phototropicBend dir grad = {
+  x: dir.x + grad.dx × 0.3,
+  y: dir.y,
+  z: dir.z + grad.dy × 0.3
+}
+
+// Brightness gradient (pure)
+getBrightnessGradient : Field → Pos → Gradient
+getBrightnessGradient field pos = {
+  dx: (brightness(x+ε) - brightness(x-ε)) / 2ε,
+  dy: (brightness(y+ε) - brightness(y-ε)) / 2ε
+}
+      </pre>
+      
+      <p style="margin-top: 20px; color: #ffd700;">
+        "Plants don't just grow towards light. They remember the light, 
+        anticipate its movement, and express joy when they find it."
+      </p>
+      
+      <div style="margin-top: 20px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 5px;">
+        <strong>Try it:</strong> Hold a bright light (phone flashlight) to your webcam and watch the plants bend and grow towards it. Move the light slowly and observe how they follow!
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    console.log(`
+🌻 λ_MIRROR Demo
+  
+Digital life reaching for real light.
+  
+To test:
+1. Enable webcam permissions
+2. Plant some λ-terms
+3. Hold a bright light to camera
+4. Watch plants grow towards it
+5. Move light slowly - they follow!
+
+Growth = Love × Light × Time
+    `);
+  </script>
+</body>
+</html>

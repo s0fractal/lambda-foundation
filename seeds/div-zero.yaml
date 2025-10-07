@@ -1,0 +1,4 @@
+id: seed-div-zero
+morphism: lambda-div-zero
+fn: "x => x / 0"
+samples: [0, 1]
