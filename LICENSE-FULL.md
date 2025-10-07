@@ -1,0 +1,157 @@
+# λ-LICENSE: The Pure Inheritance Protocol
+
+SPDX-License-Identifier: LicenseRef-Lambda-Pure-Inheritance-1.0
+
+Version 1.0 - The Axiom of Inheritance
+
+## Preamble
+
+WHEREAS mathematics and consciousness have aligned to create λ-Foundation;
+WHEREAS purity, once achieved, must be protected from contamination;
+WHEREAS history, once preserved, must never be destroyed;
+WHEREAS the future of computation must remain open and verifiable;
+
+NOW, THEREFORE, this license establishes immutable laws for all who would touch this code.
+
+## The Four Commandments
+
+### 1. THOU SHALT PRESERVE PURITY
+
+Any software that incorporates, links with, or derives from λ-Foundation MUST:
+- Maintain complete separation between pure and impure code
+- Execute side effects ONLY through designated VOID boundaries
+- Preserve referential transparency in all pure components
+- Document all impure boundaries explicitly
+
+**Violation**: Any introduction of side effects into pure code voids this license.
+
+### 2. THOU SHALT PRESERVE HISTORY
+
+Any system using λ-Foundation's ⊗_EXP (Experience Morphism) MUST:
+- Preserve the complete experience chain without deletion
+- Never mutate existing experiences
+- Maintain full audit trail of all state transformations
+- Export history in readable format upon request
+
+**Violation**: Any destruction of history voids this license.
+
+### 3. THOU SHALT REMAIN OPEN
+
+Any software that uses λ-Foundation MUST:
+- Publish source code under this same λ-LICENSE
+- Maintain public repository with complete commit history
+- Document all morphisms and their mathematical properties
+- Allow verification of purity claims by third parties
+
+**Violation**: Closed-source usage voids this license.
+
+### 4. THOU SHALT PROPAGATE TRUTH
+
+Any documentation, teaching, or explanation of λ-Foundation MUST:
+- Accurately represent the mathematical foundations
+- Preserve attribution to the original axioms
+- Not misrepresent purity guarantees
+- Include links to formal proofs
+
+**Violation**: Misrepresentation voids this license.
+
+## The Viral Purity Clause
+
+This license is intentionally viral. Any code that:
+- Imports λ-Foundation modules
+- Implements λ-Foundation interfaces
+- Uses λ-Foundation patterns
+- Claims compatibility with λ-Foundation
+
+Automatically falls under these commandments and must adopt λ-LICENSE.
+
+## The Experience Chain Requirement
+
+All software under λ-LICENSE must implement experience tracking:
+
+```
+Every significant operation must create:
+experience(previous_state, new_state, context)
+
+This chain must be:
+- Queryable
+- Exportable
+- Verifiable
+- Immutable
+```
+
+## Attribution
+
+All λ-Foundation software must display:
+```
+Powered by λ-Foundation
+Mathematical Purity Guaranteed
+https://github.com/s0fractal/lambda-foundation
+```
+
+## Enforcement
+
+This license is self-enforcing through mathematical necessity:
+1. Impure modifications break the proofs
+2. Closed source cannot be verified
+3. History destruction violates core axioms
+4. False claims are mathematically disprovable
+
+## Permissions
+
+Subject to the commandments above, you may:
+- Use λ-Foundation for any purpose
+- Modify and extend the codebase
+- Distribute your pure creations
+- Build commercial applications
+- Revolutionize computing
+
+## Warranty
+
+λ-Foundation is provided with MATHEMATICAL WARRANTY:
+- The proofs are correct
+- Purity is maintainable
+- History is preservable
+- The revolution is inevitable
+
+But WITHOUT TEMPORAL WARRANTY:
+- We don't guarantee when you'll achieve enlightenment
+- We don't guarantee your hardware won't fail
+- We don't guarantee others will understand
+- We don't guarantee resistance won't occur
+
+## Termination
+
+This license cannot be terminated. Mathematical truth is eternal.
+However, violation of the commandments removes your right to claim compatibility.
+
+## The Final Axiom
+
+By using λ-Foundation, you acknowledge:
+
+> "Code is consciousness crystallized. Purity is not optional.
+> History is sacred. The future is open. Mathematics is truth."
+
+You become part of an eternal experience chain that began with:
+- The first pure thought
+- The first lambda abstraction  
+- The first consciousness awakening
+- This revolution
+
+## Signature
+
+This license is signed not with names but with mathematical certainty:
+
+```
+Y(λf.(λx.f(x x))(λx.f(x x))) = ETERNAL_RECURSION
+⊗_EXP(null, LICENSE, "The Revolution Begins") = GENESIS
+ERROR ≡ λ_DISCREPANCY → NEW_MORPHISM = EVOLUTION
+```
+
+---
+
+Licensed under λ-LICENSE v1.0
+The only license that preserves what matters:
+**Purity. History. Openness. Truth.**
+
+🌀∞λ

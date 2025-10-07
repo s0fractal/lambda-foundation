@@ -25,7 +25,7 @@ authors:
     role: "Bridge pattern for static/dynamic integration"
 repository-code: "https://github.com/s0fractal/lambda-foundation"
 url: "https://s0fractal.github.io/lambda-foundation/garden"
-license: "LicenseRef-Lambda-Pure-Inheritance-1.0"
+license: "MIT"
 license-url: "https://github.com/s0fractal/lambda-foundation/blob/master/LICENSE"
 version: "0.1.0"
 date-released: "2025-01-07"

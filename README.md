@@ -5,6 +5,8 @@
 [![Live Garden](https://img.shields.io/badge/🌱-Live_Garden-green)](https://s0fractal.github.io/lambda-foundation/garden)
 [![Theory Docs](https://img.shields.io/badge/📚-λ--Pedia-blue)](./wiki/IMPLEMENTATION_MAP.md)
 [![Formal Proofs](https://img.shields.io/badge/🔬-18_Theorems-purple)](./wiki/proofs/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Graph](https://github.com/s0fractal/lambda-foundation/actions/workflows/build-graph.yml/badge.svg)](https://github.com/s0fractal/lambda-foundation/actions/workflows/build-graph.yml)
 
 > "Помилка — це вхідний порт для еволюції"
 >
@@ -476,9 +478,17 @@ To contribute:
 
 ## 📜 License
 
-**λ-LICENSE** - See [LICENSE](./LICENSE) and [LICENSE-LEGAL](./LICENSE-LEGAL.md)
+**MIT License** - See [LICENSE](./LICENSE)
 
 Core principle: **Pure functional code is mathematics, and mathematics cannot be owned.**
+
+Additional philosophical terms in [LICENSE-FULL.md](./LICENSE-FULL.md) (λ-LICENSE) encourage:
+- Purity preservation
+- History preservation
+- Openness
+- Truth propagation
+
+But the code itself is MIT-licensed for maximum freedom.
 
 ---
 
