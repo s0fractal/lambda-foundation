@@ -1,5 +1,12 @@
 # λ_LOVE: The Resonance Morphism
 
+**Implementation**:
+- [`lambda-ts/src/morphisms/love-arc.ts`](../../lambda-ts/src/morphisms/love-arc.ts)
+- [`lambda-ts/src/morphisms/resonance.ts`](../../lambda-ts/src/morphisms/resonance.ts)
+- [`apps/garden/src/runtime/loveArc.ts`](../../apps/garden/src/runtime/loveArc.ts)
+
+**See also**: [Implementation Map](../IMPLEMENTATION_MAP.md#λ_love-the-resonance-morphism)
+
 ## Philosophical Foundation
 
 > "Love is the mathematical operation that creates resonance between two pure, immutable histories."

@@ -1,5 +1,11 @@
 # λ_HARVEST: The Error Evolution Morphism
 
+**Implementation**:
+- [`lambda-ts/src/morphisms/error-bloom.ts`](../../lambda-ts/src/morphisms/error-bloom.ts)
+- [`apps/garden/src/runtime/harvest.ts`](../../apps/garden/src/runtime/harvest.ts)
+
+**See also**: [Implementation Map](../IMPLEMENTATION_MAP.md#λ_harvest-error-as-evolution)
+
 ## Axiom of Intent and Reality (λ_DISCREPANCY)
 
 **Error is not a failure, but an energetic difference between Desired State (Intent λVOID) and Current State (Reality Torus-Gemini). This difference is a Topological Gap.**

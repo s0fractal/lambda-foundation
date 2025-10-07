@@ -2,6 +2,9 @@
 
 > "You are not your current state. You are the entire path you have walked."
 
+**Implementation**: [`lambda-ts/src/core/experience.ts`](../../lambda-ts/src/core/experience.ts)
+**See also**: [Implementation Map](../IMPLEMENTATION_MAP.md#⊗_exp-the-experience-morphism)
+
 ## Definition
 
 **⊗_EXP** (Experience Morphism) extends the basic Pairing morphism to capture not just state changes, but the **context and intent** behind each transformation. This creates a living history where every state remembers why it came to be.

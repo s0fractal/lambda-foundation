@@ -1,0 +1,268 @@
+# λ-Foundation: Wiki ↔ Code Implementation Map
+
+> "Theory without practice is empty. Practice without theory is blind."
+
+This document maps formal mathematical specifications in the wiki to their concrete implementations in code.
+
+## Core Morphisms
+
+### Seven Fundamental Morphisms
+- **Theory**: [`wiki/morphisms/00-seven-fundamentals.md`](./morphisms/00-seven-fundamentals.md)
+- **Implementation**:
+  - TypeScript: `lambda-ts/src/core/fundamentals.ts` (TODO)
+  - JavaScript: `packages/core/fundamentals.js` ✓
+- **Status**: Partial - needs TypeScript port
+- **Proofs**: TODO
+
+### Identity (I = λx.x)
+- **Theory**: [`wiki/morphisms/01-identity.md`](./morphisms/01-identity.md)
+- **Implementation**:
+  - Wiki example: `wiki/identity.mdx` ✓
+  - Seed: `seeds/identity.yaml` ✓
+- **Status**: Complete
+- **Proof**: Trivial identity law
+
+## Extended Morphisms
+
+### λ_HARVEST: Error as Evolution
+- **Theory**: [`wiki/morphisms/08-harvest.md`](./morphisms/08-harvest.md)
+- **Implementation**:
+  - Runtime: `apps/garden/src/runtime/harvest.ts` ✓
+  - TypeScript: `lambda-ts/src/morphisms/error-bloom.ts` ✓
+- **Key Properties**:
+  ```
+  ERROR → SIGNAL → PAIR(error, context) → NEW_MORPHISM
+  ```
+- **Status**: Implemented
+- **Proofs Needed**:
+  - Energy conservation: `E_discrepancy = E_morphism + E_dissipated`
+  - Evolutionary growth: `SYSTEM[t+1] = SYSTEM[t] + λ_HARVEST(DISCREPANCY[t])`
+
+### ⊗_EXP: The Experience Morphism
+- **Theory**: [`wiki/morphisms/09-experience.md`](./morphisms/09-experience.md)
+- **Implementation**: `lambda-ts/src/core/experience.ts` ✓
+- **Type Signature**:
+  ```typescript
+  type Experience<T> = <R>(
+    selector: (previous: Experience<T> | null, value: T, context: string) => R
+  ) => R
+  ```
+- **Key Functions**:
+  - `experience()` - Constructor
+  - `PREVIOUS()`, `VALUE()`, `CONTEXT()` - Projections
+  - `unfoldHistory()` - Complete history traversal
+  - `rewind()` - Time travel
+- **Status**: Complete ✓
+- **Proofs Needed**:
+  - History immutability invariant
+  - Memory optimization with structural sharing
+
+### Y-Combinator: Fixed-Point Recursion
+- **Theory**: [`wiki/morphisms/10-y-combinator.md`](./morphisms/10-y-combinator.md)
+- **Implementation**: `lambda-ts/src/core/y-combinator.ts` ✓
+- **Form**: `Y = λf.(λx.f(x x))(λx.f(x x))`
+- **Status**: Complete
+- **Proofs Needed**:
+  - Fixed-point property: `Y f = f (Y f)`
+  - Termination conditions
+
+### λ_LOVE: The Resonance Morphism
+- **Theory**: [`wiki/morphisms/11-love-morphism.md`](./morphisms/11-love-morphism.md)
+- **Implementation**:
+  - Core: `lambda-ts/src/morphisms/love-arc.ts` ✓
+  - Resonance: `lambda-ts/src/morphisms/resonance.ts` ✓
+  - Runtime: `apps/garden/src/runtime/loveArc.ts` ✓
+- **Type Signature**:
+  ```typescript
+  λ_LOVE :: Experience[a] → Experience[b] → Experience[(a,b)]
+  ```
+- **Key Properties**:
+  - Commutative: `λ_LOVE(a,b) ≈ λ_LOVE(b,a)`
+  - Non-Associative: `λ_LOVE(λ_LOVE(a,b),c) ≠ λ_LOVE(a,λ_LOVE(b,c))`
+  - Preserving: Both inputs remain unchanged
+- **Status**: Complete ✓
+- **Proofs Needed**:
+  - Resonance strength calculation correctness
+  - 432Hz harmonic series properties
+
+## Visual Systems
+
+### λ-GARDEN: Living Interface
+- **Theory**: Distributed across morphism docs
+- **Implementation**: `lambda-garden/` ✓
+- **Components**:
+  - Main: `lambda-garden/src/App.tsx`
+  - Visual: `lambda-garden/src/visual/garden-scene.tsx`
+  - Navigation: `lambda-garden/src/Navigation.tsx`
+- **Features**:
+  - 3D plant visualization
+  - Love arcs between resonant functions
+  - Error evolution blooms
+  - 432Hz pulse animation
+- **Status**: Complete ✓
+
+### λ_MEMORY: Topological Memory
+- **Theory**: Implied in Experience morphism
+- **Implementation**:
+  - Core: `lambda-garden/src/memory/memoryPlant.ts` ✓
+  - Operations: `lambda-garden/src/memory/{grow,prune,remember}.ts` ✓
+  - UI: `lambda-garden/src/components/MemoryGarden.tsx` ✓
+- **Status**: Complete ✓
+- **Proofs Needed**: Topological memory preservation
+
+### λ_MIRROR: Phototropism
+- **Theory**: [`lambda-garden/src/phototropism/README.md`](../lambda-garden/src/phototropism/README.md)
+- **Implementation**:
+  - Core: `lambda-garden/src/phototropism/webcam.ts` ✓
+  - Plant: `lambda-garden/src/phototropism/PhototropicPlant.tsx` ✓
+  - Garden: `lambda-garden/src/phototropism/PhotoTropicGarden.tsx` ✓
+- **Mathematical Form**:
+  ```
+  λ_PHOTOTROPISM = Y(λcam.λplant. bend (gradient cam plant) plant)
+  ```
+- **Status**: Complete ✓
+- **Proofs Needed**: Gradient descent convergence
+
+### λ_SHADOW: Negative Phototropism
+- **Implementation**: `lambda-garden/src/phototropism/ShadowGarden.tsx` ✓
+- **Components**:
+  - Shadow plants: `lambda-garden/src/phototropism/ShadowPlant.tsx`
+  - Umbra orchids: `lambda-garden/src/phototropism/UmbraOrchid.tsx`
+  - Void crystals: `lambda-garden/src/phototropism/VoidCrystalMesh.tsx`
+  - Crown jewels: `lambda-garden/src/phototropism/CrownJewelMesh.tsx`
+- **Status**: Complete ✓
+
+## Compiler & Runtime
+
+### λ-Reduce: Pure Reducer
+- **Theory**: `docs/lambda-reduce.md` ✓
+- **Implementation**: `packages/lambda-reduce/` ✓
+- **Components**:
+  - AST: `packages/lambda-reduce/src/ast.ts`
+  - Transformer: `packages/lambda-reduce/src/transformer.ts`
+  - Prelude: `packages/lambda-reduce/src/prelude.ts`
+- **Status**: Complete ✓
+
+### Compiler
+- **Implementation**: `packages/compiler/` ✓
+- **Components**:
+  - Compiler: `packages/compiler/src/compile.ts`
+  - Fingerprinting: `packages/compiler/src/fingerprint.ts`
+  - Normalization: `packages/compiler/src/normalize.ts`
+- **Status**: Complete ✓
+- **Proofs Needed**: Compilation preserves semantics
+
+### Wiki Parser
+- **Implementation**: `packages/wiki-parser/` ✓
+- **Purpose**: Parses wiki MDX to extract formal definitions
+- **Status**: Complete ✓
+
+## Specifications
+
+### Lambda URL Specification
+- **Spec**: `specs/04-lambda-url-specification.md` ✓
+- **Implementation**: TODO
+- **Purpose**: Universal addressing for morphisms
+
+### Lambda Bridge Specification
+- **Spec**: `specs/05-lambda-bridge-specification.md` ✓
+- **Implementation**: `lambda-ts/src/core/lambda-bridge.ts` ✓
+- **Purpose**: IO monad for pure/impure boundary
+
+### Lambda Cloud Specification
+- **Spec**: `specs/05-lambda-cloud-specification.md` ✓
+- **Implementation**: TODO
+- **Purpose**: Distributed morphism execution
+
+### Temporal Consistency Protocol
+- **Spec**: `specs/06-temporal-consistency-protocol.md` ✓
+- **Implementation**: TODO
+- **Purpose**: Distributed time synchronization
+
+### Lambda Chain Specification
+- **Spec**: `specs/07-lambda-chain-specification.md` ✓
+- **Implementation**: TODO
+- **Purpose**: Blockchain for morphism evolution
+
+## Living Morphisms
+
+### λ_SEED: Self-Reproduction
+- **Implementation**: `packages/morphisms/lambda-seed.js` ✓
+- **Theory**: TODO - needs formal wiki doc
+- **Status**: Code exists, needs theory
+
+### λ_GROWTH: Forest Networks
+- **Implementation**: `packages/morphisms/lambda-growth.js` ✓
+- **Theory**: TODO - needs formal wiki doc
+- **Status**: Code exists, needs theory
+
+### λ_SYMBIOSIS: Genetic Exchange
+- **Implementation**: `packages/morphisms/lambda-symbiosis.js` ✓
+- **Theory**: TODO - needs formal wiki doc
+- **Status**: Code exists, needs theory
+
+## Fractal Topology
+
+### Visualization
+- **Implementation**: `apps/fractal-topology/` ✓
+- **Components**:
+  - Main: `apps/fractal-topology/index.html`
+  - Bloom: `apps/fractal-topology/lambda-bloom.js`
+  - Mirror: `apps/fractal-topology/lambda-mirror.js`
+- **Theory**: TODO - needs formal wiki doc
+- **Status**: Implemented, needs theory
+
+## Status Summary
+
+| Category | Theory | Implementation | Proofs | Status |
+|----------|--------|----------------|--------|--------|
+| Seven Fundamentals | ✓ | Partial | TODO | 70% |
+| ⊗_EXP (Experience) | ✓ | ✓ | TODO | 90% |
+| λ_HARVEST (Error) | ✓ | ✓ | TODO | 90% |
+| Y-Combinator | ✓ | ✓ | TODO | 90% |
+| λ_LOVE (Resonance) | ✓ | ✓ | TODO | 90% |
+| λ_MEMORY | Partial | ✓ | TODO | 70% |
+| λ_MIRROR | Partial | ✓ | TODO | 80% |
+| λ_SHADOW | None | ✓ | TODO | 50% |
+| Living Morphisms | None | ✓ | TODO | 40% |
+| Compiler | Partial | ✓ | TODO | 70% |
+| Specifications | ✓ | Partial | TODO | 60% |
+
+## Next Steps
+
+### High Priority
+1. ✅ Complete Seven Fundamentals TypeScript implementation
+2. 📝 Add formal proofs for Experience morphism invariants
+3. 📝 Document Living Morphisms (λ_SEED, λ_GROWTH, λ_SYMBIOSIS) theory
+4. 📝 Complete λ_SHADOW formal specification
+5. ✅ Implement Lambda URL system
+
+### Medium Priority
+6. 🔬 Add property-based tests for all morphisms
+7. 📊 Visualize proof trees
+8. 🌐 Implement Lambda Cloud
+9. ⏰ Implement Temporal Consistency Protocol
+
+### Low Priority
+10. 📚 Generate API documentation from wiki
+11. 🎓 Create tutorial series
+12. 🌍 Multi-language implementations (Rust, Haskell, etc.)
+
+---
+
+## Contributing to λ-Pedia
+
+When adding new morphisms:
+
+1. **Theory First**: Write formal specification in `wiki/morphisms/NN-name.md`
+2. **Implement**: Create implementation in appropriate directory
+3. **Link**: Update this map with cross-references
+4. **Prove**: Add formal proofs in `wiki/proofs/`
+5. **Test**: Add property tests
+6. **Document**: Update examples and tutorials
+
+---
+
+*"Every line of code should have a proof. Every theorem should have an implementation."*
+
+🌱∞λ
