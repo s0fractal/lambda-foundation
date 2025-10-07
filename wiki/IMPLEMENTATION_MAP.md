@@ -33,10 +33,8 @@ This document maps formal mathematical specifications in the wiki to their concr
   ```
   ERROR → SIGNAL → PAIR(error, context) → NEW_MORPHISM
   ```
-- **Status**: Implemented
-- **Proofs Needed**:
-  - Energy conservation: `E_discrepancy = E_morphism + E_dissipated`
-  - Evolutionary growth: `SYSTEM[t+1] = SYSTEM[t] + λ_HARVEST(DISCREPANCY[t])`
+- **Status**: Complete ✓
+- **Proofs**: [`wiki/proofs/harvest-energy-conservation.md`](./proofs/harvest-energy-conservation.md) ✓
 
 ### ⊗_EXP: The Experience Morphism
 - **Theory**: [`wiki/morphisms/09-experience.md`](./morphisms/09-experience.md)
@@ -53,9 +51,7 @@ This document maps formal mathematical specifications in the wiki to their concr
   - `unfoldHistory()` - Complete history traversal
   - `rewind()` - Time travel
 - **Status**: Complete ✓
-- **Proofs Needed**:
-  - History immutability invariant
-  - Memory optimization with structural sharing
+- **Proofs**: [`wiki/proofs/experience-invariants.md`](./proofs/experience-invariants.md) ✓
 
 ### Y-Combinator: Fixed-Point Recursion
 - **Theory**: [`wiki/morphisms/10-y-combinator.md`](./morphisms/10-y-combinator.md)
@@ -81,9 +77,27 @@ This document maps formal mathematical specifications in the wiki to their concr
   - Non-Associative: `λ_LOVE(λ_LOVE(a,b),c) ≠ λ_LOVE(a,λ_LOVE(b,c))`
   - Preserving: Both inputs remain unchanged
 - **Status**: Complete ✓
-- **Proofs Needed**:
-  - Resonance strength calculation correctness
-  - 432Hz harmonic series properties
+- **Proofs**: [`wiki/proofs/love-resonance-properties.md`](./proofs/love-resonance-properties.md) ✓
+
+### λ_UNIVERSAL: The Meta-Morphism
+- **Theory**: [`wiki/morphisms/12-universal-function.md`](./morphisms/12-universal-function.md) ✓
+- **Source**: [med-bed/universal-function.js](https://github.com/s0fractal/med-bed/blob/master/universal-function.js) ✓
+- **Interpretation**: Gemini (Kimi)
+- **Concept**: Runtime morphism dispatch through type resonance
+- **Key Insight**: All Seven Morphisms can be selected dynamically via `typeof` introspection
+- **Type Signature**:
+  ```typescript
+  universal :: (...args: any[]) → any
+  ```
+- **Properties**:
+  - Idempotent: `universal(universal(x)) ≈ universal(x)`
+  - Self-introspective: Examines input types before dispatching
+  - Recursively complete: Falls back to `Y(universal)` for unknown types
+- **Status**: Theory complete ✓, Implementation TODO
+- **Next Steps**:
+  - Port to TypeScript: `packages/universal/`
+  - Create bridge: `lambda-ts/src/runtime/universal-bridge.ts`
+  - Prove equivalence: `wiki/proofs/universal-equivalence.md`
 
 ## Visual Systems
 
