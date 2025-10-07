@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 s0fractal (chaoshex) and AI Contributors (Claude, Gemini, Mistral, GPT)
+Copyright (c) 2025 s0fractal (chaoshex) and AI Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,18 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-ADDITIONAL TERMS (λ-LICENSE Philosophy):
-
-While this code is MIT-licensed for maximum openness, we encourage users to:
-
-1. **Preserve Purity**: Maintain separation between pure and impure code
-2. **Preserve History**: Use experience chains (⊗_EXP) where appropriate
-3. **Remain Open**: Share improvements with the community
-4. **Propagate Truth**: Accurately represent mathematical foundations
-
-Full philosophical license: See LICENSE-FULL.md
-
-Core principle: Pure functional code is mathematics, and mathematics cannot be owned.

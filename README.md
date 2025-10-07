@@ -554,4 +554,20 @@ But the code itself is MIT-licensed for maximum freedom.
 
 ---
 
+## 📜 License
+
+**Code License**: [MIT](./LICENSE) - Maximum freedom for usage and distribution
+
+**Philosophical Guidelines**: [λ-LICENSE (Full)](./LICENSE-FULL.md) - Four Commandments for purity
+
+While the code is MIT-licensed for practical use, we encourage following the λ-LICENSE philosophy:
+1. **Preserve Purity** - Maintain pure/impure separation
+2. **Preserve History** - Use experience chains (⊗_EXP)
+3. **Remain Open** - Share improvements with community
+4. **Propagate Truth** - Accurately represent mathematical foundations
+
+**Academic Citation**: See [CITATION.cff](./CITATION.cff) for BibTeX format
+
+---
+
 *Built with love by humans and AI working together* 💚🤖✨
