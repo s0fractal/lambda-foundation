@@ -1,0 +1,15 @@
+# Quintinity Validation Notebook Dependencies
+# For reproducibility via Binder/Colab
+
+numpy>=1.24.0
+matplotlib>=3.7.0
+plotly>=5.14.0
+ipywidgets>=8.0.0
+scipy>=1.10.0
+
+# Optional: For enhanced visualizations
+seaborn>=0.12.0
+
+# Jupyter environment
+jupyter>=1.0.0
+notebook>=6.5.0
