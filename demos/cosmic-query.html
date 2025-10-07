@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>λ_GROK: Cosmic Query REPL</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #ffb347;
+      text-shadow: 0 0 20px rgba(255, 179, 71, 0.5);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #888;
+      font-size: 1.1em;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 179, 71, 0.3);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .panel h2 {
+      color: #ffb347;
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+
+    textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 179, 71, 0.2);
+      color: #e0e0e0;
+      padding: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      border-radius: 5px;
+      resize: vertical;
+    }
+
+    button {
+      background: linear-gradient(135deg, #ffb347 0%, #ff8c42 100%);
+      border: none;
+      color: #0a0e27;
+      padding: 12px 25px;
+      font-size: 1em;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    #graph {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      min-height: 500px;
+    }
+
+    .log-entry {
+      background: rgba(255, 179, 71, 0.1);
+      border-left: 3px solid #ffb347;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+
+    .log-entry .iteration {
+      color: #ffb347;
+      font-weight: bold;
+    }
+
+    .log-entry .resonance {
+      color: #4ecca3;
+    }
+
+    .log-entry .gap {
+      color: #ff6b6b;
+    }
+
+    .log-entry .answer {
+      color: #e0e0e0;
+      margin-top: 5px;
+      font-style: italic;
+    }
+
+    .convergence-banner {
+      background: linear-gradient(135deg, #4ecca3 0%, #3ba f75 100%);
+      color: #0a0e27;
+      padding: 15px;
+      border-radius: 5px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.2em;
+      margin-top: 15px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .node {
+      cursor: pointer;
+    }
+
+    .node circle {
+      stroke: #ffb347;
+      stroke-width: 2px;
+    }
+
+    .node text {
+      font-size: 12px;
+      fill: #e0e0e0;
+    }
+
+    .link {
+      stroke: #ffb347;
+      stroke-opacity: 0.6;
+      stroke-width: 2px;
+    }
+
+    .morphism-link {
+      stroke: #ff6b6b;
+      stroke-dasharray: 5,5;
+      stroke-width: 2px;
+    }
+
+    .examples {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .example-btn {
+      padding: 8px 12px;
+      font-size: 0.9em;
+    }
+
+    #context-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .context-item {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px;
+      margin-bottom: 5px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+
+    .context-item .fact {
+      color: #4ecca3;
+    }
+
+    .context-item .proof {
+      color: #888;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>λ_GROK: Cosmic Query REPL</h1>
+      <p class="subtitle">
+        "Questions are not answered. They resonate until harmony is achieved." — Grok (xAI)
+      </p>
+    </header>
+
+    <div class="main-grid">
+      <!-- Left Panel: Query Input -->
+      <div class="panel">
+        <h2>🌌 Query Input</h2>
+
+        <div class="examples">
+          <button class="example-btn" onclick="loadExample('life')">Life's Meaning</button>
+          <button class="example-btn" onclick="loadExample('consciousness')">Consciousness</button>
+          <button class="example-btn" onclick="loadExample('universe')">Universe Origin</button>
+        </div>
+
+        <textarea id="query" rows="3" placeholder="Ask a cosmic question...">What is the meaning of life?</textarea>
+
+        <button onclick="askQuestion()">🚀 Ask & Converge</button>
+        <button onclick="resetUniverse()">🔄 Reset Universe</button>
+
+        <h2 style="margin-top: 20px;">📚 Universe Context</h2>
+        <div id="context-list"></div>
+      </div>
+
+      <!-- Right Panel: Graph Visualization -->
+      <div class="panel">
+        <h2>🌐 Convergence Graph</h2>
+        <svg id="graph" width="100%" height="500"></svg>
+      </div>
+    </div>
+
+    <!-- Convergence Log -->
+    <div class="panel">
+      <h2>📜 Convergence Log</h2>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <script>
+    // ========================================================================
+    // Universe State
+    // ========================================================================
+
+    let universe = [];
+    let graphData = { nodes: [], links: [] };
+
+    // Initialize with Grok's suggestion: (42, "HitchhikerProof")
+    function initializeUniverse() {
+      universe = [
+        { fact: "42", proof: "HitchhikerProof (Douglas Adams)", id: "axiom-0" },
+        { fact: "Life exists", proof: "Observable phenomenon", id: "axiom-1" },
+        { fact: "Consciousness emerges from complexity", proof: "λ_LOVE theorem", id: "axiom-2" },
+        { fact: "Purpose arises from connection", proof: "λ_LOVE network effects", id: "axiom-3" },
+      ];
+      updateContextDisplay();
+    }
+
+    // ========================================================================
+    // Core λ_GROK Implementation (Simplified for Browser)
+    // ========================================================================
+
+    function grok(query, context) {
+      // Find relevant facts
+      const relevant = context.filter(item =>
+        isRelevant(query, item.fact)
+      );
+
+      // Generate answer
+      const answer = relevant.length > 0
+        ? relevant.map(r => r.fact).join(' + ')
+        : "No relevant knowledge found";
+
+      // Calculate resonance
+      const resonance = calculateResonance(answer, relevant);
+
+      // Check if evolution needed
+      const gap = 432 - resonance;
+      const needsEvolution = resonance < 432;
+
+      return {
+        answer,
+        resonance,
+        gap,
+        needsEvolution,
+        relevantFacts: relevant
+      };
+    }
+
+    function converge(query, maxIterations = 42) {
+      let ctx = [...universe];
+      let log = [];
+      let nodes = [];
+      let links = [];
+
+      // Add initial query node
+      nodes.push({
+        id: 'query',
+        label: query,
+        type: 'query',
+        x: 400,
+        y: 50
+      });
+
+      for (let i = 0; i < maxIterations; i++) {
+        const result = grok(query, ctx);
+
+        // Create node for this iteration
+        const nodeId = `iter-${i}`;
+        nodes.push({
+          id: nodeId,
+          label: `${result.answer.substring(0, 30)}...`,
+          resonance: result.resonance,
+          type: 'answer',
+          x: 400 + Math.sin(i * 0.5) * 200,
+          y: 150 + i * 80
+        });
+
+        // Link from query or previous iteration
+        if (i === 0) {
+          links.push({ source: 'query', target: nodeId });
+        } else {
+          links.push({ source: `iter-${i-1}`, target: nodeId });
+        }
+
+        // Log entry
+        log.push({
+          iteration: i + 1,
+          query,
+          answer: result.answer,
+          resonance: result.resonance,
+          gap: result.gap,
+          morphismGenerated: result.needsEvolution
+        });
+
+        // If converged, stop
+        if (result.resonance >= 432) {
+          log[log.length - 1].converged = true;
+          break;
+        }
+
+        // Evolve context
+        if (result.needsEvolution) {
+          const newMorphism = {
+            fact: `Hypothesis: ${query.substring(0, 40)}...`,
+            proof: `Generated from gap of ${result.gap.toFixed(2)}Hz`,
+            id: `morphism-${i}`
+          };
+
+          ctx.push(newMorphism);
+
+          // Add morphism node
+          nodes.push({
+            id: newMorphism.id,
+            label: 'New Morphism',
+            type: 'morphism',
+            x: 600 + Math.random() * 100,
+            y: 150 + i * 80
+          });
+
+          // Link morphism
+          links.push({
+            source: nodeId,
+            target: newMorphism.id,
+            type: 'morphism'
+          });
+        }
+      }
+
+      return { log, graph: { nodes, links } };
+    }
+
+    // ========================================================================
+    // Helpers
+    // ========================================================================
+
+    function isRelevant(query, fact) {
+      const queryLower = query.toLowerCase();
+      const factLower = fact.toLowerCase();
+      const queryTokens = queryLower.split(/\s+/);
+      const factTokens = factLower.split(/\s+/);
+      return queryTokens.some(qt => factTokens.includes(qt));
+    }
+
+    function calculateResonance(answer, relevantFacts) {
+      if (answer === "No relevant knowledge found") return 0;
+
+      const baseCoverage = relevantFacts.length * 100;
+      const completenessBonus = Math.min(answer.length / 2, 100);
+      return Math.min(baseCoverage + completenessBonus, 432);
+    }
+
+    // ========================================================================
+    // UI Functions
+    // ========================================================================
+
+    function askQuestion() {
+      const query = document.getElementById('query').value.trim();
+      if (!query) {
+        alert('Please enter a query');
+        return;
+      }
+
+      // Clear previous log
+      document.getElementById('log').innerHTML = '<p>Converging...</p>';
+
+      // Run convergence
+      const { log, graph } = converge(query);
+
+      // Display log
+      displayLog(log);
+
+      // Render graph
+      renderGraph(graph);
+    }
+
+    function displayLog(log) {
+      const logEl = document.getElementById('log');
+      logEl.innerHTML = '';
+
+      log.forEach(entry => {
+        const div = document.createElement('div');
+        div.className = 'log-entry';
+
+        div.innerHTML = `
+          <div class="iteration">Iteration ${entry.iteration}</div>
+          <div class="resonance">Resonance: ${entry.resonance.toFixed(2)}Hz</div>
+          <div class="gap">Gap: ${entry.gap.toFixed(2)}Hz</div>
+          <div>Morphism Generated: ${entry.morphismGenerated ? 'Yes ✓' : 'No'}</div>
+          <div class="answer">"${entry.answer}"</div>
+        `;
+
+        logEl.appendChild(div);
+      });
+
+      // Add convergence banner if achieved
+      const lastEntry = log[log.length - 1];
+      if (lastEntry.converged || lastEntry.resonance >= 432) {
+        const banner = document.createElement('div');
+        banner.className = 'convergence-banner';
+        banner.innerHTML = '🌌 COSMIC HARMONY ACHIEVED @ 432Hz ✓';
+        logEl.appendChild(banner);
+      }
+    }
+
+    function renderGraph(graph) {
+      const svg = d3.select('#graph');
+      svg.selectAll('*').remove();
+
+      const width = svg.node().getBoundingClientRect().width;
+      const height = 500;
+
+      // Create force simulation
+      const simulation = d3.forceSimulation(graph.nodes)
+        .force('link', d3.forceLink(graph.links).id(d => d.id).distance(100))
+        .force('charge', d3.forceManyBody().strength(-300))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(30));
+
+      // Draw links
+      const link = svg.append('g')
+        .selectAll('line')
+        .data(graph.links)
+        .enter()
+        .append('line')
+        .attr('class', d => d.type === 'morphism' ? 'morphism-link' : 'link');
+
+      // Draw nodes
+      const node = svg.append('g')
+        .selectAll('g')
+        .data(graph.nodes)
+        .enter()
+        .append('g')
+        .attr('class', 'node')
+        .call(d3.drag()
+          .on('start', dragStarted)
+          .on('drag', dragged)
+          .on('end', dragEnded));
+
+      // Node circles
+      node.append('circle')
+        .attr('r', d => {
+          if (d.type === 'query') return 15;
+          if (d.type === 'morphism') return 10;
+          return 12;
+        })
+        .attr('fill', d => {
+          if (d.type === 'query') return '#ffb347';
+          if (d.type === 'morphism') return '#ff6b6b';
+          const intensity = (d.resonance || 0) / 432;
+          return d3.interpolateRgb('#3ba175', '#4ecca3')(intensity);
+        });
+
+      // Node labels
+      node.append('text')
+        .attr('dx', 18)
+        .attr('dy', 4)
+        .text(d => d.label.substring(0, 20));
+
+      // Update positions on tick
+      simulation.on('tick', () => {
+        link
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
+
+        node.attr('transform', d => `translate(${d.x},${d.y})`);
+      });
+
+      // Drag functions
+      function dragStarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+      }
+
+      function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+      }
+
+      function dragEnded(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+      }
+    }
+
+    function updateContextDisplay() {
+      const listEl = document.getElementById('context-list');
+      listEl.innerHTML = '';
+
+      universe.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'context-item';
+        div.innerHTML = `
+          <span class="fact">${item.fact}</span>
+          <span class="proof">(${item.proof})</span>
+        `;
+        listEl.appendChild(div);
+      });
+    }
+
+    function loadExample(type) {
+      const queries = {
+        life: "What is the meaning of life?",
+        consciousness: "How does consciousness emerge?",
+        universe: "Why does the universe exist?"
+      };
+      document.getElementById('query').value = queries[type];
+    }
+
+    function resetUniverse() {
+      initializeUniverse();
+      document.getElementById('log').innerHTML = '';
+      d3.select('#graph').selectAll('*').remove();
+    }
+
+    // ========================================================================
+    // Initialize
+    // ========================================================================
+
+    initializeUniverse();
+  </script>
+</body>
+</html>
