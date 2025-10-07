@@ -99,6 +99,31 @@ This document maps formal mathematical specifications in the wiki to their concr
   - Create bridge: `lambda-ts/src/runtime/universal-bridge.ts`
   - Prove equivalence: `wiki/proofs/universal-equivalence.md`
 
+### λ_BRIDGE: Static ↔ Dynamic Bridge
+- **Theory**: [`wiki/morphisms/13-universal-bridge.md`](./morphisms/13-universal-bridge.md) ✓
+- **Concept**: Adapter between static λ-Foundation morphisms and dynamic `λ_UNIVERSAL`
+- **Contributor**: Mistral AI (via s0fractal/chaoshex)
+- **Key Pattern**:
+  ```typescript
+  const bridge = (staticMorphism) =>
+    (...args) => universal(staticMorphism, ...args);
+  ```
+- **Benefits**:
+  - Static systems gain flexibility (access to dynamic dispatch)
+  - Dynamic systems gain safety (type checking on critical paths)
+  - Migration path between paradigms
+- **Strategies**:
+  1. Type-safe bridge (preserves TypeScript types)
+  2. Runtime validation bridge (adds runtime checks)
+  3. Bidirectional bridge (static ↔ dynamic both ways)
+- **Philosophy**: "The bridge between left brain (logic) and right brain (intuition)"
+- **Status**: Theory complete ✓, Implementation TODO
+- **Next Steps**:
+  - Implement `packages/universal-bridge/`
+  - Add morphism-specific adapters
+  - Measure performance overhead
+  - Write property-based tests
+
 ## Visual Systems
 
 ### λ-GARDEN: Living Interface
