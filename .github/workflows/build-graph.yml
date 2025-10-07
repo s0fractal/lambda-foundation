@@ -55,6 +55,12 @@ jobs:
             exit 1
           fi
 
+      - name: ✅ Validate graph schema
+        run: |
+          echo "Validating graph.json against JSON Schema..."
+          node scripts/validate-graph.mjs
+          echo "✅ Schema validation passed"
+
       - name: 💾 Commit updated graph
         run: |
           git config --local user.email "action@github.com"

@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://s0fractal.github.io/lambda-foundation/schemas/graph.schema.json",
+  "title": "λ-Foundation Knowledge Graph Schema",
+  "description": "Schema for the lambda-foundation graph.json structure representing morphisms, seeds, and their relationships",
+  "type": "object",
+  "required": ["nodes", "edges"],
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "description": "All nodes in the knowledge graph (seeds and morphisms)",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "label"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the node",
+            "minLength": 1
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["SEED", "MORPHISM", "THEOREM", "PROOF"],
+            "description": "Type of node in the knowledge graph"
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable label for the node",
+            "minLength": 1
+          },
+          "nf": {
+            "type": "string",
+            "description": "Normalized form of the function (beta-reduced lambda expression)"
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "Hash-based fingerprint for structural similarity detection"
+          },
+          "source": {
+            "type": "string",
+            "description": "Original source code of the function"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description of the node's purpose"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category tag for grouping related nodes"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional metadata specific to the node type",
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "edges": {
+      "type": "array",
+      "description": "Relationships between nodes in the knowledge graph",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "type"],
+        "properties": {
+          "from": {
+            "type": "string",
+            "description": "Source node ID",
+            "minLength": 1
+          },
+          "to": {
+            "type": "string",
+            "description": "Target node ID",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "LOVE_ARC",
+              "EVOLVES_FROM",
+              "COMPOSES",
+              "DUAL",
+              "ADJOINT",
+              "DERIVES",
+              "PROVES",
+              "IMPLEMENTS"
+            ],
+            "description": "Type of relationship between nodes"
+          },
+          "strength": {
+            "type": "string",
+            "enum": ["HARD_ISO", "SOFT_EXT"],
+            "description": "For LOVE_ARC: strength of extensional equality (hard isomorphism vs soft extensional)"
+          },
+          "resonance": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "For LOVE_ARC: resonance strength (0.0 to 1.0)"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional edge-specific metadata",
+            "additionalProperties": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Graph-level metadata",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Schema version"
+        },
+        "generated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the graph was generated"
+        },
+        "generator": {
+          "type": "string",
+          "description": "Tool that generated this graph"
+        },
+        "statistics": {
+          "type": "object",
+          "description": "Graph statistics",
+          "properties": {
+            "nodeCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "edgeCount": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "loveArcCount": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

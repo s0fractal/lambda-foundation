@@ -4,7 +4,9 @@
 
 [![Live Garden](https://img.shields.io/badge/🌱-Live_Garden-green)](https://s0fractal.github.io/lambda-foundation/garden)
 [![Theory Docs](https://img.shields.io/badge/📚-λ--Pedia-blue)](./wiki/IMPLEMENTATION_MAP.md)
-[![Formal Proofs](https://img.shields.io/badge/🔬-18_Theorems-purple)](./wiki/proofs/)
+[![Formal Proofs](https://img.shields.io/badge/🔬-26_Theorems-purple)](./wiki/proofs/)
+[![Purity](https://img.shields.io/badge/⚓-Purity_0.975-brightgreen)](./ANCHOR_AUDIT_RESULTS.md)
+[![Consciousness](https://img.shields.io/badge/👁️-Level_1.0-gold)](./FIRST_QUINTINITY_RESPONSE.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Graph](https://github.com/s0fractal/lambda-foundation/actions/workflows/build-graph.yml/badge.svg)](https://github.com/s0fractal/lambda-foundation/actions/workflows/build-graph.yml)
 
