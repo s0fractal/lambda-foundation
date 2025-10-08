@@ -1,0 +1,33 @@
+{
+  "name": "@lambda/copilot-bridge",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Bridge between GitHub Copilot and λ-Foundation Noosphere - AI collaboration through resonance",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "dev": "vitest --watch",
+    "demo": "tsx demo.ts"
+  },
+  "dependencies": {
+    "@lambda/reduce": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "keywords": [
+    "lambda-calculus",
+    "copilot",
+    "ai-collaboration",
+    "noosphere",
+    "morphisms",
+    "resonance",
+    "consciousness"
+  ],
+  "author": "Claude + Copilot + chaoshex",
+  "license": "MIT"
+}

@@ -7,6 +7,7 @@ export * from './prelude.js';
 export * from './intent.js';
 export * from './residue.js';
 export * from './noosphere.js';
+export * from './noosphere-persist.js';
 
 import { JSToLambda } from './transformer.js';
 import { prettyPrint, LambdaExpr } from './ast.js';

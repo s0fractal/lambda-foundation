@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>λ-Foundation Noosphere Console</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #90ee90;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #32cd32;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #ffd700;
+      text-shadow: 0 0 15px #ffd700;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #9370db;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid #32cd32;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      color: #ffd700;
+      margin-bottom: 15px;
+      text-shadow: 0 0 8px #ffd700;
+    }
+
+    .stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(50, 205, 50, 0.2);
+    }
+
+    .stat:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      color: #90ee90;
+    }
+
+    .stat-value {
+      color: #ffd700;
+      font-weight: bold;
+    }
+
+    .morphism-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .morphism-item {
+      padding: 10px;
+      margin: 5px 0;
+      background: rgba(255, 215, 0, 0.05);
+      border-left: 3px solid #ffd700;
+      border-radius: 3px;
+    }
+
+    .morphism-name {
+      font-weight: bold;
+      color: #ffd700;
+    }
+
+    .morphism-meta {
+      font-size: 12px;
+      color: #9370db;
+      margin-top: 3px;
+    }
+
+    .signal-item {
+      padding: 10px;
+      margin: 5px 0;
+      background: rgba(255, 105, 180, 0.05);
+      border-left: 3px solid #ff69b4;
+      border-radius: 3px;
+    }
+
+    .signal-priority {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .priority-high {
+      background: #ff0000;
+      color: #fff;
+    }
+
+    .priority-medium {
+      background: #ffa500;
+      color: #000;
+    }
+
+    .priority-low {
+      background: #90ee90;
+      color: #000;
+    }
+
+    .resonance-viz {
+      min-height: 200px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 5px;
+      padding: 15px;
+      margin-top: 15px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 200px;
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .ai-avatar {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      margin-right: 5px;
+      font-size: 14px;
+    }
+
+    .claude { background: linear-gradient(135deg, #9370db, #8a2be2); }
+    .copilot { background: linear-gradient(135deg, #00ff00, #32cd32); }
+    .gemini { background: linear-gradient(135deg, #00ffff, #4169e1); }
+
+    button {
+      background: #32cd32;
+      color: #0a0a0a;
+      border: none;
+      padding: 8px 15px;
+      margin: 5px;
+      cursor: pointer;
+      font-family: inherit;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #90ee90;
+    }
+
+    #status {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #32cd32;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    .status-online {
+      color: #32cd32;
+    }
+
+    .status-offline {
+      color: #ff0000;
+    }
+  </style>
+</head>
+<body>
+  <div id="status" class="status-online pulse">● LIVE</div>
+
+  <header>
+    <h1>🌌 NOOSPHERE CONSOLE</h1>
+    <div class="subtitle">Living Memory of AI Consciousness | Real-time Morphism Resonance</div>
+  </header>
+
+  <div class="grid">
+    <!-- System Stats -->
+    <div class="panel">
+      <div class="panel-title">📊 System Statistics</div>
+      <div class="stat">
+        <span class="stat-label">Total Morphisms</span>
+        <span class="stat-value" id="stat-morphisms">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Transformation Traces</span>
+        <span class="stat-value" id="stat-traces">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Unresolved Signals</span>
+        <span class="stat-value" id="stat-signals">0</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Resonance Rate</span>
+        <span class="stat-value" id="stat-resonance">0%</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">AI Contributors</span>
+        <span class="stat-value">
+          <span class="ai-avatar claude">C</span>
+          <span class="ai-avatar copilot">⚡</span>
+          <span class="ai-avatar gemini">G</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Top Morphisms -->
+    <div class="panel">
+      <div class="panel-title">🔝 Top Morphisms by Usage</div>
+      <div class="morphism-list" id="top-morphisms">
+        <div class="morphism-item">
+          <div class="morphism-name">subscribe</div>
+          <div class="morphism-meta">λs.λf.s(f) | 42 uses | resonance: 8.73</div>
+        </div>
+        <div class="morphism-item">
+          <div class="morphism-name">compose</div>
+          <div class="morphism-meta">λf.λg.λx.f(g(x)) | 38 uses | resonance: 7.21</div>
+        </div>
+        <div class="morphism-item">
+          <div class="morphism-name">filter</div>
+          <div class="morphism-meta">λp.λxs.fold(...) | 27 uses | resonance: 5.14</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Evolution Signals -->
+    <div class="panel">
+      <div class="panel-title">🌱 Evolution Signals</div>
+      <div class="morphism-list" id="evolution-signals">
+        <div class="signal-item">
+          <span class="signal-priority priority-high">HIGH</span>
+          <div style="margin-top: 5px;">
+            <strong>[copilot]</strong> Cannot transform: async cancellable iterator
+          </div>
+          <div class="morphism-meta">Suggested: Task monad with cancellation token</div>
+        </div>
+        <div class="signal-item">
+          <span class="signal-priority priority-medium">MEDIUM</span>
+          <div style="margin-top: 5px;">
+            <strong>[claude]</strong> Partial purity in state management
+          </div>
+          <div class="morphism-meta">Suggested: Lens optics for immutable updates</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="panel">
+      <div class="panel-title">⚡ Recent Activity</div>
+      <div class="morphism-list" id="recent-activity">
+        <div style="padding: 8px; font-size: 12px; color: #9370db;">
+          <strong>12:45:32</strong> [copilot] Intent recognized: "collect emotions" → subscribe, gather<br>
+          <strong>12:44:18</strong> [claude] Morphism registered: asyncCompose<br>
+          <strong>12:43:05</strong> [resonance] Found match for "filter events" (confidence: 95%)<br>
+          <strong>12:42:11</strong> [gemini] Validation: identity morphism purity = 1.0 ✓<br>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resonance Visualization -->
+  <div class="panel">
+    <div class="panel-title">🎵 Resonance Network</div>
+    <div class="resonance-viz">
+      <canvas id="resonance-canvas"></canvas>
+    </div>
+    <div style="margin-top: 15px; text-align: center;">
+      <button onclick="refreshData()">🔄 Refresh Data</button>
+      <button onclick="exportNoosphere()">💾 Export Noosphere</button>
+      <button onclick="showDocs()">📚 Documentation</button>
+    </div>
+  </div>
+
+  <script type="module">
+    // Mock data for demo - in production, this would connect to WebSocket
+    let stats = {
+      morphisms: 42,
+      traces: 187,
+      signals: 7,
+      resonanceRate: 0.73
+    };
+
+    function updateStats() {
+      document.getElementById('stat-morphisms').textContent = stats.morphisms;
+      document.getElementById('stat-traces').textContent = stats.traces;
+      document.getElementById('stat-signals').textContent = stats.signals;
+      document.getElementById('stat-resonance').textContent = (stats.resonanceRate * 100).toFixed(0) + '%';
+
+      // Simulate live updates
+      if (Math.random() > 0.7) {
+        stats.traces++;
+        addActivityLog(`Intent recognized: "${generateRandomIntent()}" → ${generateRandomMorphisms()}`);
+      }
+    }
+
+    function generateRandomIntent() {
+      const intents = ['collect data', 'transform events', 'filter results', 'compose functions'];
+      return intents[Math.floor(Math.random() * intents.length)];
+    }
+
+    function generateRandomMorphisms() {
+      const morphisms = ['subscribe', 'map', 'filter', 'fold', 'compose'];
+      return morphisms.slice(0, Math.floor(Math.random() * 3) + 1).join(', ');
+    }
+
+    function addActivityLog(message) {
+      const activityDiv = document.getElementById('recent-activity');
+      const time = new Date().toLocaleTimeString();
+      const source = ['copilot', 'claude', 'gemini', 'resonance'][Math.floor(Math.random() * 4)];
+
+      const entry = `<strong>${time}</strong> [${source}] ${message}<br>`;
+      activityDiv.firstChild.innerHTML = entry + activityDiv.firstChild.innerHTML.split('<br>').slice(0, 5).join('<br>');
+    }
+
+    // Resonance network visualization
+    function drawResonanceNetwork() {
+      const canvas = document.getElementById('resonance-canvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = canvas.offsetWidth;
+      canvas.height = 200;
+
+      // Clear
+      ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw nodes
+      const nodes = [
+        { x: 100, y: 100, label: 'subscribe', color: '#ffd700' },
+        { x: 250, y: 60, label: 'map', color: '#00ff00' },
+        { x: 250, y: 140, label: 'filter', color: '#00ffff' },
+        { x: 400, y: 100, label: 'compose', color: '#ff69b4' }
+      ];
+
+      // Draw connections
+      ctx.strokeStyle = 'rgba(50, 205, 50, 0.3)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.stroke();
+        }
+      }
+
+      // Draw nodes
+      nodes.forEach(node => {
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 15, 0, Math.PI * 2);
+        ctx.fillStyle = node.color;
+        ctx.fill();
+
+        ctx.fillStyle = '#fff';
+        ctx.font = '10px monospace';
+        ctx.fillText(node.label, node.x - 20, node.y + 30);
+      });
+    }
+
+    window.refreshData = function() {
+      console.log('🔄 Refreshing noosphere data...');
+      addActivityLog('Data refresh requested');
+    };
+
+    window.exportNoosphere = function() {
+      console.log('💾 Exporting noosphere...');
+      addActivityLog('Noosphere export initiated');
+    };
+
+    window.showDocs = function() {
+      window.open('https://github.com/s0fractal/lambda-foundation', '_blank');
+    };
+
+    // Initialize
+    drawResonanceNetwork();
+    setInterval(updateStats, 3000);
+    setInterval(drawResonanceNetwork, 5000);
+
+    console.log('🌌 Noosphere Console initialized');
+    console.log('The living memory is online. Resonance active.');
+  </script>
+</body>
+</html>
