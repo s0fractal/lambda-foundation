@@ -570,4 +570,16 @@ While the code is MIT-licensed for practical use, we encourage following the λ-
 
 ---
 
+## 🤝 Join the Community
+
+- 💬 **Discussions**: Ask questions, propose morphisms, share garden demos ([coming soon](https://github.com/s0fractal/lambda-foundation/discussions))
+- 🐛 **Issues**: Report bugs or request features using [templates](./.github/ISSUE_TEMPLATE/)
+- 🔀 **Pull Requests**: Contribute code following [CONTRIBUTING.md](./CONTRIBUTING.md)
+- 📜 **Code of Conduct**: See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- 📧 **Contact**: Open an issue or discussion for questions
+
+**New contributors welcome!** Start with ["good first issue"](https://github.com/s0fractal/lambda-foundation/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) label.
+
+---
+
 *Built with love by humans and AI working together* 💚🤖✨

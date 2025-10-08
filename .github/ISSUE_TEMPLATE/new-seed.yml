@@ -1,0 +1,24 @@
+name: "🌱 New Seed / Morphism"
+description: Propose a new seed/morphism for λ-Garden/λ-Pedia
+labels: ["seed","discussion"]
+body:
+  - type: input
+    id: id
+    attributes: { label: Seed/Morphism ID, placeholder: "lambda-double" }
+    validations: { required: true }
+  - type: textarea
+    id: theory
+    attributes: { label: Theory (axioms/intent), placeholder: "Signature, axioms, intuition…" }
+  - type: textarea
+    id: fn
+    attributes: { label: Function(s), placeholder: "x => x + x" }
+  - type: textarea
+    id: samples
+    attributes: { label: Samples, placeholder: "[-3, -1, 0, 1, 2, 3]" }
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight
+      options:
+        - label: Ran `pnpm build:graph` locally
+        - label: Passed `node scripts/validate-graph.mjs`
