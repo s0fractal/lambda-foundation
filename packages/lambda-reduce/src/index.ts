@@ -1,8 +1,12 @@
 // λREDUCE: Pure functional transformation of imperative code
+// Extended with: Intent Recognition, Residue Analysis, Noosphere Integration
 
 export * from './ast.js';
 export * from './transformer.js';
 export * from './prelude.js';
+export * from './intent.js';
+export * from './residue.js';
+export * from './noosphere.js';
 
 import { JSToLambda } from './transformer.js';
 import { prettyPrint, LambdaExpr } from './ast.js';

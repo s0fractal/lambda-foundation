@@ -1,0 +1,202 @@
+---
+morphism: identity
+category: fundamental
+purity: 1.0
+---
+
+# Identity Morphism (I)
+
+## Formal Definition
+
+```λ-calculus
+I ≡ λx.x
+```
+
+## Type Signature
+
+```
+I : ∀α. α → α
+```
+
+In Category Theory:
+```
+id_A : A → A
+```
+
+## Axioms
+
+### Law 1: Self-application
+```
+I(I) = I
+```
+
+### Law 2: Left Identity (Composition)
+```
+∀f. I ∘ f = f
+```
+
+### Law 3: Right Identity (Composition)
+```
+∀f. f ∘ I = f
+```
+
+### Law 4: Fixpoint
+```
+Y(λf.I) = I
+```
+
+## Properties
+
+- **Purity**: 1.0 (absolutely pure, no side effects)
+- **Termination**: Always terminates in O(1)
+- **Referential transparency**: Total
+- **Computational complexity**: Θ(1)
+
+## Projections
+
+### TypeScript
+```typescript
+const identity = <A>(x: A): A => x;
+
+// Or point-free
+const I = (x) => x;
+```
+
+### Rust
+```rust
+fn identity<A>(x: A) -> A {
+    x
+}
+
+// Generic trait
+impl<A> Identity for A {
+    fn identity(self) -> Self {
+        self
+    }
+}
+```
+
+### WebAssembly (WAT)
+```wasm
+(func $identity (param $x i32) (result i32)
+  local.get $x
+)
+```
+
+### Haskell
+```haskell
+id :: a -> a
+id x = x
+
+-- Built-in in Prelude
+```
+
+### Lambda Calculus (Church Encoding)
+```
+I = λx.x
+```
+
+## Examples
+
+### Example 1: Basic Usage
+```typescript
+identity(5)        // → 5
+identity("hello")  // → "hello"
+identity([1,2,3])  // → [1,2,3]
+```
+
+### Example 2: Composition
+```typescript
+compose(identity, double)(5)  // → double(5) → 10
+compose(double, identity)(5)  // → double(5) → 10
+```
+
+### Example 3: Monad Laws
+```typescript
+// Left identity: return a >>= f  ≡  f a
+bind(pure(5), f) ≡ f(5)
+
+// Right identity: m >>= return  ≡  m
+bind(m, pure) ≡ m
+```
+
+## Proofs
+
+### Theorem 1: I is unique
+**Statement**: There is exactly one function with type `α → α` that satisfies the identity laws.
+
+**Proof**:
+```
+Assume f : α → α and g : α → α both satisfy identity laws.
+Then: f = f ∘ I = f ∘ g = I ∘ g = g
+Therefore: f = g □
+```
+
+### Theorem 2: I is idempotent
+**Statement**: `I ∘ I = I`
+
+**Proof**:
+```
+I ∘ I
+= λx.(I (I x))     [definition of composition]
+= λx.(I x)          [β-reduction]
+= λx.x              [definition of I]
+= I □
+```
+
+## Related Morphisms
+
+- **compose**: I is the identity element
+- **const**: dual in some sense (ignores argument vs preserves it)
+- **fix**: I is a fixpoint of λf.I
+
+## Applications
+
+1. **Default transformations**: When no transformation needed
+2. **Monad laws**: Critical for lawful monads
+3. **Category theory**: Identity morphism for every object
+4. **Functor laws**: `fmap id = id`
+5. **Placeholder**: During refactoring or composition
+
+## History
+
+- First formalized by: Alonzo Church (1930s)
+- Lambda calculus: Original combinator
+- SKI calculus: One of three fundamental combinators
+- Category theory: Universal identity morphism
+
+## Implementation Notes
+
+### Performance
+- Should compile to no-op in optimized builds
+- Zero-cost abstraction in all projections
+- Often inlined by compilers
+
+### Testing
+```typescript
+// Property-based test
+forAll(arbitrary<A>(), (x: A) =>
+  identity(x) === x
+);
+```
+
+## Fingerprint
+
+```
+Hash: 0x49646e74  // "Idnt" in hex
+Signature: λx.x
+Arity: 1
+Purity: 1.0
+Category: fundamental
+```
+
+## References
+
+- Church, A. (1932). "A set of postulates for the foundation of logic"
+- SKI Combinator Calculus
+- Category Theory: Mac Lane (1971)
+- Lambda Calculus: Barendregt (1984)
+
+---
+
+*This is the Platonic form. All implementations are shadows.*

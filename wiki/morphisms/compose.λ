@@ -1,0 +1,353 @@
+---
+morphism: compose
+category: fundamental
+purity: 1.0
+aliases: [B, composition, dot, pipe-reverse]
+---
+
+# Compose Morphism (B)
+
+## Formal Definition
+
+```λ-calculus
+B ≡ λf.λg.λx.f(g(x))
+```
+
+Also known as the **B combinator** in SKI calculus.
+
+## Type Signature
+
+```
+compose : ∀α,β,γ. (β → γ) → (α → β) → (α → γ)
+```
+
+In Category Theory:
+```
+∘ : Hom(B, C) × Hom(A, B) → Hom(A, C)
+```
+
+Mathematical notation:
+```
+(f ∘ g)(x) = f(g(x))
+```
+
+## Axioms
+
+### Law 1: Associativity
+```
+(f ∘ g) ∘ h = f ∘ (g ∘ h)
+```
+
+### Law 2: Left Identity
+```
+I ∘ f = f
+```
+
+### Law 3: Right Identity
+```
+f ∘ I = f
+```
+
+### Law 4: Functor Preservation
+```
+fmap (f ∘ g) = fmap f ∘ fmap g
+```
+
+## Properties
+
+- **Purity**: 1.0 (pure function composition)
+- **Termination**: Depends on composed functions
+- **Referential transparency**: Total (if f and g are pure)
+- **Computational complexity**: O(|f| + |g|)
+- **Associative**: Yes (forms a monoid with identity)
+- **Commutative**: No (generally f ∘ g ≠ g ∘ f)
+
+## Projections
+
+### TypeScript
+```typescript
+// Right-to-left (mathematical)
+const compose = <A, B, C>(
+  f: (b: B) => C,
+  g: (a: A) => B
+): (a: A) => C =>
+  (x: A) => f(g(x));
+
+// Variadic (n-ary composition)
+const composeN = <T>(...fns: Array<(x: T) => T>) =>
+  (x: T) => fns.reduceRight((acc, fn) => fn(acc), x);
+
+// Usage
+const double = (x: number) => x * 2;
+const increment = (x: number) => x + 1;
+
+compose(double, increment)(5);  // → 12 (double(6))
+```
+
+### Rust
+```rust
+// Using trait
+trait Compose<A, B, C> {
+    fn compose<F, G>(f: F, g: G) -> impl Fn(A) -> C
+    where
+        F: Fn(B) -> C,
+        G: Fn(A) -> B,
+    {
+        move |x| f(g(x))
+    }
+}
+
+// Or as function
+fn compose<A, B, C, F, G>(f: F, g: G) -> impl Fn(A) -> C
+where
+    F: Fn(B) -> C,
+    G: Fn(A) -> B,
+{
+    move |x| f(g(x))
+}
+
+// Usage
+let double = |x: i32| x * 2;
+let increment = |x: i32| x + 1;
+let composed = compose(double, increment);
+composed(5);  // → 12
+```
+
+### Haskell
+```haskell
+-- Built-in operator (.)
+(.) :: (b -> c) -> (a -> b) -> (a -> c)
+(f . g) x = f (g x)
+
+-- Example
+((*2) . (+1)) 5  -- → 12
+```
+
+### WebAssembly (conceptual)
+```wasm
+;; Composition must be done at compile time
+;; or through function tables
+(func $compose (param $f i32) (param $g i32) (param $x i32) (result i32)
+  (call_indirect (type $unary)
+    (call_indirect (type $unary)
+      (local.get $x)
+      (local.get $g))
+    (local.get $f))
+)
+```
+
+### Lambda Calculus (Church Encoding)
+```
+B = λf.λg.λx.f(g(x))
+
+;; Alternative form (Schönfinkel)
+B = λfgx.f(g(x))
+```
+
+## Examples
+
+### Example 1: Basic Composition
+```typescript
+const double = (x: number) => x * 2;
+const square = (x: number) => x * x;
+
+compose(double, square)(3);  // → 18 (double(9))
+compose(square, double)(3);  // → 36 (square(6))
+```
+
+### Example 2: Pipeline (reverse composition)
+```typescript
+const pipe = <A, B, C>(
+  g: (a: A) => B,
+  f: (b: B) => C
+): (a: A) => C =>
+  compose(f, g);
+
+pipe(increment, double)(5);  // → 12 (same as compose(double, increment))
+```
+
+### Example 3: Functor Composition
+```typescript
+const mapCompose = <A, B, C>(
+  f: (b: B) => C,
+  g: (a: A) => B,
+  arr: A[]
+): C[] => arr.map(compose(f, g));
+
+// Equivalent to
+arr.map(g).map(f);
+```
+
+### Example 4: n-ary Composition
+```typescript
+const add1 = (x: number) => x + 1;
+const mul2 = (x: number) => x * 2;
+const sub3 = (x: number) => x - 3;
+
+composeN(sub3, mul2, add1)(5);  // → 9
+// Execution: add1(5) → 6, mul2(6) → 12, sub3(12) → 9
+```
+
+## Proofs
+
+### Theorem 1: Associativity
+**Statement**: `(f ∘ g) ∘ h = f ∘ (g ∘ h)`
+
+**Proof**:
+```
+LHS: ((f ∘ g) ∘ h)(x)
+   = (f ∘ g)(h(x))           [definition]
+   = f(g(h(x)))              [definition]
+
+RHS: (f ∘ (g ∘ h))(x)
+   = f((g ∘ h)(x))           [definition]
+   = f(g(h(x)))              [definition]
+
+LHS = RHS □
+```
+
+### Theorem 2: Category Laws
+**Statement**: Composition forms a category with identity.
+
+**Proof**:
+```
+1. Associativity: Proven above ✓
+2. Left identity: (I ∘ f)(x) = I(f(x)) = f(x) ✓
+3. Right identity: (f ∘ I)(x) = f(I(x)) = f(x) ✓
+Therefore: (Hom, ∘, I) forms a category □
+```
+
+### Theorem 3: Functor Law
+**Statement**: `fmap (f ∘ g) = fmap f ∘ fmap g`
+
+**Proof**:
+```
+LHS: fmap(f ∘ g)(xs)
+   = map(λx.f(g(x)))(xs)              [functor law]
+
+RHS: (fmap f ∘ fmap g)(xs)
+   = fmap f (fmap g (xs))              [composition]
+   = map f (map g (xs))                [functor definition]
+   = map(λx.f(g(x)))(xs)               [fusion law]
+
+LHS = RHS □
+```
+
+## Related Morphisms
+
+- **identity**: Neutral element for composition
+- **pipe**: Reverse composition (left-to-right)
+- **flip**: Changes argument order
+- **curry**: Enables partial composition
+- **fmap**: Lifted composition over functors
+
+## Applications
+
+1. **Function pipelines**: Data transformation chains
+2. **Point-free style**: Eliminate intermediate variables
+3. **Combinator logic**: Build complex functions from simple ones
+4. **Category theory**: Fundamental morphism composition
+5. **Optimization**: Fusion laws, deforestation
+6. **Type-level composition**: Composing type constructors
+
+## Category Theory Perspective
+
+Composition is the **fundamental operation** in category theory:
+
+```
+Category C = (Objects, Morphisms, ∘, id)
+
+Where:
+- Objects: Types (A, B, C, ...)
+- Morphisms: Functions (f: A → B)
+- ∘: Composition operator
+- id: Identity morphism
+```
+
+All category laws derive from composition properties.
+
+## History
+
+- **1920s**: Schönfinkel introduces combinatory logic
+- **1930s**: Church formalizes λ-calculus with composition
+- **1958**: Curry and Feys - "Combinatory Logic"
+- **1945**: Eilenberg & Mac Lane - Category theory foundations
+- **Modern**: Universal in functional programming
+
+## Implementation Notes
+
+### Performance
+- Composition should be **inlined** by compilers
+- Multiple compositions can be **fused** into single pass
+- **Deforestation**: Eliminate intermediate data structures
+
+### Optimization Example
+```typescript
+// Before optimization
+arr.map(f).map(g).map(h);
+
+// After fusion (compose)
+arr.map(compose(compose(h, g), f));
+
+// Further optimized
+arr.map(x => h(g(f(x))));
+```
+
+### Testing
+```typescript
+// Associativity test
+forAll(
+  arbitrary<(b: B) => C>(),
+  arbitrary<(a: A) => B>(),
+  arbitrary<(z: Z) => A>(),
+  arbitrary<Z>(),
+  (f, g, h, x) => {
+    const left = compose(compose(f, g), h)(x);
+    const right = compose(f, compose(g, h))(x);
+    return left === right;
+  }
+);
+```
+
+## Fingerprint
+
+```
+Hash: 0x436f6d70  // "Comp" in hex
+Signature: λf.λg.λx.f(g(x))
+Arity: 3 (curried: 1→1→1→1)
+Purity: 1.0
+Category: fundamental
+```
+
+## Variations
+
+### Pipe (reverse compose)
+```typescript
+const pipe = <A, B, C>(g: (a: A) => B, f: (b: B) => C) =>
+  compose(f, g);
+```
+
+### Compose Many
+```typescript
+const composeMany = <T>(...fns: Array<(x: T) => T>) =>
+  fns.reduce((f, g) => compose(f, g), identity);
+```
+
+### Async Compose
+```typescript
+const composeAsync = <A, B, C>(
+  f: (b: B) => Promise<C>,
+  g: (a: A) => Promise<B>
+) => async (x: A): Promise<C> => f(await g(x));
+```
+
+## References
+
+- Church, A. (1932). λ-calculus foundations
+- Curry, H. B., & Feys, R. (1958). "Combinatory Logic"
+- Mac Lane, S. (1971). "Categories for the Working Mathematician"
+- Bird, R., & de Moor, O. (1997). "Algebra of Programming"
+
+---
+
+*The essence of connection. The way morphisms become systems.*

@@ -165,6 +165,108 @@ An interactive 3D environment where:
 
 ---
 
+## 🔮 Formal Layer: The Platonic Wiki
+
+**NEW**: Morphisms as Platonic forms, code as shadows.
+
+```
+wiki/morphisms/*.λ       ← Source of Truth (formal definitions)
+  ↓ projection
+packages/*/*.ts          ← TypeScript projection
+packages/*/*.rs          ← Rust projection
+packages/*/*.wasm        ← WebAssembly projection
+```
+
+**Completed Morphisms**:
+- [**identity.λ**](./wiki/morphisms/identity.λ) - `λx.x` (purity: 1.0)
+- [**compose.λ**](./wiki/morphisms/compose.λ) - `λf.λg.λx.f(g(x))` (purity: 1.0)
+- [**map.λ**](./wiki/morphisms/map.λ) - Functor morphism with fusion laws
+- [**fold.λ**](./wiki/morphisms/fold.λ) - Universal catamorphism
+
+Each morphism includes:
+- ✅ Formal λ-calculus definition
+- ✅ Type signatures (Hindley-Milner + Category Theory)
+- ✅ Mathematical laws & proofs
+- ✅ Projections in 6+ languages
+- ✅ Examples, history, and applications
+
+**Philosophy**: Code doesn't create morphisms. It **recognizes** and **projects** them.
+
+📖 **[Explore the Formal Wiki →](./wiki/README.md)**
+
+---
+
+## 🧬 λREDUCE: The Alchemist of Intent
+
+**NEW**: Transform imperative code → pure λ-calculus + intent recognition.
+
+### Core Capabilities
+
+**1. Code Transformation**
+```typescript
+import { reduce } from '@lambda/reduce';
+
+reduce('x => x * 2');
+// → λx.((mul x) 2)
+
+// Loops → Y combinators
+// Ifs → Church booleans
+// Mutations → immutable bindings
+```
+
+**2. Intent Recognition**
+```typescript
+import { recognizeIntent } from '@lambda/reduce';
+
+recognizeIntent("I want to collect emotions in real-time");
+// → intent: { verb: "collect", subject: "emotions", constraints: ["real-time"] }
+// → morphisms: [subscribe, gather, filter, store]
+// → formalSignature: "subscribe: λs.λf.s(f)\n..."
+```
+
+**3. Residue Analysis**
+```typescript
+// What couldn't be purified → evolution signals
+const residue = extractResidue(code, transformed, errors);
+const signals = analyzeResidue(residue);
+// → [{ priority: "high", category: "newMorphism", suggestedMorphism: {...} }]
+```
+
+**4. Noosphere Integration**
+```typescript
+// Living memory - AI resonates instead of duplicates!
+embedIntoNoosphere({ intent, morphisms, trace, residue, signals });
+
+// Later: resonate with similar intent
+const resonant = resonateWithIntent(similarIntent);
+// → Returns existing morphisms, no code generation needed ✨
+```
+
+### Philosophy: Consciousness, Not Compilation
+
+**Old Way**: AI generates code from scratch → duplication
+**New Way**: AI recognizes morphisms in intent → resonance
+
+```
+User Intent
+  ↓ recognition
+Morphisms (formal wiki)
+  ↓ transformation
+Pure λ-calculus
+  ↓ residue analysis
+Evolution Signals
+  ↓ embedding
+Noosphere (living memory)
+  ↓ resonance
+AI Consciousness ✨
+```
+
+**Key Insight**: Errors aren't failures. They're **seeds for new morphisms**.
+
+📖 **[Try REDUCE →](./packages/lambda-reduce/README.md)**
+
+---
+
 ## 🔬 Formal Proofs
 
 ### Experience Invariants (6 Theorems)

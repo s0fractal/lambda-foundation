@@ -1,0 +1,418 @@
+---
+morphism: map
+category: functor
+purity: 1.0
+aliases: [fmap, lift, transform]
+---
+
+# Map Morphism (Functor)
+
+## Formal Definition
+
+```λ-calculus
+map ≡ λf.λxs.fold(λa.λb.cons(f(a), b), nil, xs)
+```
+
+For lists specifically:
+```
+map f []     = []
+map f (x:xs) = f(x) : map f xs
+```
+
+## Type Signature
+
+```
+map : ∀α,β. (α → β) → F α → F β
+```
+
+Where F is a Functor (container/context).
+
+Specialized for lists:
+```
+map : (α → β) → List α → List β
+```
+
+## Functor Laws
+
+### Law 1: Identity
+```
+map id = id
+map id xs = xs
+```
+
+### Law 2: Composition
+```
+map (f ∘ g) = map f ∘ map g
+map (f ∘ g) xs = map f (map g xs)
+```
+
+## Properties
+
+- **Purity**: 1.0 (if f is pure)
+- **Termination**: Guaranteed for finite structures
+- **Structure preservation**: Length/shape unchanged
+- **Computational complexity**: O(n) where n = |xs|
+- **Parallelizable**: Yes (each element independent)
+- **Fusion**: Multiple maps can be fused into one
+
+## Projections
+
+### TypeScript
+```typescript
+// Array map (built-in)
+const map = <A, B>(f: (a: A) => B, arr: A[]): B[] =>
+  arr.map(f);
+
+// Generic functor
+interface Functor<F> {
+  map<A, B>(f: (a: A) => B, fa: F<A>): F<B>;
+}
+
+// Maybe functor
+type Maybe<A> = { tag: 'Just'; value: A } | { tag: 'Nothing' };
+
+const mapMaybe = <A, B>(f: (a: A) => B, m: Maybe<A>): Maybe<B> =>
+  m.tag === 'Just' ? { tag: 'Just', value: f(m.value) } : m;
+
+// Recursive implementation
+const mapRec = <A, B>(f: (a: A) => B, arr: A[]): B[] =>
+  arr.length === 0
+    ? []
+    : [f(arr[0]), ...mapRec(f, arr.slice(1))];
+```
+
+### Rust
+```rust
+// Using Iterator trait (lazy)
+fn map<A, B, F>(f: F, iter: impl Iterator<Item = A>) -> impl Iterator<Item = B>
+where
+    F: Fn(A) -> B,
+{
+    iter.map(f)
+}
+
+// Eager Vec version
+fn map_vec<A, B, F>(f: F, vec: Vec<A>) -> Vec<B>
+where
+    F: Fn(A) -> B,
+{
+    vec.into_iter().map(f).collect()
+}
+
+// Generic Functor trait
+trait Functor<A> {
+    type Target<B>;
+    fn fmap<B, F>(self, f: F) -> Self::Target<B>
+    where
+        F: Fn(A) -> B;
+}
+
+// Option functor
+impl<A> Functor<A> for Option<A> {
+    type Target<B> = Option<B>;
+    fn fmap<B, F>(self, f: F) -> Option<B>
+    where
+        F: Fn(A) -> B,
+    {
+        self.map(f)
+    }
+}
+```
+
+### Haskell
+```haskell
+-- Built-in for lists
+map :: (a -> b) -> [a] -> [b]
+map _ []     = []
+map f (x:xs) = f x : map f xs
+
+-- Generic functor
+class Functor f where
+  fmap :: (a -> b) -> f a -> f b
+
+-- List instance
+instance Functor [] where
+  fmap = map
+
+-- Maybe instance
+instance Functor Maybe where
+  fmap _ Nothing  = Nothing
+  fmap f (Just x) = Just (f x)
+```
+
+### Python
+```python
+# Built-in
+def map_list(f, xs):
+    return [f(x) for x in xs]
+
+# Or using built-in map (lazy)
+map(f, xs)  # returns iterator
+
+# Recursive
+def map_recursive(f, xs):
+    if not xs:
+        return []
+    return [f(xs[0])] + map_recursive(f, xs[1:])
+```
+
+### Lambda Calculus (Church Encoding)
+```
+map = λf.λxs.xs (λh.λt.cons (f h) (map f t)) nil
+
+;; Where:
+cons = λh.λt.λc.λn.c h (t c n)
+nil  = λc.λn.n
+```
+
+## Examples
+
+### Example 1: Simple Transformation
+```typescript
+const double = (x: number) => x * 2;
+map(double, [1, 2, 3]);  // → [2, 4, 6]
+
+const toUpper = (s: string) => s.toUpperCase();
+map(toUpper, ["a", "b", "c"]);  // → ["A", "B", "C"]
+```
+
+### Example 2: Composition Law
+```typescript
+const f = (x: number) => x * 2;
+const g = (x: number) => x + 1;
+
+// These are equivalent:
+map(compose(f, g), [1, 2, 3]);     // → [4, 6, 8]
+map(f, map(g, [1, 2, 3]));         // → [4, 6, 8]
+```
+
+### Example 3: Identity Law
+```typescript
+map(identity, [1, 2, 3]);  // → [1, 2, 3]
+// Same as:
+identity([1, 2, 3]);       // → [1, 2, 3]
+```
+
+### Example 4: Nested Structures
+```typescript
+// Map of map (nested functors)
+const nestedDouble = (xs: number[][]) =>
+  map(ys => map(x => x * 2, ys), xs);
+
+nestedDouble([[1, 2], [3, 4]]);  // → [[2, 4], [6, 8]]
+```
+
+### Example 5: Different Functors
+```typescript
+// Maybe functor
+mapMaybe(x => x * 2, { tag: 'Just', value: 5 });
+// → { tag: 'Just', value: 10 }
+
+mapMaybe(x => x * 2, { tag: 'Nothing' });
+// → { tag: 'Nothing' }
+
+// Either functor
+mapEither(x => x * 2, { tag: 'Right', value: 5 });
+// → { tag: 'Right', value: 10 }
+
+mapEither(x => x * 2, { tag: 'Left', error: 'fail' });
+// → { tag: 'Left', error: 'fail' }
+```
+
+## Proofs
+
+### Theorem 1: Identity Law
+**Statement**: `map id = id`
+
+**Proof** (by induction on lists):
+```
+Base case: map id []
+  = []                    [definition]
+  = id []                 [identity definition]
+
+Inductive case: map id (x:xs)
+  = id x : map id xs      [definition of map]
+  = x : xs                [IH + id definition]
+  = id (x:xs)             [identity definition]
+
+Therefore: map id = id □
+```
+
+### Theorem 2: Composition Law
+**Statement**: `map (f ∘ g) = map f ∘ map g`
+
+**Proof** (by induction on lists):
+```
+Base case: map (f ∘ g) []
+  = []                           [definition]
+  = map f []                     [definition]
+  = map f (map g [])             [definition]
+  = (map f ∘ map g) []           [composition]
+
+Inductive case: map (f ∘ g) (x:xs)
+  = (f ∘ g) x : map (f ∘ g) xs   [definition]
+  = f(g(x)) : (map f ∘ map g) xs [IH]
+  = f(g(x)) : map f (map g xs)   [composition]
+  = map f (g(x) : map g xs)      [definition]
+  = map f (map g (x:xs))         [definition]
+  = (map f ∘ map g) (x:xs)       [composition]
+
+Therefore: map (f ∘ g) = map f ∘ map g □
+```
+
+### Theorem 3: Fusion Law
+**Statement**: If `h (f x) = g (h x)` for all x, then `h ∘ map f = map g ∘ h`
+
+**Proof**:
+```
+(h ∘ map f) (x:xs)
+  = h (f x : map f xs)         [definition]
+  = g (h x) : h (map f xs)     [precondition]
+  = g (h x) : map g (h xs)     [IH]
+  = map g (h x : h xs)         [definition]
+  = map g (h (x:xs))           [definition of h for lists]
+  = (map g ∘ h) (x:xs)         [composition]
+
+Therefore: h ∘ map f = map g ∘ h □
+```
+
+## Related Morphisms
+
+- **fold**: Reduces structure (map preserves it)
+- **filter**: Removes elements (map transforms them)
+- **flatMap**: Maps then flattens (monadic bind)
+- **zipWith**: Maps over two structures simultaneously
+- **traverse**: Map with effects (applicative functor)
+
+## Applications
+
+1. **Data transformation**: Transform all elements uniformly
+2. **Type lifting**: Lift functions into contexts
+3. **Parallel processing**: Each element independent
+4. **Composition**: Build complex transformations
+5. **Abstraction**: Generic over container types
+6. **Deforestation**: Fusion eliminates intermediate structures
+
+## Category Theory Perspective
+
+Map is the **defining operation** of functors:
+
+```
+Functor F : C → D
+
+Where:
+- On objects: F(A) maps type A to F<A>
+- On morphisms: fmap maps f : A → B to fmap f : F A → F B
+
+Laws:
+1. fmap id_A = id_F(A)           (identity preservation)
+2. fmap (g ∘ f) = fmap g ∘ fmap f (composition preservation)
+```
+
+Natural transformation between functors preserves map structure.
+
+## History
+
+- **1930s**: Church - λ-calculus foundations
+- **1960s**: Landin - ISWIM language includes map
+- **1977**: Backus - "Can Programming Be Liberated from the von Neumann Style?"
+- **1980s**: Haskell - Formalized Functor type class
+- **Modern**: Universal in functional programming
+
+## Implementation Notes
+
+### Performance
+
+#### Fusion Optimization
+```typescript
+// Before fusion (creates intermediate arrays)
+arr.map(f).map(g).map(h);
+
+// After fusion (single pass)
+arr.map(x => h(g(f(x))));
+```
+
+#### Deforestation
+```haskell
+-- Before (creates intermediate list)
+sum (map (*2) [1..n])
+
+-- After deforestation (folds directly)
+fold (+) 0 (map (*2) [1..n])
+  ⟹ fold (\x acc -> acc + x*2) 0 [1..n]
+```
+
+#### Parallelization
+```typescript
+// Can be parallelized (no shared state)
+const parallelMap = <A, B>(f: (a: A) => B, arr: A[]): Promise<B[]> =>
+  Promise.all(arr.map(x => Promise.resolve(f(x))));
+```
+
+### Testing
+```typescript
+// Identity law
+forAll(arbitrary<A[]>(), (xs: A[]) =>
+  deepEqual(map(identity, xs), xs)
+);
+
+// Composition law
+forAll(
+  arbitrary<(b: B) => C>(),
+  arbitrary<(a: A) => B>(),
+  arbitrary<A[]>(),
+  (f, g, xs) =>
+    deepEqual(
+      map(compose(f, g), xs),
+      map(f, map(g, xs))
+    )
+);
+```
+
+## Fingerprint
+
+```
+Hash: 0x4d617066  // "Mapf" in hex
+Signature: λf.λxs.fold(λa.λb.cons(f(a), b), nil, xs)
+Arity: 2
+Purity: 1.0 (if f is pure)
+Category: functor
+```
+
+## Variations
+
+### Map with Index
+```typescript
+const mapWithIndex = <A, B>(f: (a: A, i: number) => B, arr: A[]): B[] =>
+  arr.map((x, i) => f(x, i));
+```
+
+### Map Maybe (filterMap)
+```typescript
+const mapMaybe = <A, B>(f: (a: A) => B | null, arr: A[]): B[] =>
+  arr.flatMap(x => {
+    const result = f(x);
+    return result !== null ? [result] : [];
+  });
+```
+
+### Async Map
+```typescript
+const mapAsync = async <A, B>(
+  f: (a: A) => Promise<B>,
+  arr: A[]
+): Promise<B[]> =>
+  Promise.all(arr.map(f));
+```
+
+## References
+
+- Church, A. (1932). λ-calculus
+- Backus, J. (1978). "Can Programming Be Liberated..."
+- Bird, R., & Wadler, P. (1988). "Introduction to Functional Programming"
+- Mac Lane, S. (1971). "Categories for the Working Mathematician"
+- Gibbons, J. (2002). "Calculating Functional Programs"
+
+---
+
+*Structure-preserving transformation. The essence of functors.*

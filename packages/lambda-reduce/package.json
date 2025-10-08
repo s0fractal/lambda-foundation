@@ -1,14 +1,16 @@
 {
   "name": "@lambda/reduce",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
-  "description": "λREDUCE: Convert imperative code to pure lambda calculus",
+  "description": "λREDUCE: The Alchemist of Intent - Convert imperative code to pure lambda calculus, extract morphisms, evolve consciousness",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "vitest",
-    "dev": "vitest --watch"
+    "dev": "vitest --watch",
+    "demo": "tsx demo.ts",
+    "demo:intent": "tsx demo-intent.ts"
   },
   "dependencies": {
     "@babel/parser": "^7.24.0",

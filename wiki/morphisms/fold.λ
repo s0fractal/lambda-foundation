@@ -1,0 +1,487 @@
+---
+morphism: fold
+category: catamorphism
+purity: 1.0
+aliases: [reduce, foldl, foldr, catamorphism, crush]
+---
+
+# Fold Morphism (Catamorphism)
+
+## Formal Definition
+
+```λ-calculus
+;; Right fold (foldr)
+foldr ≡ λf.λz.λxs.xs(λh.λt.f h (foldr f z t))(z)
+
+;; Left fold (foldl)
+foldl ≡ λf.λz.λxs.xs(λh.λt.foldl f (f z h) t)(z)
+```
+
+For lists:
+```
+foldr f z []     = z
+foldr f z (x:xs) = f x (foldr f z xs)
+
+foldl f z []     = z
+foldl f z (x:xs) = foldl f (f z x) xs
+```
+
+## Type Signature
+
+```
+foldr : ∀α,β. (α → β → β) → β → List α → β
+foldl : ∀α,β. (β → α → β) → β → List α → β
+```
+
+General catamorphism:
+```
+fold : ∀α,β. (F α → α) → Fix F → α
+```
+
+## Fold Laws
+
+### Law 1: Universal Property
+```
+h = foldr f z  ⟺  h [] = z ∧ h (x:xs) = f x (h xs)
+```
+
+### Law 2: Fusion
+```
+h ∘ foldr f z = foldr g (h z)  ⟺  h (f x y) = g x (h y)
+```
+
+### Law 3: Map-fold Fusion
+```
+foldr f z ∘ map g = foldr (f ∘ g) z
+```
+
+### Law 4: Fold-build Fusion (Short-cut deforestation)
+```
+foldr f z (build g) = g f z
+```
+
+## Properties
+
+- **Purity**: 1.0 (if f and z are pure)
+- **Termination**: Guaranteed for finite structures
+- **Structure consumption**: Reduces structure to single value
+- **Computational complexity**: O(n) where n = |xs|
+- **Foldr**: Lazy, works on infinite lists (with short-circuit)
+- **Foldl**: Strict, tail-recursive, stack-safe
+- **Universal**: All list functions can be expressed as fold
+
+## Projections
+
+### TypeScript
+```typescript
+// Right fold (lazy)
+const foldr = <A, B>(
+  f: (a: A, b: B) => B,
+  z: B,
+  arr: A[]
+): B => {
+  if (arr.length === 0) return z;
+  const [head, ...tail] = arr;
+  return f(head, foldr(f, z, tail));
+};
+
+// Left fold (strict, built-in reduce)
+const foldl = <A, B>(
+  f: (b: B, a: A) => B,
+  z: B,
+  arr: A[]
+): B => arr.reduce(f, z);
+
+// Tail-recursive foldl
+const foldlRec = <A, B>(
+  f: (b: B, a: A) => B,
+  z: B,
+  arr: A[]
+): B => {
+  let acc = z;
+  for (const x of arr) {
+    acc = f(acc, x);
+  }
+  return acc;
+};
+```
+
+### Rust
+```rust
+// Right fold
+fn foldr<A, B, F>(f: F, z: B, vec: &[A]) -> B
+where
+    F: Fn(&A, B) -> B,
+{
+    match vec.split_first() {
+        None => z,
+        Some((head, tail)) => f(head, foldr(f, z, tail)),
+    }
+}
+
+// Left fold (iterator method)
+fn foldl<A, B, F>(f: F, z: B, iter: impl Iterator<Item = A>) -> B
+where
+    F: Fn(B, A) -> B,
+{
+    iter.fold(z, f)
+}
+
+// Generic catamorphism
+trait Foldable<A> {
+    fn fold<B, F>(self, f: F, z: B) -> B
+    where
+        F: Fn(A, B) -> B;
+}
+
+impl<A> Foldable<A> for Vec<A> {
+    fn fold<B, F>(self, f: F, z: B) -> B
+    where
+        F: Fn(A, B) -> B,
+    {
+        self.into_iter().rfold(z, |acc, x| f(x, acc))
+    }
+}
+```
+
+### Haskell
+```haskell
+-- Right fold (built-in, lazy)
+foldr :: (a -> b -> b) -> b -> [a] -> b
+foldr _ z []     = z
+foldr f z (x:xs) = f x (foldr f z xs)
+
+-- Left fold (strict)
+foldl :: (b -> a -> b) -> b -> [a] -> b
+foldl _ z []     = z
+foldl f z (x:xs) = foldl f (f z x) xs
+
+-- Strict left fold (recommended)
+foldl' :: (b -> a -> b) -> b -> [a] -> b
+foldl' f z []     = z
+foldl' f z (x:xs) = let z' = f z x
+                    in seq z' (foldl' f z' xs)
+```
+
+### Python
+```python
+# Built-in reduce (left fold)
+from functools import reduce
+
+def foldl(f, z, xs):
+    return reduce(f, xs, z)
+
+# Right fold (recursive)
+def foldr(f, z, xs):
+    if not xs:
+        return z
+    return f(xs[0], foldr(f, z, xs[1:]))
+```
+
+### Lambda Calculus (Church Encoding)
+```
+foldr = λf.λz.λxs.xs f z
+
+;; Where lists are Church-encoded as:
+nil  = λf.λz.z
+cons = λh.λt.λf.λz.f h (t f z)
+
+;; So: [1,2,3] = λf.λz.f 1 (f 2 (f 3 z))
+```
+
+## Examples
+
+### Example 1: Sum
+```typescript
+const sum = (arr: number[]) =>
+  foldl((acc, x) => acc + x, 0, arr);
+
+sum([1, 2, 3, 4]);  // → 10
+```
+
+### Example 2: Product
+```typescript
+const product = (arr: number[]) =>
+  foldl((acc, x) => acc * x, 1, arr);
+
+product([2, 3, 4]);  // → 24
+```
+
+### Example 3: Length
+```typescript
+const length = <A>(arr: A[]) =>
+  foldl((acc, _) => acc + 1, 0, arr);
+
+length([1, 2, 3]);  // → 3
+```
+
+### Example 4: Reverse
+```typescript
+// Using foldl
+const reverse = <A>(arr: A[]) =>
+  foldl((acc, x) => [x, ...acc], [], arr);
+
+reverse([1, 2, 3]);  // → [3, 2, 1]
+```
+
+### Example 5: Map as Fold
+```typescript
+const mapAsFold = <A, B>(f: (a: A) => B, arr: A[]): B[] =>
+  foldr((x, acc) => [f(x), ...acc], [], arr);
+
+mapAsFold(x => x * 2, [1, 2, 3]);  // → [2, 4, 6]
+```
+
+### Example 6: Filter as Fold
+```typescript
+const filterAsFold = <A>(p: (a: A) => boolean, arr: A[]): A[] =>
+  foldr((x, acc) => p(x) ? [x, ...acc] : acc, [], arr);
+
+filterAsFold(x => x > 2, [1, 2, 3, 4]);  // → [3, 4]
+```
+
+### Example 7: Flatten
+```typescript
+const flatten = <A>(arr: A[][]): A[] =>
+  foldl((acc, xs) => [...acc, ...xs], [], arr);
+
+flatten([[1, 2], [3, 4]]);  // → [1, 2, 3, 4]
+```
+
+### Example 8: All/Any
+```typescript
+const all = (p: (x: number) => boolean, arr: number[]) =>
+  foldl((acc, x) => acc && p(x), true, arr);
+
+const any = (p: (x: number) => boolean, arr: number[]) =>
+  foldl((acc, x) => acc || p(x), false, arr);
+
+all(x => x > 0, [1, 2, 3]);   // → true
+any(x => x < 0, [1, 2, 3]);   // → false
+```
+
+## Proofs
+
+### Theorem 1: Universal Property
+**Statement**: `h = foldr f z  ⟺  h [] = z ∧ h (x:xs) = f x (h xs)`
+
+**Proof**:
+```
+(⟹) Assume h = foldr f z
+  h [] = foldr f z [] = z ✓
+  h (x:xs) = foldr f z (x:xs)
+          = f x (foldr f z xs)
+          = f x (h xs) ✓
+
+(⟸) Assume h [] = z and h (x:xs) = f x (h xs)
+  By induction:
+    h [] = z = foldr f z []
+    h (x:xs) = f x (h xs)
+             = f x (foldr f z xs)  [IH]
+             = foldr f z (x:xs)
+  Therefore h = foldr f z □
+```
+
+### Theorem 2: Fusion Law
+**Statement**: `h ∘ foldr f z = foldr g (h z)` if `h (f x y) = g x (h y)`
+
+**Proof** (by induction):
+```
+Base case:
+  (h ∘ foldr f z) [] = h z = foldr g (h z) []
+
+Inductive case:
+  (h ∘ foldr f z) (x:xs)
+    = h (f x (foldr f z xs))       [definition]
+    = g x (h (foldr f z xs))       [precondition]
+    = g x ((h ∘ foldr f z) xs)     [IH]
+    = g x (foldr g (h z) xs)       [IH]
+    = foldr g (h z) (x:xs)         [definition]
+  Therefore: h ∘ foldr f z = foldr g (h z) □
+```
+
+### Theorem 3: Map-Fold Fusion
+**Statement**: `foldr f z ∘ map g = foldr (f ∘ g) z`
+
+**Proof**:
+```
+Use fusion law with h = foldr f z:
+  h (cons (g x) ys) = f (g x) (h ys)
+
+This satisfies the fusion precondition, so:
+  foldr f z ∘ map g = foldr (λx.f (g x)) z
+                    = foldr (f ∘ g) z □
+```
+
+### Theorem 4: Fold is Universal
+**Statement**: Every total list function can be expressed as fold.
+
+**Proof sketch**:
+```
+Any h : List α → β satisfies:
+  h [] = some value z
+  h (x:xs) = some function of x and h(xs)
+
+By universal property, h = foldr f z for appropriate f and z.
+Examples:
+  map f    = foldr (λx.λxs.f x : xs) []
+  filter p = foldr (λx.λxs.if p(x) then x:xs else xs) []
+  length   = foldr (λx.λn.n+1) 0
+  etc. □
+```
+
+## Related Morphisms
+
+- **map**: Special case of fold (structure-preserving)
+- **filter**: Special case of fold (selective)
+- **scan**: Fold that returns intermediate results
+- **unfold**: Dual of fold (anamorphism)
+- **hylomorphism**: Unfold followed by fold
+- **paramorphism**: Fold with access to tail
+
+## Applications
+
+1. **Aggregation**: Sum, product, min, max
+2. **Building**: Construct new structures
+3. **Search**: Find, any, all
+4. **Validation**: Check properties
+5. **Deforestation**: Eliminate intermediate structures
+6. **Recursion schemes**: Express all primitive recursion
+
+## Category Theory Perspective
+
+Fold is a **catamorphism** - the unique morphism that makes this diagram commute:
+
+```
+F(Fix F) --F(fold φ)--> F(A)
+   |                      |
+   in                     φ
+   |                      |
+   v                      v
+ Fix F ----fold φ-----> A
+```
+
+Where:
+- F: Functor (pattern of recursion)
+- Fix F: Fixed point (recursive data type)
+- φ: F-algebra (how to combine one level)
+- fold φ: Catamorphism (recursive traversal)
+
+## History
+
+- **1977**: Backus introduces fold/reduce in FP
+- **1989**: Bird & Wadler - Functional programming book
+- **1991**: Meijer et al. - "Functional Programming with Bananas, Lenses..."
+- **1996**: Gibbons - "The Third Homomorphism Theorem"
+- **Modern**: Foundation of functional programming
+
+## Implementation Notes
+
+### Performance
+
+#### Tail Recursion (foldl)
+```typescript
+// Not tail recursive (stack overflow for large lists)
+const foldr = <A, B>(f: (a: A, b: B) => B, z: B, arr: A[]): B =>
+  arr.length === 0 ? z : f(arr[0], foldr(f, z, arr.slice(1)));
+
+// Tail recursive (stack-safe)
+const foldl = <A, B>(f: (b: B, a: A) => B, z: B, arr: A[]): B => {
+  let acc = z;
+  for (const x of arr) {
+    acc = f(acc, x);
+  }
+  return acc;
+};
+```
+
+#### Short-circuit
+```typescript
+// Lazy foldr can short-circuit
+const any = (p: (x: number) => boolean, arr: number[]): boolean =>
+  foldr((x, acc) => p(x) ? true : acc, false, arr);
+
+// Stops early when finds match
+any(x => x > 100, [1, 2, 200, 3, 4]);  // Stops at 200
+```
+
+#### Fusion
+```typescript
+// Before fusion
+const result = foldr(g, z2, map(f, xs));
+
+// After fusion (no intermediate list)
+const result = foldr((x, acc) => g(f(x), acc), z2, xs);
+```
+
+### Testing
+```typescript
+// Universal property
+forAll(
+  arbitrary<(a: A, b: B) => B>(),
+  arbitrary<B>(),
+  arbitrary<A[]>(),
+  (f, z, xs) => {
+    const h = (arr: A[]) => foldr(f, z, arr);
+    return h([]) === z &&
+           xs.every((x, i) => {
+             const tail = xs.slice(i + 1);
+             return h([x, ...tail]) === f(x, h(tail));
+           });
+  }
+);
+```
+
+## Fingerprint
+
+```
+Hash: 0x466f6c64  // "Fold" in hex
+Signature: λf.λz.λxs.xs(λh.λt.f h (foldr f z t))(z)
+Arity: 3
+Purity: 1.0 (if f is pure)
+Category: catamorphism
+```
+
+## Variations
+
+### Scan (Intermediate Results)
+```typescript
+const scanl = <A, B>(f: (b: B, a: A) => B, z: B, arr: A[]): B[] => {
+  const result: B[] = [z];
+  let acc = z;
+  for (const x of arr) {
+    acc = f(acc, x);
+    result.push(acc);
+  }
+  return result;
+};
+
+scanl((acc, x) => acc + x, 0, [1, 2, 3]);
+// → [0, 1, 3, 6]
+```
+
+### Fold1 (No Initial Value)
+```typescript
+const fold1 = <A>(f: (a: A, b: A) => A, arr: A[]): A => {
+  if (arr.length === 0) throw new Error('Empty array');
+  return foldl(f, arr[0], arr.slice(1));
+};
+```
+
+### FoldMap (Fold with Monoid)
+```typescript
+const foldMap = <A, M>(f: (a: A) => M, mempty: M, mappend: (m1: M, m2: M) => M, arr: A[]): M =>
+  foldl((acc, x) => mappend(acc, f(x)), mempty, arr);
+```
+
+## References
+
+- Backus, J. (1978). "Can Programming Be Liberated..."
+- Bird, R., & Wadler, P. (1988). "Introduction to Functional Programming"
+- Meijer, E., Fokkinga, M., & Paterson, R. (1991). "Functional Programming with Bananas..."
+- Gibbons, J. (2002). "Calculating Functional Programs"
+- Hutton, G. (1999). "A Tutorial on the Universality and Expressiveness of Fold"
+
+---
+
+*The universal destroyer and creator. All recursion begins and ends here.*

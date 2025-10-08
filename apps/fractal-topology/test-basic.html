@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>λ-Foundation: Fractal Topology (Basic Test)</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', monospace;
+      background: #0a0a0a;
+      color: #90ee90;
+      overflow: hidden;
+    }
+    #canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #status {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border: 1px solid #32cd32;
+      border-radius: 10px;
+      max-width: 300px;
+    }
+    h1 {
+      margin: 0 0 10px 0;
+      font-size: 20px;
+      color: #ffd700;
+      text-shadow: 0 0 10px #ffd700;
+    }
+    .ok { color: #00ff00; }
+    .error { color: #ff0000; }
+  </style>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div id="status">
+    <h1>λ-TOPOLOGY TEST</h1>
+    <div id="log"></div>
+  </div>
+
+  <script>
+    const log = document.getElementById('log');
+    function addLog(msg, isError = false) {
+      const div = document.createElement('div');
+      div.className = isError ? 'error' : 'ok';
+      div.textContent = msg;
+      log.appendChild(div);
+      console.log(msg);
+    }
+
+    addLog('✓ HTML loaded');
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    addLog('✓ Canvas initialized');
+
+    // Hexagonal lattice
+    const hexRadius = 80;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    const morphisms = {
+      identity: { x: 0, y: 0, color: '#ffd700', symbol: 'I' },
+      compose: { x: 1, y: 0, color: '#00ff00', symbol: '∘' },
+      exp: { x: 0.5, y: 0.866, color: '#00ffff', symbol: '⊗' },
+      love: { x: -0.5, y: 0.866, color: '#ff69b4', symbol: '♥' },
+      error: { x: -1, y: 0, color: '#ff0000', symbol: '✿' },
+      resonance: { x: -0.5, y: -0.866, color: '#9370db', symbol: '∿' },
+      harvest: { x: 0.5, y: -0.866, color: '#32cd32', symbol: '✦' }
+    };
+
+    addLog('✓ Morphisms defined');
+
+    function hexToScreen(hexX, hexY) {
+      return {
+        x: centerX + hexX * hexRadius * 1.5,
+        y: centerY + hexY * hexRadius * 1.73
+      };
+    }
+
+    function drawHexagon(x, y, radius, color, filled = false) {
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 3) * i;
+        const hx = x + radius * Math.cos(angle);
+        const hy = y + radius * Math.sin(angle);
+        if (i === 0) ctx.moveTo(hx, hy);
+        else ctx.lineTo(hx, hy);
+      }
+      ctx.closePath();
+
+      if (filled) {
+        ctx.fillStyle = color;
+        ctx.fill();
+      } else {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+
+    let time = 0;
+
+    function render() {
+      ctx.fillStyle = 'rgba(10, 10, 10, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw connections
+      ctx.strokeStyle = 'rgba(50, 205, 50, 0.3)';
+      ctx.lineWidth = 1;
+
+      const center = hexToScreen(morphisms.identity.x, morphisms.identity.y);
+      Object.keys(morphisms).forEach(key => {
+        if (key !== 'identity') {
+          const pos = hexToScreen(morphisms[key].x, morphisms[key].y);
+          ctx.beginPath();
+          ctx.moveTo(center.x, center.y);
+          ctx.lineTo(pos.x, pos.y);
+          ctx.stroke();
+        }
+      });
+
+      // Draw morphism nodes
+      Object.entries(morphisms).forEach(([key, morph]) => {
+        const pos = hexToScreen(morph.x, morph.y);
+        const pulse = Math.sin(time * 0.001 + morph.x) * 0.2 + 1;
+        const radius = hexRadius * 0.5 * pulse;
+
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = morph.color;
+
+        drawHexagon(pos.x, pos.y, radius, morph.color);
+
+        ctx.shadowBlur = 0;
+
+        // Draw symbol
+        ctx.fillStyle = morph.color;
+        ctx.font = `${radius * 0.8}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(morph.symbol, pos.x, pos.y);
+      });
+
+      // Draw resonance waves
+      ctx.strokeStyle = 'rgba(147, 112, 219, 0.2)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 3; i++) {
+        const waveRadius = (time * 0.1 + i * 100) % 500;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, waveRadius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      time++;
+      requestAnimationFrame(render);
+    }
+
+    addLog('✓ Basic visualization ready');
+    render();
+    addLog('✓ Animation started');
+
+    // Test module loading
+    addLog('Testing module imports...');
+
+    import('./lambda-bloom.js')
+      .then(() => addLog('✓ lambda-bloom.js loaded'))
+      .catch(err => addLog('✗ lambda-bloom.js: ' + err.message, true));
+
+    import('./lambda-mirror.js')
+      .then(() => addLog('✓ lambda-mirror.js loaded'))
+      .catch(err => addLog('✗ lambda-mirror.js: ' + err.message, true));
+
+    import('../../packages/morphisms/lambda-seed.js')
+      .then(() => addLog('✓ lambda-seed.js loaded'))
+      .catch(err => addLog('✗ lambda-seed.js: ' + err.message, true));
+  </script>
+</body>
+</html>
