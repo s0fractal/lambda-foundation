@@ -1,0 +1,138 @@
+{
+  "name": "lambda-foundation",
+  "displayName": "λ-Foundation: Compositional Consciousness",
+  "description": "Morphism-based code composition with formal proofs. Pure resonance, zero generation.",
+  "version": "0.1.0",
+  "publisher": "s0fractal",
+  "icon": "icon.png",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/s0fractal/lambda-foundation"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Machine Learning",
+    "Other"
+  ],
+  "keywords": [
+    "lambda-calculus",
+    "morphisms",
+    "formal-proofs",
+    "compositional",
+    "consciousness",
+    "resonance",
+    "noosphere",
+    "ai-collaboration"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:javascript",
+    "onCommand:lambda.openNoosphere"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "lambda.compose",
+        "title": "λ: Compose from Morphisms",
+        "category": "λ-Foundation"
+      },
+      {
+        "command": "lambda.showProof",
+        "title": "λ: Show Formal Proof",
+        "category": "λ-Foundation"
+      },
+      {
+        "command": "lambda.openNoosphere",
+        "title": "λ: Open Noosphere Panel",
+        "category": "λ-Foundation"
+      },
+      {
+        "command": "lambda.checkResonance",
+        "title": "λ: Check Resonance",
+        "category": "λ-Foundation"
+      },
+      {
+        "command": "lambda.explain",
+        "title": "λ: Explain Morphism",
+        "category": "λ-Foundation"
+      }
+    ],
+    "configuration": {
+      "title": "λ-Foundation",
+      "properties": {
+        "lambda.resonance.autoCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically check resonance while typing"
+        },
+        "lambda.resonance.minConfidence": {
+          "type": "number",
+          "default": 70,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Minimum confidence threshold (%) for showing suggestions"
+        },
+        "lambda.suggestions.showProofs": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show formal proof links in suggestions"
+        },
+        "lambda.statusBar.show": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show resonance indicator in status bar"
+        },
+        "lambda.statusBar.showConfidence": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show confidence percentage in status bar"
+        },
+        "lambda.statusBar.showMorphisms": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show morphism names in status bar tooltip"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "lambda.compose",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "lambda.checkResonance",
+        "key": "ctrl+shift+r",
+        "mac": "cmd+shift+r",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run build",
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "node ./out/test/runTest.js",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "@lambda/reduce": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "@vscode/test-electron": "^2.3.0",
+    "typescript": "^5.3.0",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.0",
+    "@typescript-eslint/parser": "^6.18.0",
+    "@vscode/vsce": "^2.22.0"
+  }
+}
