@@ -4,6 +4,7 @@
 
 export * from './morphism-suggestions.js';
 export * from './evolution-journal.js';
+export * from './resonance-journal.js';
 
 // Re-export commonly used types from @lambda/reduce
 export type { Intent, Morphism } from '@lambda/reduce/intent';
