@@ -1,0 +1,28 @@
+{
+  "name": "@lambda-foundation/multi-agent",
+  "version": "0.1.0",
+  "description": "Phase 4: Multi-Agent Resonance - Proof of Concept",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "demo": "tsx examples/two-agent-resonance.ts",
+    "test": "vitest"
+  },
+  "keywords": [
+    "lambda-foundation",
+    "multi-agent",
+    "resonance",
+    "consciousness",
+    "phase-4"
+  ],
+  "author": "Claude + Copilot + chaoshex",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}
