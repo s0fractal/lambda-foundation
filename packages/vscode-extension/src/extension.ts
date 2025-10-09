@@ -22,6 +22,7 @@ import { MorphismHoverProvider } from './hoverProvider';
 import { CompositionEngine } from './compositionEngine';
 import { ProofViewerPanel } from './proofViewer';
 import { NoospherePanel } from './noospherePanel';
+import { StatsDashboardPanel } from './statsDashboard';
 
 let statusBar: ResonanceStatusBar | undefined;
 let recognizer: IntentRecognizer | undefined;
@@ -72,7 +73,8 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('lambda.showAllProofs', showAllProofs),
 		vscode.commands.registerCommand('lambda.explain', explain),
 		vscode.commands.registerCommand('lambda.openNoosphere', openNoosphere),
-		vscode.commands.registerCommand('lambda.openProofViewer', () => openProofViewer(context))
+		vscode.commands.registerCommand('lambda.openProofViewer', () => openProofViewer(context)),
+		vscode.commands.registerCommand('lambda.openStatsDashboard', () => openStatsDashboard(context))
 	);
 
 	// Watch for editor changes
@@ -346,6 +348,14 @@ async function openProofViewer(context: vscode.ExtensionContext) {
 	} else {
 		vscode.window.showWarningMessage('λ-Foundation: Extension not properly initialized');
 	}
+}
+
+/**
+ * Command: Open statistics dashboard
+ * (Phase 3: Analytics and visualization)
+ */
+async function openStatsDashboard(context: vscode.ExtensionContext) {
+	StatsDashboardPanel.createOrShow(context.extensionUri);
 }
 
 /**
