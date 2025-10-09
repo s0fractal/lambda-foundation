@@ -21,6 +21,7 @@ import { ResonanceCodeLensProvider } from './codeLensProvider';
 import { MorphismHoverProvider } from './hoverProvider';
 import { CompositionEngine } from './compositionEngine';
 import { ProofViewerPanel } from './proofViewer';
+import { NoospherePanel } from './noospherePanel';
 
 let statusBar: ResonanceStatusBar | undefined;
 let recognizer: IntentRecognizer | undefined;
@@ -324,12 +325,12 @@ async function explain(resonance?: any) {
 
 /**
  * Command: Open noosphere panel
- * (Phase 2 Week 4: Opens proof viewer)
+ * (Phase 3: Full noosphere panel with collective memory)
  */
 async function openNoosphere() {
 	const context = (global as any).extensionContext;
 	if (context && noosphereClient) {
-		ProofViewerPanel.createOrShow(context.extensionUri, noosphereClient);
+		NoospherePanel.createOrShow(context.extensionUri, noosphereClient);
 	} else {
 		vscode.window.showWarningMessage('λ-Foundation: Extension not properly initialized');
 	}
