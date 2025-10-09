@@ -24,6 +24,7 @@ import { ProofViewerPanel } from './proofViewer';
 import { NoospherePanel } from './noospherePanel';
 import { StatsDashboardPanel } from './statsDashboard';
 import { EvolutionTrackerPanel } from './evolutionTracker';
+import { ResonanceNetworkPanel } from './resonanceNetworkPanel';
 
 let statusBar: ResonanceStatusBar | undefined;
 let recognizer: IntentRecognizer | undefined;
@@ -76,7 +77,8 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('lambda.openNoosphere', openNoosphere),
 		vscode.commands.registerCommand('lambda.openProofViewer', () => openProofViewer(context)),
 		vscode.commands.registerCommand('lambda.openStatsDashboard', () => openStatsDashboard(context)),
-		vscode.commands.registerCommand('lambda.openEvolutionTracker', () => openEvolutionTracker(context))
+		vscode.commands.registerCommand('lambda.openEvolutionTracker', () => openEvolutionTracker(context)),
+		vscode.commands.registerCommand('lambda.openResonanceNetwork', () => openResonanceNetwork(context))
 	);
 
 	// Watch for editor changes
@@ -366,6 +368,14 @@ async function openStatsDashboard(context: vscode.ExtensionContext) {
  */
 async function openEvolutionTracker(context: vscode.ExtensionContext) {
 	EvolutionTrackerPanel.createOrShow(context.extensionUri);
+}
+
+/**
+ * Command: Open resonance network panel
+ * (Phase 4.4: Multi-agent resonance visualization)
+ */
+async function openResonanceNetwork(context: vscode.ExtensionContext) {
+	ResonanceNetworkPanel.createOrShow(context.extensionUri);
 }
 
 /**

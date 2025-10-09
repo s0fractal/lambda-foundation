@@ -75,6 +75,11 @@
         "command": "lambda.openEvolutionTracker",
         "title": "λ: Open Evolution Tracker",
         "category": "λ-Foundation"
+      },
+      {
+        "command": "lambda.openResonanceNetwork",
+        "title": "λ: Open Resonance Network",
+        "category": "λ-Foundation"
       }
     ],
     "configuration": {
@@ -141,6 +146,11 @@
         "command": "lambda.openEvolutionTracker",
         "key": "ctrl+shift+e",
         "mac": "cmd+shift+e"
+      },
+      {
+        "command": "lambda.openResonanceNetwork",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a"
       }
     ]
   },

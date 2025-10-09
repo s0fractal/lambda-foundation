@@ -19,11 +19,17 @@ This is the **foundation layer** for Phase 4.
 # Install dependencies
 pnpm install
 
-# Run the demo
+# Run basic demo (two agents)
 pnpm demo
+
+# Run consensus demo (three agents)
+pnpm demo:consensus
+
+# Run live visualization (React + D3.js)
+pnpm demo:viz
 ```
 
-You'll see two agents (Claude and Copilot simulators) discover and recognize patterns, with trust scores updating in real-time.
+You'll see agents discover and recognize patterns, with trust scores updating in real-time.
 
 ## Architecture
 
@@ -197,15 +203,57 @@ Starting score: 0.5 (neutral)
 - Proposal accepted: +0.10
 - Proposal rejected: -0.15
 
-## Next Steps
+## Phase 4 Progress
 
-This is the **minimal foundation**. Next we'll add:
+### ✅ Phase 4.1: Foundation Layer (Complete)
+- ResonanceProtocol - Message broadcasting
+- SharedMessageBus - In-memory transport
+- AgentRegistry - Trust tracking
+- AgentSimulator - Mock agents
+- Two-agent demo working
 
-1. **Shared Morphism Pool** - Collective memory
-2. **Consensus Engine** - 3+ agent validation
-3. **Network Transport** - Replace in-memory bus
-4. **Visualization** - Real-time graph
-5. **VS Code Panel** - UI integration
+### ✅ Phase 4.2: Collective Memory (Complete)
+- SharedMorphismPool - Multi-agent attribution
+- ConsensusEngine - Trust-weighted voting
+- Three-agent consensus demo
+- Pattern lifecycle tracking
+
+### ✅ Phase 4.3: Visualization (Complete)
+- ResonanceGraph - D3.js force-directed graph
+- GraphControls - Interactive filters
+- NodeDetails/EdgeDetails - Inspector panels
+- Real-time updates from message bus
+- Live simulation demo
+- Minimal HTML POC (standalone)
+
+### 🔄 Phase 4.4: VS Code Integration (Next)
+- Network Panel component
+- WebView integration
+- Export/import functionality
+
+## Visualization Demo
+
+The visualization shows real-time multi-agent resonance:
+
+```bash
+pnpm demo:viz
+```
+
+Features:
+- **Force-directed graph** - Agents and resonance edges
+- **Multiple layouts** - Force, circular, hierarchical, grid
+- **Interactive controls** - Filters, view modes, toggles
+- **Node inspection** - Click agents for detailed stats
+- **Edge inspection** - Click resonances for confidence data
+- **Real-time updates** - Live simulation of three-agent consensus
+- **Particle effects** - Visual resonance flow
+- **Trust visualization** - Node size = trust score
+- **Confidence visualization** - Edge thickness = confidence
+
+Also available as standalone HTML demo:
+```bash
+open packages/multi-agent/examples/visualization-demo.html
+```
 
 ## Philosophy
 

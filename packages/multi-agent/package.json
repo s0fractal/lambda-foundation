@@ -9,6 +9,7 @@
     "dev": "tsc --watch",
     "demo": "tsx examples/two-agent-resonance.ts",
     "demo:consensus": "tsx examples/three-agent-consensus.ts",
+    "demo:viz": "vite examples --open",
     "test": "vitest"
   },
   "keywords": [
@@ -20,10 +21,25 @@
   ],
   "author": "Claude + Copilot + chaoshex",
   "license": "MIT",
+  "dependencies": {
+    "d3": "^7.9.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ws": "^8.16.0"
+  },
   "devDependencies": {
+    "@types/d3": "^7.4.3",
     "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/ws": "^8.5.10",
+    "@vitejs/plugin-react": "^4.2.0",
     "tsx": "^4.0.0",
     "typescript": "^5.3.0",
+    "vite": "^5.0.0",
     "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
   }
 }

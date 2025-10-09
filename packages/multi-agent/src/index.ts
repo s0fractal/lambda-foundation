@@ -25,3 +25,12 @@ export type { ConsensusConfig } from "./consensus/ConsensusEngine.js";
 // Simulation
 export { AgentSimulator } from "./simulation/AgentSimulator.js";
 export type { AgentConfig } from "./simulation/AgentSimulator.js";
+
+// Visualization (Phase 4.3)
+export * from "./visualization/index.js";
+
+// Network Transport (Phase 4.4)
+export { NetworkTransport, NetworkTransportServer } from "./transport/NetworkTransport.js";
+
+// Storage (Phase 4.4)
+export { ResonanceStorage } from "./storage/ResonanceStorage.js";
