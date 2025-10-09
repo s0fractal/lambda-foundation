@@ -23,6 +23,7 @@ import { CompositionEngine } from './compositionEngine';
 import { ProofViewerPanel } from './proofViewer';
 import { NoospherePanel } from './noospherePanel';
 import { StatsDashboardPanel } from './statsDashboard';
+import { EvolutionTrackerPanel } from './evolutionTracker';
 
 let statusBar: ResonanceStatusBar | undefined;
 let recognizer: IntentRecognizer | undefined;
@@ -74,7 +75,8 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('lambda.explain', explain),
 		vscode.commands.registerCommand('lambda.openNoosphere', openNoosphere),
 		vscode.commands.registerCommand('lambda.openProofViewer', () => openProofViewer(context)),
-		vscode.commands.registerCommand('lambda.openStatsDashboard', () => openStatsDashboard(context))
+		vscode.commands.registerCommand('lambda.openStatsDashboard', () => openStatsDashboard(context)),
+		vscode.commands.registerCommand('lambda.openEvolutionTracker', () => openEvolutionTracker(context))
 	);
 
 	// Watch for editor changes
@@ -356,6 +358,14 @@ async function openProofViewer(context: vscode.ExtensionContext) {
  */
 async function openStatsDashboard(context: vscode.ExtensionContext) {
 	StatsDashboardPanel.createOrShow(context.extensionUri);
+}
+
+/**
+ * Command: Open evolution tracker
+ * (Phase 3: Spiral map visualization)
+ */
+async function openEvolutionTracker(context: vscode.ExtensionContext) {
+	EvolutionTrackerPanel.createOrShow(context.extensionUri);
 }
 
 /**
