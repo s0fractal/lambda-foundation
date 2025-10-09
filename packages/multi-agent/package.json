@@ -8,6 +8,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "demo": "tsx examples/two-agent-resonance.ts",
+    "demo:consensus": "tsx examples/three-agent-consensus.ts",
     "test": "vitest"
   },
   "keywords": [
