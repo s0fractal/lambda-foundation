@@ -17,10 +17,14 @@ import * as vscode from 'vscode';
 import { ResonanceStatusBar } from './statusBar';
 import { IntentRecognizer } from './intentRecognizer';
 import { NoosphereClient } from './noosphereClient';
+import { ResonanceCodeLensProvider } from './codeLensProvider';
+import { MorphismHoverProvider } from './hoverProvider';
 
 let statusBar: ResonanceStatusBar | undefined;
 let recognizer: IntentRecognizer | undefined;
 let noosphereClient: NoosphereClient | undefined;
+let codeLensProvider: ResonanceCodeLensProvider | undefined;
+let hoverProvider: MorphismHoverProvider | undefined;
 
 /**
  * Extension activation
@@ -34,11 +38,28 @@ export function activate(context: vscode.ExtensionContext) {
 	recognizer = new IntentRecognizer();
 	statusBar = new ResonanceStatusBar();
 
+	// Initialize Phase 2 providers
+	codeLensProvider = new ResonanceCodeLensProvider(recognizer, noosphereClient);
+	hoverProvider = new MorphismHoverProvider(noosphereClient);
+
+	// Register providers
+	context.subscriptions.push(
+		vscode.languages.registerCodeLensProvider(
+			{ scheme: 'file', language: '*' },
+			codeLensProvider
+		),
+		vscode.languages.registerHoverProvider(
+			{ scheme: 'file', language: '*' },
+			hoverProvider
+		)
+	);
+
 	// Register commands
 	context.subscriptions.push(
 		vscode.commands.registerCommand('lambda.checkResonance', checkResonance),
 		vscode.commands.registerCommand('lambda.compose', compose),
 		vscode.commands.registerCommand('lambda.showProof', showProof),
+		vscode.commands.registerCommand('lambda.showAllProofs', showAllProofs),
 		vscode.commands.registerCommand('lambda.explain', explain),
 		vscode.commands.registerCommand('lambda.openNoosphere', openNoosphere)
 	);
@@ -68,6 +89,8 @@ export function deactivate() {
 
 	statusBar?.dispose();
 	noosphereClient?.dispose();
+	codeLensProvider?.dispose();
+	hoverProvider?.dispose();
 }
 
 /**
@@ -216,6 +239,25 @@ async function showProof(morphismName: string) {
 			`λ-Foundation: Proof not found: ${proofPath}`
 		);
 	}
+}
+
+/**
+ * Command: Show all proofs for multiple morphisms
+ */
+async function showAllProofs(morphismNames: string[]) {
+	if (!morphismNames || morphismNames.length === 0) {
+		vscode.window.showWarningMessage('λ-Foundation: No morphisms to show proofs for');
+		return;
+	}
+
+	// Open each proof in sequence
+	for (const morphismName of morphismNames) {
+		await showProof(morphismName);
+	}
+
+	vscode.window.showInformationMessage(
+		`λ-Foundation: Opened ${morphismNames.length} proof files`
+	);
 }
 
 /**
