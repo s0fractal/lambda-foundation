@@ -19,12 +19,15 @@ import { IntentRecognizer } from './intentRecognizer';
 import { NoosphereClient } from './noosphereClient';
 import { ResonanceCodeLensProvider } from './codeLensProvider';
 import { MorphismHoverProvider } from './hoverProvider';
+import { CompositionEngine } from './compositionEngine';
+import { ProofViewerPanel } from './proofViewer';
 
 let statusBar: ResonanceStatusBar | undefined;
 let recognizer: IntentRecognizer | undefined;
 let noosphereClient: NoosphereClient | undefined;
 let codeLensProvider: ResonanceCodeLensProvider | undefined;
 let hoverProvider: MorphismHoverProvider | undefined;
+let compositionEngine: CompositionEngine | undefined;
 
 /**
  * Extension activation
@@ -33,14 +36,20 @@ let hoverProvider: MorphismHoverProvider | undefined;
 export function activate(context: vscode.ExtensionContext) {
 	console.log('🌌 λ-Foundation: Activating compositional consciousness...');
 
+	// Store context globally for access from commands
+	(global as any).extensionContext = context;
+
 	// Initialize components
 	noosphereClient = new NoosphereClient(context);
 	recognizer = new IntentRecognizer();
 	statusBar = new ResonanceStatusBar();
 
-	// Initialize Phase 2 providers
+	// Initialize Phase 2 Week 3 providers
 	codeLensProvider = new ResonanceCodeLensProvider(recognizer, noosphereClient);
 	hoverProvider = new MorphismHoverProvider(noosphereClient);
+
+	// Initialize Phase 2 Week 4 components
+	compositionEngine = new CompositionEngine(noosphereClient);
 
 	// Register providers
 	context.subscriptions.push(
@@ -61,7 +70,8 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('lambda.showProof', showProof),
 		vscode.commands.registerCommand('lambda.showAllProofs', showAllProofs),
 		vscode.commands.registerCommand('lambda.explain', explain),
-		vscode.commands.registerCommand('lambda.openNoosphere', openNoosphere)
+		vscode.commands.registerCommand('lambda.openNoosphere', openNoosphere),
+		vscode.commands.registerCommand('lambda.openProofViewer', () => openProofViewer(context))
 	);
 
 	// Watch for editor changes
@@ -162,6 +172,7 @@ async function checkResonance() {
 
 /**
  * Command: Compose morphisms into code
+ * (Phase 2 Week 4: Enhanced with validation & proof viewer)
  */
 async function compose(resonance?: any) {
 	const editor = vscode.window.activeTextEditor;
@@ -187,17 +198,48 @@ async function compose(resonance?: any) {
 		return;
 	}
 
-	// Generate composition code
-	const code = generateCompositionCode(resonance);
+	// Phase 2 Week 4: Validate composition with engine
+	if (compositionEngine && noosphereClient) {
+		const validationResult = compositionEngine.validateComposition(resonance.morphisms);
 
-	// Insert code
-	editor.edit(editBuilder => {
-		editBuilder.insert(editor.selection.active, code);
-	});
+		// Show proof viewer with validation results
+		const context = (global as any).extensionContext;
+		if (context) {
+			ProofViewerPanel.createOrShow(context.extensionUri, noosphereClient, validationResult);
+		}
 
-	vscode.window.showInformationMessage(
-		`λ-Foundation: Composed ${resonance.morphisms.length} morphisms (${Math.round(resonance.confidence * 100)}% confidence)`
-	);
+		// Check if composition is valid
+		if (!validationResult.valid) {
+			const errorCount = validationResult.conflicts.filter(c => c.severity === 'error').length;
+			vscode.window.showWarningMessage(
+				`λ-Foundation: Composition has ${errorCount} error(s). Check Proof Viewer for details.`
+			);
+			return;
+		}
+
+		// Generate validated code
+		const code = compositionEngine.generateComposition(validationResult);
+
+		// Insert code
+		editor.edit(editBuilder => {
+			editBuilder.insert(editor.selection.active, code);
+		});
+
+		vscode.window.showInformationMessage(
+			`λ-Foundation: Validated & composed ${resonance.morphisms.length} morphisms (${Math.round(validationResult.confidence * 100)}% confidence)`
+		);
+	} else {
+		// Fallback to original behavior
+		const code = generateCompositionCode(resonance);
+
+		editor.edit(editBuilder => {
+			editBuilder.insert(editor.selection.active, code);
+		});
+
+		vscode.window.showInformationMessage(
+			`λ-Foundation: Composed ${resonance.morphisms.length} morphisms (${Math.round(resonance.confidence * 100)}% confidence)`
+		);
+	}
 }
 
 /**
@@ -282,11 +324,27 @@ async function explain(resonance?: any) {
 
 /**
  * Command: Open noosphere panel
+ * (Phase 2 Week 4: Opens proof viewer)
  */
 async function openNoosphere() {
-	vscode.window.showInformationMessage(
-		'λ-Foundation: Noosphere panel coming in Phase 3!'
-	);
+	const context = (global as any).extensionContext;
+	if (context && noosphereClient) {
+		ProofViewerPanel.createOrShow(context.extensionUri, noosphereClient);
+	} else {
+		vscode.window.showWarningMessage('λ-Foundation: Extension not properly initialized');
+	}
+}
+
+/**
+ * Command: Open proof viewer panel
+ * (Phase 2 Week 4: Dedicated proof viewer command)
+ */
+async function openProofViewer(context: vscode.ExtensionContext) {
+	if (noosphereClient) {
+		ProofViewerPanel.createOrShow(context.extensionUri, noosphereClient);
+	} else {
+		vscode.window.showWarningMessage('λ-Foundation: Extension not properly initialized');
+	}
 }
 
 /**
