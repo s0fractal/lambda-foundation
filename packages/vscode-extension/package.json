@@ -60,6 +60,21 @@
         "command": "lambda.explain",
         "title": "λ: Explain Morphism",
         "category": "λ-Foundation"
+      },
+      {
+        "command": "lambda.openProofViewer",
+        "title": "λ: Open Proof Viewer",
+        "category": "λ-Foundation"
+      },
+      {
+        "command": "lambda.openStatsDashboard",
+        "title": "λ: Open Statistics Dashboard",
+        "category": "λ-Foundation"
+      },
+      {
+        "command": "lambda.openEvolutionTracker",
+        "title": "λ: Open Evolution Tracker",
+        "category": "λ-Foundation"
       }
     ],
     "configuration": {
@@ -111,6 +126,21 @@
         "key": "ctrl+shift+r",
         "mac": "cmd+shift+r",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "lambda.openNoosphere",
+        "key": "ctrl+shift+n",
+        "mac": "cmd+shift+n"
+      },
+      {
+        "command": "lambda.openStatsDashboard",
+        "key": "ctrl+shift+s",
+        "mac": "cmd+shift+s"
+      },
+      {
+        "command": "lambda.openEvolutionTracker",
+        "key": "ctrl+shift+e",
+        "mac": "cmd+shift+e"
       }
     ]
   },
