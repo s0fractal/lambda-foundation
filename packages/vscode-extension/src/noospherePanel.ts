@@ -53,7 +53,7 @@ export class NoospherePanel {
 
 		// Set up message handling
 		this.panel.webview.onDidReceiveMessage(
-			message => this.handleMessage(message),
+			(message: any) => this.handleMessage(message),
 			null,
 			this.disposables
 		);
@@ -211,7 +211,7 @@ ${morphism.properties.map(p => `- ${p}`).join('\n')}
 
 		const example = examples[morphismName] || `// Example for ${morphismName}`;
 
-		await editor.edit(editBuilder => {
+		await editor.edit((editBuilder: vscode.TextEditorEdit) => {
 			editBuilder.insert(editor.selection.active, example);
 		});
 	}

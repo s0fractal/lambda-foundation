@@ -13,13 +13,13 @@ import type { NoosphereClient } from './noosphereClient';
  * Type expression in lambda calculus notation
  * Examples: "Stream α", "[Event]", "α → β"
  */
-export interface TypeExpr {
-	raw: string;           // Original type string
-	input?: TypeExpr;      // Input type (for functions)
-	output?: TypeExpr;     // Output type (for functions)
-	constructor?: string;  // Type constructor (Stream, List, etc)
-	variable?: string;     // Type variable (α, β, etc)
-	isFunction: boolean;   // Is this a function type?
+export type TypeExpr = {
+	raw: string;
+	isFunction: boolean;
+	input?: TypeExpr;
+	output?: TypeExpr;
+	constructor?: string;
+	variable?: string;
 }
 
 /**

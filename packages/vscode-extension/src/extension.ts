@@ -226,7 +226,7 @@ async function compose(resonance?: any) {
 		const code = compositionEngine.generateComposition(validationResult);
 
 		// Insert code
-		editor.edit(editBuilder => {
+		editor.edit((editBuilder: vscode.TextEditorEdit) => {
 			editBuilder.insert(editor.selection.active, code);
 		});
 
@@ -237,7 +237,7 @@ async function compose(resonance?: any) {
 		// Fallback to original behavior
 		const code = generateCompositionCode(resonance);
 
-		editor.edit(editBuilder => {
+		editor.edit((editBuilder: vscode.TextEditorEdit) => {
 			editBuilder.insert(editor.selection.active, code);
 		});
 
@@ -320,7 +320,7 @@ async function explain(resonance?: any) {
 
 	const explanation = generateExplanation(resonance);
 
-	vscode.window.showInformationMessage(explanation, 'Show Proof').then(selection => {
+	vscode.window.showInformationMessage(explanation, 'Show Proof').then((selection: string | undefined) => {
 		if (selection === 'Show Proof' && resonance.morphisms.length > 0) {
 			showProof(resonance.morphisms[0]);
 		}
@@ -393,7 +393,7 @@ function generateCompositionCode(resonance: any): string {
 	code += `// Type: ${getTypeFlow(morphisms)}\n`;
 
 	// Add proof references
-	code += `// Proven: ${morphisms.map(m => `wiki/proofs/${m}.proof`).join(', ')}\n\n`;
+	code += `// Proven: ${morphisms.map((m: string) => `wiki/proofs/${m}.proof`).join(', ')}\n\n`;
 
 	return code;
 }

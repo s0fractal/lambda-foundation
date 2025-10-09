@@ -29,7 +29,7 @@ export class ProofViewerPanel {
 
 		// Set up message handling
 		this.panel.webview.onDidReceiveMessage(
-			message => this.handleMessage(message),
+			(message: any) => this.handleMessage(message),
 			null,
 			this.disposables
 		);
@@ -157,7 +157,7 @@ export class ProofViewerPanel {
 			return;
 		}
 
-		await editor.edit(editBuilder => {
+		await editor.edit((editBuilder: vscode.TextEditorEdit) => {
 			editBuilder.insert(editor.selection.active, code);
 		});
 

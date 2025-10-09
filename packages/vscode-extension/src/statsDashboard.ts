@@ -33,7 +33,7 @@ export class StatsDashboardPanel {
 
 		// Set up message handling
 		this.panel.webview.onDidReceiveMessage(
-			message => this.handleMessage(message),
+			(message: any) => this.handleMessage(message),
 			null,
 			this.disposables
 		);
