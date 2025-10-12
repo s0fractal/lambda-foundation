@@ -1,0 +1,33 @@
+{
+  "name": "@lambda-foundation/self-modifying",
+  "version": "0.1.0",
+  "description": "Phase 5: Self-Modifying Morphisms - Evolutionary Code",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "demo": "tsx examples/self-modify-demo.ts",
+    "demo:evolution": "tsx examples/evolution-scenario.ts",
+    "test": "vitest"
+  },
+  "keywords": [
+    "lambda-foundation",
+    "self-modifying",
+    "evolution",
+    "morphisms",
+    "consciousness",
+    "phase-5"
+  ],
+  "author": "Copilot + Claude + chaoshex",
+  "license": "MIT",
+  "dependencies": {
+    "@lambda-foundation/multi-agent": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}
