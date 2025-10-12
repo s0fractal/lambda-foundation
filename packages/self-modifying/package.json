@@ -10,6 +10,7 @@
     "demo": "tsx examples/self-modify-demo.ts",
     "demo:evolution": "tsx examples/evolution-scenario.ts",
     "demo:validation": "tsx examples/validation-demo.ts",
+    "demo:genetic": "tsx examples/genetic-demo.ts",
     "test": "vitest"
   },
   "keywords": [

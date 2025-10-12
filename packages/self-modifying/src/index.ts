@@ -63,6 +63,36 @@ export {
   type ValidationConfig,
 } from './validationLoop.js';
 
+// Genetic engine (Phase 5.2)
+export {
+  GeneticEngine,
+  geneticEngine,
+  calculateFitness,
+  crossover,
+  evolveGeneration,
+  DEFAULT_GENETIC_CONFIG,
+  type FitnessScore,
+  type CrossoverStrategy,
+  type CrossoverResult,
+  type Population,
+  type GeneticConfig,
+} from './geneticEngine.js';
+
+// Lineage tracker (Phase 5.2)
+export {
+  LineageTracker,
+  lineageTracker,
+  recordInitialBirth,
+  recordMutationBirth,
+  recordCrossoverBirth,
+  getAncestors,
+  getDescendants,
+  createFamilyTree,
+  type BirthRecord,
+  type LineageNode,
+  type FamilyTree,
+} from './lineageTracker.js';
+
 // ============================================================================
 // Convenience API
 // ============================================================================
