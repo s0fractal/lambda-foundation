@@ -52,6 +52,17 @@ export {
   MutationStrategies,
 } from './mutationEngine.js';
 
+// Validation loop (Phase 5.1)
+export {
+  ValidationLoop,
+  initializeValidationLoop,
+  getValidationLoop,
+  validateMutation,
+  runValidationCycle,
+  DEFAULT_VALIDATION_CONFIG,
+  type ValidationConfig,
+} from './validationLoop.js';
+
 // ============================================================================
 // Convenience API
 // ============================================================================
