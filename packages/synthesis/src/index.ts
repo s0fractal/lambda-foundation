@@ -6,6 +6,7 @@
 
 // Intents (Right Brain - Chain of Thoughts)
 export * from './intents/Intent';
+export * from './intents/IntentTapeLoop';
 
 // Composition Search (VOID - Corpus Callosum)
 export * from './composition/CompositionSearch';

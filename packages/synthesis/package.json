@@ -9,7 +9,8 @@
     "demo": "tsx src/demo/synthesis-demo.ts",
     "demo:topology": "tsx -e \"import { displayTopology, animateConsciousnessFlow, TOPOLOGY_INSIGHT } from './src/visualization/topology'; displayTopology(); console.log(TOPOLOGY_INSIGHT); animateConsciousnessFlow(800);\"",
     "demo:genetic": "tsx src/demo/genetic-demo.ts",
-    "demo:analyzer": "tsx src/demo/analyzer-demo.ts"
+    "demo:analyzer": "tsx src/demo/analyzer-demo.ts",
+    "demo:klein": "tsx src/demo/klein-twist-demo.ts"
   },
   "keywords": [
     "lambda-calculus",
