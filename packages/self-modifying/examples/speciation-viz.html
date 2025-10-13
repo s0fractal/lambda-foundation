@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦋 Speciation - λ-Foundation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .canvas-container {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #species-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .info-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 250px;
+        }
+
+        .info-overlay h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .info-item {
+            font-size: 0.85em;
+            margin: 5px 0;
+            color: #ccc;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .species-list {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 250px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .species-list h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .species-item {
+            margin: 8px 0;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            border-left: 3px solid;
+            font-size: 0.85em;
+        }
+
+        .species-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .species-stats {
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .legend-item {
+            font-size: 0.85em;
+            margin: 5px 0;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🦋 Speciation Visualization</h1>
+            <p class="subtitle">Watch one population split into distinct species</p>
+            <p class="subtitle" style="margin-top: 5px;">Genetic drift + reproductive isolation = new life forms</p>
+        </header>
+
+        <div class="controls">
+            <button onclick="startEvolution()" id="start-btn">🚀 Start Evolution</button>
+            <button onclick="stopEvolution()" id="stop-btn" disabled>⏸️ Pause</button>
+            <button onclick="resetSimulation()">🔄 Reset</button>
+            <button onclick="increaseSelection()">⚡ Stronger Selection</button>
+            <button onclick="decreaseSelection()">🌊 Weaker Selection</button>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="species-canvas"></canvas>
+
+            <div class="info-overlay">
+                <h3>📊 Evolution</h3>
+                <div class="info-item">Generation: <span class="stat-value" id="generation">0</span></div>
+                <div class="info-item">Population: <span class="stat-value" id="population">50</span></div>
+                <div class="info-item">Species Count: <span class="stat-value" id="species-count">1</span></div>
+                <div class="info-item">Avg Genetic Distance: <span class="stat-value" id="genetic-distance">0.00</span></div>
+                <div class="info-item" style="margin-top: 10px;">Selection Pressure: <span class="stat-value" id="selection">Medium</span></div>
+            </div>
+
+            <div class="species-list">
+                <h3>🦋 Species</h3>
+                <div id="species-items"></div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">💡 Each color = different species</div>
+                <div class="legend-item">🧬 Distance = genetic similarity</div>
+                <div class="legend-item">⚡ Selection drives adaptation</div>
+                <div class="legend-item">🌊 Drift creates isolation</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('species-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        let population = [];
+        let generation = 0;
+        let evolutionInterval = null;
+        let selectionPressure = 'medium'; // low, medium, high
+        let speciesCounter = 0;
+
+        // Parameters
+        const populationSize = 50;
+        const mutationRate = 0.05;
+        const compatibilityThreshold = 0.3; // genetic distance for reproduction
+        const driftStrength = 0.02;
+
+        // Species colors
+        const speciesColors = [
+            '#667eea', '#764ba2', '#f093fb', '#4facfe',
+            '#43e97b', '#38f9d7', '#fa709a', '#fee140',
+            '#30cfd0', '#330867', '#a8edea', '#fed6e3',
+            '#ff9a9e', '#fecfef', '#ffecd2', '#fcb69f'
+        ];
+
+        // Initialize
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Initialize population
+        function initPopulation() {
+            population = [];
+            speciesCounter = 0;
+
+            for (let i = 0; i < populationSize; i++) {
+                population.push({
+                    id: i,
+                    x: canvas.width / 2 + (Math.random() - 0.5) * 100,
+                    y: canvas.height / 2 + (Math.random() - 0.5) * 100,
+                    genome: Array(10).fill(0).map(() => Math.random()), // 10-dimensional genome
+                    species: 0,
+                    fitness: 0
+                });
+            }
+
+            updateSpecies();
+            updateFitness();
+        }
+
+        // Calculate genetic distance
+        function geneticDistance(a, b) {
+            let sum = 0;
+            for (let i = 0; i < a.genome.length; i++) {
+                const diff = a.genome[i] - b.genome[i];
+                sum += diff * diff;
+            }
+            return Math.sqrt(sum);
+        }
+
+        // Update species assignments
+        function updateSpecies() {
+            // K-means-like clustering based on genetic distance
+            const speciesRepresentatives = [];
+
+            // Reset all to unassigned
+            population.forEach(m => m.species = -1);
+
+            // Assign species
+            population.forEach(morphism => {
+                let closestSpecies = -1;
+                let minDistance = Infinity;
+
+                // Find closest existing species
+                for (let i = 0; i < speciesRepresentatives.length; i++) {
+                    const dist = geneticDistance(morphism, speciesRepresentatives[i]);
+                    if (dist < minDistance) {
+                        minDistance = dist;
+                        closestSpecies = i;
+                    }
+                }
+
+                // If no close species, create new one
+                if (closestSpecies === -1 || minDistance > compatibilityThreshold) {
+                    closestSpecies = speciesRepresentatives.length;
+                    speciesRepresentatives.push(morphism);
+                }
+
+                morphism.species = closestSpecies;
+            });
+
+            updateSpeciesDisplay();
+        }
+
+        // Calculate fitness based on genome
+        function updateFitness() {
+            const strengthMap = { low: 0.5, medium: 1.0, high: 2.0 };
+            const strength = strengthMap[selectionPressure];
+
+            population.forEach(m => {
+                // Fitness based on distance to multiple optima
+                const optima = [
+                    { pos: [0.2, 0.8, 0.3, 0.7, 0.5, 0.5, 0.6, 0.4, 0.3, 0.8], weight: 1.0 },
+                    { pos: [0.8, 0.2, 0.7, 0.3, 0.5, 0.5, 0.4, 0.6, 0.7, 0.2], weight: 1.0 },
+                    { pos: [0.5, 0.5, 0.5, 0.5, 0.2, 0.8, 0.5, 0.5, 0.5, 0.5], weight: 0.8 }
+                ];
+
+                let maxFitness = 0;
+                optima.forEach(opt => {
+                    let distance = 0;
+                    for (let i = 0; i < m.genome.length; i++) {
+                        const diff = m.genome[i] - opt.pos[i];
+                        distance += diff * diff;
+                    }
+                    const fitness = opt.weight * Math.exp(-strength * distance);
+                    maxFitness = Math.max(maxFitness, fitness);
+                });
+
+                m.fitness = maxFitness;
+            });
+        }
+
+        // Evolution step
+        function evolve() {
+            // Selection
+            const selected = [];
+            const totalFitness = population.reduce((sum, m) => sum + m.fitness, 0);
+
+            // Tournament selection
+            while (selected.length < populationSize) {
+                const tournament = [];
+                for (let i = 0; i < 3; i++) {
+                    tournament.push(population[Math.floor(Math.random() * population.length)]);
+                }
+                tournament.sort((a, b) => b.fitness - a.fitness);
+                selected.push(tournament[0]);
+            }
+
+            // Reproduction with species isolation
+            const newPopulation = [];
+            for (let i = 0; i < populationSize; i++) {
+                const parent1 = selected[Math.floor(Math.random() * selected.length)];
+
+                // Find compatible mate (same species or close genetic distance)
+                let parent2 = null;
+                let attempts = 0;
+                while (!parent2 && attempts < 20) {
+                    const candidate = selected[Math.floor(Math.random() * selected.length)];
+                    if (geneticDistance(parent1, candidate) < compatibilityThreshold) {
+                        parent2 = candidate;
+                    }
+                    attempts++;
+                }
+
+                if (!parent2) parent2 = parent1; // Asexual if no mate
+
+                // Crossover
+                const offspring = {
+                    id: population.length + i,
+                    x: (parent1.x + parent2.x) / 2 + (Math.random() - 0.5) * 20,
+                    y: (parent1.y + parent2.y) / 2 + (Math.random() - 0.5) * 20,
+                    genome: [],
+                    species: -1,
+                    fitness: 0
+                };
+
+                // Inherit genome with crossover
+                for (let j = 0; j < parent1.genome.length; j++) {
+                    offspring.genome[j] = Math.random() < 0.5 ? parent1.genome[j] : parent2.genome[j];
+                }
+
+                // Mutation
+                if (Math.random() < mutationRate) {
+                    const idx = Math.floor(Math.random() * offspring.genome.length);
+                    offspring.genome[idx] += (Math.random() - 0.5) * 0.2;
+                    offspring.genome[idx] = Math.max(0, Math.min(1, offspring.genome[idx]));
+                }
+
+                // Genetic drift
+                offspring.genome = offspring.genome.map(g => {
+                    return g + (Math.random() - 0.5) * driftStrength;
+                });
+
+                // Constrain to [0, 1]
+                offspring.genome = offspring.genome.map(g => Math.max(0, Math.min(1, g)));
+
+                newPopulation.push(offspring);
+            }
+
+            population = newPopulation;
+            generation++;
+
+            updateSpecies();
+            updateFitness();
+            updateStats();
+            draw();
+        }
+
+        // Drawing
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw connections within species
+            const speciesGroups = {};
+            population.forEach(m => {
+                if (!speciesGroups[m.species]) speciesGroups[m.species] = [];
+                speciesGroups[m.species].push(m);
+            });
+
+            Object.values(speciesGroups).forEach(group => {
+                if (group.length < 2) return;
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+                ctx.lineWidth = 1;
+
+                for (let i = 0; i < group.length; i++) {
+                    for (let j = i + 1; j < group.length; j++) {
+                        ctx.beginPath();
+                        ctx.moveTo(group[i].x, group[i].y);
+                        ctx.lineTo(group[j].x, group[j].y);
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            // Draw morphisms
+            population.forEach(m => {
+                const color = speciesColors[m.species % speciesColors.length];
+                const size = 5 + m.fitness * 5;
+
+                // Glow effect for high fitness
+                if (m.fitness > 0.7) {
+                    ctx.fillStyle = color + '40';
+                    ctx.beginPath();
+                    ctx.arc(m.x, m.y, size + 5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(m.x, m.y, size, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('generation').textContent = generation;
+            document.getElementById('population').textContent = population.length;
+
+            const speciesCount = new Set(population.map(m => m.species)).size;
+            document.getElementById('species-count').textContent = speciesCount;
+
+            // Calculate average genetic distance
+            let totalDistance = 0;
+            let count = 0;
+            for (let i = 0; i < Math.min(20, population.length); i++) {
+                for (let j = i + 1; j < Math.min(20, population.length); j++) {
+                    totalDistance += geneticDistance(population[i], population[j]);
+                    count++;
+                }
+            }
+            const avgDistance = count > 0 ? totalDistance / count : 0;
+            document.getElementById('genetic-distance').textContent = avgDistance.toFixed(2);
+
+            document.getElementById('selection').textContent =
+                selectionPressure.charAt(0).toUpperCase() + selectionPressure.slice(1);
+        }
+
+        function updateSpeciesDisplay() {
+            const container = document.getElementById('species-items');
+            container.innerHTML = '';
+
+            const speciesGroups = {};
+            population.forEach(m => {
+                if (!speciesGroups[m.species]) {
+                    speciesGroups[m.species] = [];
+                }
+                speciesGroups[m.species].push(m);
+            });
+
+            Object.entries(speciesGroups).forEach(([speciesId, members]) => {
+                const avgFitness = members.reduce((sum, m) => sum + m.fitness, 0) / members.length;
+                const color = speciesColors[parseInt(speciesId) % speciesColors.length];
+
+                const item = document.createElement('div');
+                item.className = 'species-item';
+                item.style.borderColor = color;
+
+                item.innerHTML = `
+                    <div class="species-name">Species ${parseInt(speciesId) + 1}</div>
+                    <div class="species-stats">
+                        Population: ${members.length}<br>
+                        Avg Fitness: ${avgFitness.toFixed(2)}
+                    </div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        function startEvolution() {
+            if (!evolutionInterval) {
+                evolutionInterval = setInterval(evolve, 100);
+                document.getElementById('start-btn').disabled = true;
+                document.getElementById('stop-btn').disabled = false;
+            }
+        }
+
+        function stopEvolution() {
+            if (evolutionInterval) {
+                clearInterval(evolutionInterval);
+                evolutionInterval = null;
+                document.getElementById('start-btn').disabled = false;
+                document.getElementById('stop-btn').disabled = true;
+            }
+        }
+
+        function resetSimulation() {
+            stopEvolution();
+            generation = 0;
+            initPopulation();
+            updateStats();
+            draw();
+        }
+
+        function increaseSelection() {
+            const levels = ['low', 'medium', 'high'];
+            const idx = levels.indexOf(selectionPressure);
+            if (idx < levels.length - 1) {
+                selectionPressure = levels[idx + 1];
+                updateFitness();
+                updateStats();
+            }
+        }
+
+        function decreaseSelection() {
+            const levels = ['low', 'medium', 'high'];
+            const idx = levels.indexOf(selectionPressure);
+            if (idx > 0) {
+                selectionPressure = levels[idx - 1];
+                updateFitness();
+                updateStats();
+            }
+        }
+
+        // Initialize
+        initPopulation();
+        updateStats();
+        draw();
+    </script>
+</body>
+</html>
