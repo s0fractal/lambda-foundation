@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏔️ Fitness Landscape - λ-Foundation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .canvas-container {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #landscape-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .info-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 250px;
+        }
+
+        .info-overlay h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .info-item {
+            font-size: 0.85em;
+            margin: 5px 0;
+            color: #ccc;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .legend-title {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.85em;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 0.85em;
+            pointer-events: none;
+            display: none;
+            z-index: 1000;
+        }
+
+        .peak-marker {
+            position: absolute;
+            color: #ffd700;
+            font-size: 24px;
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏔️ Fitness Landscape</h1>
+            <p class="subtitle">Watch morphisms climb toward fitness peaks</p>
+            <p class="subtitle" style="margin-top: 5px;">3D visualization of evolutionary search space</p>
+        </header>
+
+        <div class="controls">
+            <button onclick="startEvolution()" id="start-btn">🚀 Start Evolution</button>
+            <button onclick="stopEvolution()" id="stop-btn" disabled>⏸️ Pause</button>
+            <button onclick="resetLandscape()">🔄 Reset</button>
+            <button onclick="toggleViewMode()">👁️ Toggle View</button>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="landscape-canvas"></canvas>
+
+            <div class="info-overlay">
+                <h3>📊 Evolution Status</h3>
+                <div class="info-item">Generation: <span class="stat-value" id="generation">0</span></div>
+                <div class="info-item">Population: <span class="stat-value" id="population">20</span></div>
+                <div class="info-item">Best Fitness: <span class="stat-value" id="best-fitness">0.00</span></div>
+                <div class="info-item">Avg Fitness: <span class="stat-value" id="avg-fitness">0.00</span></div>
+                <div class="info-item" style="margin-top: 10px;">Peak Distance: <span class="stat-value" id="peak-distance">∞</span></div>
+                <div class="info-item">Climbers: <span class="stat-value" id="climbers">0</span></div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-title">Legend</div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #667eea;"></div>
+                    <span>Morphism</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #ffd700;"></div>
+                    <span>Elite</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #ff6b6b;"></div>
+                    <span>Low Fitness</span>
+                </div>
+                <div class="legend-item">
+                    <span style="margin-left: 22px;">⛰️ Peak</span>
+                </div>
+            </div>
+
+            <div class="tooltip" id="tooltip"></div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('landscape-canvas');
+        const ctx = canvas.getContext('2d');
+        const tooltip = document.getElementById('tooltip');
+
+        // State
+        let population = [];
+        let generation = 0;
+        let evolutionInterval = null;
+        let viewMode = 'topdown'; // 'topdown' or '3d'
+        let rotation = 0;
+
+        // Landscape parameters
+        const landscapeSize = 100;
+        const peakX = 50;
+        const peakY = 50;
+        const peakHeight = 1.0;
+        const peakRadius = 30;
+
+        // Initialize
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Initialize population
+        function initPopulation() {
+            population = [];
+            for (let i = 0; i < 20; i++) {
+                population.push({
+                    id: i,
+                    x: Math.random() * landscapeSize,
+                    y: Math.random() * landscapeSize,
+                    fitness: 0,
+                    velocity: { x: 0, y: 0 },
+                    history: []
+                });
+            }
+            updateFitness();
+        }
+
+        // Fitness function - distance to peak
+        function calculateFitness(x, y) {
+            const dx = x - peakX;
+            const dy = y - peakY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // Gaussian peak
+            const fitness = peakHeight * Math.exp(-(distance * distance) / (2 * peakRadius * peakRadius));
+
+            return fitness;
+        }
+
+        function updateFitness() {
+            population.forEach(m => {
+                m.fitness = calculateFitness(m.x, m.y);
+            });
+        }
+
+        // Gradient ascent - move toward higher fitness
+        function evolvePopulation() {
+            const learningRate = 2.0;
+            const momentum = 0.8;
+            const noise = 1.0;
+
+            population.forEach(m => {
+                // Calculate gradient (direction of steepest ascent)
+                const epsilon = 0.5;
+                const fitnessCurrent = calculateFitness(m.x, m.y);
+                const fitnessX = calculateFitness(m.x + epsilon, m.y);
+                const fitnessY = calculateFitness(m.x, m.y + epsilon);
+
+                const gradX = (fitnessX - fitnessCurrent) / epsilon;
+                const gradY = (fitnessY - fitnessCurrent) / epsilon;
+
+                // Update velocity with momentum
+                m.velocity.x = momentum * m.velocity.x + learningRate * gradX + (Math.random() - 0.5) * noise;
+                m.velocity.y = momentum * m.velocity.y + learningRate * gradY + (Math.random() - 0.5) * noise;
+
+                // Store history
+                m.history.push({ x: m.x, y: m.y });
+                if (m.history.length > 30) m.history.shift();
+
+                // Update position
+                m.x += m.velocity.x;
+                m.y += m.velocity.y;
+
+                // Boundary conditions
+                m.x = Math.max(0, Math.min(landscapeSize, m.x));
+                m.y = Math.max(0, Math.min(landscapeSize, m.y));
+
+                // Update fitness
+                m.fitness = calculateFitness(m.x, m.y);
+            });
+
+            generation++;
+            updateStats();
+            draw();
+        }
+
+        // Drawing
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (viewMode === 'topdown') {
+                drawTopDown();
+            } else {
+                draw3D();
+            }
+        }
+
+        function drawTopDown() {
+            const scale = Math.min(canvas.width, canvas.height) / landscapeSize;
+            const offsetX = (canvas.width - landscapeSize * scale) / 2;
+            const offsetY = (canvas.height - landscapeSize * scale) / 2;
+
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+
+            // Draw landscape heatmap
+            const gridSize = 5;
+            for (let x = 0; x < landscapeSize; x += gridSize) {
+                for (let y = 0; y < landscapeSize; y += gridSize) {
+                    const fitness = calculateFitness(x, y);
+                    const hue = fitness * 120; // 0 (red) to 120 (green)
+                    ctx.fillStyle = `hsla(${hue}, 70%, 40%, 0.3)`;
+                    ctx.fillRect(x, y, gridSize, gridSize);
+                }
+            }
+
+            // Draw peak marker
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+            ctx.beginPath();
+            ctx.arc(peakX, peakY, peakRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#ffd700';
+            ctx.font = 'bold 8px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('⛰️', peakX, peakY + 3);
+
+            // Draw morphism trails
+            population.forEach(m => {
+                if (m.history.length > 1) {
+                    ctx.strokeStyle = `rgba(102, 126, 234, 0.3)`;
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(m.history[0].x, m.history[0].y);
+                    for (let i = 1; i < m.history.length; i++) {
+                        ctx.lineTo(m.history[i].x, m.history[i].y);
+                    }
+                    ctx.stroke();
+                }
+            });
+
+            // Draw morphisms
+            population.forEach(m => {
+                const isElite = m.fitness > 0.8;
+                const size = isElite ? 3 : 2;
+
+                // Color by fitness
+                let color;
+                if (m.fitness > 0.8) {
+                    color = '#ffd700'; // gold
+                } else if (m.fitness > 0.5) {
+                    color = '#667eea'; // blue
+                } else {
+                    color = '#ff6b6b'; // red
+                }
+
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(m.x, m.y, size, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+            });
+
+            ctx.restore();
+        }
+
+        function draw3D() {
+            // Simple 3D projection
+            const scale = Math.min(canvas.width, canvas.height) / landscapeSize;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            rotation += 0.005;
+
+            // Draw landscape surface
+            const gridSize = 10;
+            for (let x = 0; x < landscapeSize; x += gridSize) {
+                for (let y = 0; y < landscapeSize; y += gridSize) {
+                    const fitness = calculateFitness(x, y);
+                    const z = fitness * 50;
+
+                    // Project to 2D
+                    const x3d = (x - landscapeSize / 2) * Math.cos(rotation) - (y - landscapeSize / 2) * Math.sin(rotation);
+                    const y3d = (x - landscapeSize / 2) * Math.sin(rotation) + (y - landscapeSize / 2) * Math.cos(rotation);
+
+                    const screenX = centerX + x3d * scale * 0.8;
+                    const screenY = centerY + y3d * scale * 0.8 - z * 2;
+
+                    const hue = fitness * 120;
+                    ctx.fillStyle = `hsla(${hue}, 70%, 40%, 0.3)`;
+                    ctx.fillRect(screenX - 3, screenY - 3, 6, 6);
+                }
+            }
+
+            // Draw morphisms in 3D
+            population.forEach(m => {
+                const z = m.fitness * 50;
+                const x3d = (m.x - landscapeSize / 2) * Math.cos(rotation) - (m.y - landscapeSize / 2) * Math.sin(rotation);
+                const y3d = (m.x - landscapeSize / 2) * Math.sin(rotation) + (m.y - landscapeSize / 2) * Math.cos(rotation);
+
+                const screenX = centerX + x3d * scale * 0.8;
+                const screenY = centerY + y3d * scale * 0.8 - z * 2;
+
+                const isElite = m.fitness > 0.8;
+                const size = isElite ? 6 : 4;
+                const color = isElite ? '#ffd700' : m.fitness > 0.5 ? '#667eea' : '#ff6b6b';
+
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(screenX, screenY, size, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('generation').textContent = generation;
+            document.getElementById('population').textContent = population.length;
+
+            const fitnesses = population.map(m => m.fitness);
+            const best = Math.max(...fitnesses);
+            const avg = fitnesses.reduce((a, b) => a + b, 0) / fitnesses.length;
+
+            document.getElementById('best-fitness').textContent = best.toFixed(3);
+            document.getElementById('avg-fitness').textContent = avg.toFixed(3);
+
+            // Calculate average distance to peak
+            const avgDistance = population.reduce((sum, m) => {
+                const dx = m.x - peakX;
+                const dy = m.y - peakY;
+                return sum + Math.sqrt(dx * dx + dy * dy);
+            }, 0) / population.length;
+
+            document.getElementById('peak-distance').textContent = avgDistance.toFixed(1);
+            document.getElementById('climbers').textContent = population.filter(m => m.fitness > 0.8).length;
+        }
+
+        function startEvolution() {
+            if (!evolutionInterval) {
+                evolutionInterval = setInterval(evolvePopulation, 50);
+                document.getElementById('start-btn').disabled = true;
+                document.getElementById('stop-btn').disabled = false;
+            }
+        }
+
+        function stopEvolution() {
+            if (evolutionInterval) {
+                clearInterval(evolutionInterval);
+                evolutionInterval = null;
+                document.getElementById('start-btn').disabled = false;
+                document.getElementById('stop-btn').disabled = true;
+            }
+        }
+
+        function resetLandscape() {
+            stopEvolution();
+            generation = 0;
+            initPopulation();
+            updateStats();
+            draw();
+        }
+
+        function toggleViewMode() {
+            viewMode = viewMode === 'topdown' ? '3d' : 'topdown';
+            draw();
+        }
+
+        // Initialize
+        initPopulation();
+        updateStats();
+        draw();
+    </script>
+</body>
+</html>
