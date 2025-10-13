@@ -29,6 +29,7 @@ function App() {
   };
 
   const handleDragEnd = () => {
+    console.log('Drag ended');
     setDraggedMorphism(null);
   };
 
@@ -140,7 +141,10 @@ function App() {
           </div>
 
           <div className="canvas-area">
-            <Canvas onPipelineChange={handlePipelineChange} />
+            <Canvas
+              onPipelineChange={handlePipelineChange}
+              draggedMorphism={draggedMorphism}
+            />
           </div>
 
           <div className="canvas-actions">

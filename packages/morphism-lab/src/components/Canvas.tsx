@@ -4,9 +4,10 @@ import './Canvas.css';
 
 interface CanvasProps {
   onPipelineChange: (nodes: PipelineNode[]) => void;
+  draggedMorphism: Morphism | null;
 }
 
-export function Canvas({ onPipelineChange }: CanvasProps) {
+export function Canvas({ onPipelineChange, draggedMorphism }: CanvasProps) {
   const [nodes, setNodes] = useState<PipelineNode[]>([]);
   const [connections, setConnections] = useState<Array<{ from: string; to: string }>>([]);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
@@ -20,18 +21,16 @@ export function Canvas({ onPipelineChange }: CanvasProps) {
 
     if (!canvasRef.current) return;
 
-    // Get morphism from dataTransfer
-    const morphismData = e.dataTransfer.getData('text/plain');
     console.log('Drop received on canvas!');
-    console.log('morphismData:', morphismData);
+    console.log('draggedMorphism:', draggedMorphism);
 
-    if (!morphismData) {
-      console.warn('No morphism data in drop event');
+    // Use state instead of dataTransfer (more reliable!)
+    if (!draggedMorphism) {
+      console.warn('No morphism being dragged');
       return;
     }
 
-    const morphism = JSON.parse(morphismData);
-    console.log('Parsed morphism:', morphism);
+    const morphism = draggedMorphism;
 
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -46,6 +45,11 @@ export function Canvas({ onPipelineChange }: CanvasProps) {
     const updatedNodes = [...nodes, newNode];
     setNodes(updatedNodes);
     onPipelineChange(updatedNodes);
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    console.log('Drag ENTER canvas');
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -170,6 +174,7 @@ export function Canvas({ onPipelineChange }: CanvasProps) {
         ref={canvasRef}
         className="canvas-drop-zone"
         onDrop={handleDrop}
+        onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onClick={cancelConnection}
       >
