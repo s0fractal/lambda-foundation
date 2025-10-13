@@ -18,7 +18,7 @@ function App() {
   const handleDragStart = (morphism: Morphism) => (e: React.DragEvent) => {
     setDraggedMorphism(morphism);
     e.dataTransfer.effectAllowed = 'copy';
-    e.dataTransfer.setData('morphism', JSON.stringify(morphism));
+    e.dataTransfer.setData('application/json', JSON.stringify(morphism));
   };
 
   const handleDragEnd = () => {

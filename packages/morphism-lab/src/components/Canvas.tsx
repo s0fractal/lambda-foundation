@@ -21,10 +21,16 @@ export function Canvas({ onPipelineChange }: CanvasProps) {
     if (!canvasRef.current) return;
 
     // Get morphism from dataTransfer
-    const morphismData = e.dataTransfer.getData('morphism');
-    if (!morphismData) return;
+    const morphismData = e.dataTransfer.getData('application/json');
+    console.log('Drop received, morphismData:', morphismData);
+
+    if (!morphismData) {
+      console.warn('No morphism data in drop event');
+      return;
+    }
 
     const morphism = JSON.parse(morphismData);
+    console.log('Parsed morphism:', morphism);
 
     const rect = canvasRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -43,6 +49,7 @@ export function Canvas({ onPipelineChange }: CanvasProps) {
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
   };
 
   // Remove node
