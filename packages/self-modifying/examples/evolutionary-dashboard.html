@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 Evolutionary Dashboard - λ-Foundation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        header {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 8px 8px 0 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-size: 0.9em;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+
+        .content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .viz-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        .viz-container.active {
+            display: block;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .control-group {
+            margin-bottom: 10px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        button {
+            width: 100%;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .split-view {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: row;
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .split-view.active {
+            display: flex;
+        }
+
+        .split-panel {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            max-width: 400px;
+        }
+
+        .info-panel h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .info-text {
+            font-size: 0.85em;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .shortcut-hint {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            font-size: 0.85em;
+            color: #888;
+        }
+
+        .shortcut-hint kbd {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: inherit;
+            color: #e0e0e0;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #667eea;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <h1>🌌 Evolutionary Dashboard</h1>
+            <p class="subtitle">Phase 5.2: Genetic Morphisms - All Visualizations in One Place</p>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('playground')" data-tab="playground">
+                🧬 Playground
+            </div>
+            <div class="tab" onclick="switchTab('tree')" data-tab="tree">
+                🌳 Family Tree
+            </div>
+            <div class="tab" onclick="switchTab('landscape')" data-tab="landscape">
+                🏔️ Landscape
+            </div>
+            <div class="tab" onclick="switchTab('speciation')" data-tab="speciation">
+                🦋 Speciation
+            </div>
+            <div class="tab" onclick="switchTab('coevolution')" data-tab="coevolution">
+                🦊🐰 Co-Evolution
+            </div>
+            <div class="tab" onclick="toggleSplitView()" data-tab="split">
+                ⚡ Split View
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="viz-container active" id="playground">
+                <iframe src="evolutionary-playground.html"></iframe>
+            </div>
+            <div class="viz-container" id="tree">
+                <iframe src="family-tree-viz.html"></iframe>
+            </div>
+            <div class="viz-container" id="landscape">
+                <iframe src="fitness-landscape.html"></iframe>
+            </div>
+            <div class="viz-container" id="speciation">
+                <iframe src="speciation-viz.html"></iframe>
+            </div>
+            <div class="viz-container" id="coevolution">
+                <iframe src="coevolution-viz.html"></iframe>
+            </div>
+
+            <div class="split-view" id="split-view">
+                <div class="split-panel">
+                    <iframe id="split-left" src="evolutionary-playground.html"></iframe>
+                </div>
+                <div class="split-panel">
+                    <iframe id="split-right" src="family-tree-viz.html"></iframe>
+                </div>
+            </div>
+
+            <div class="shortcut-hint" id="shortcuts">
+                <kbd>1-5</kbd> Switch tabs | <kbd>S</kbd> Split view | <kbd>F</kbd> Fullscreen | <kbd>?</kbd> Help
+            </div>
+
+            <div class="info-panel" id="info-panel">
+                <h3>🧬 Evolutionary Playground</h3>
+                <p class="info-text">
+                    Watch morphisms breed and evolve over generations. Fitness improves from 0.40 to 0.95+
+                    through sexual reproduction and natural selection.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const vizInfo = {
+            playground: {
+                title: '🧬 Evolutionary Playground',
+                description: 'Watch morphisms breed and evolve over generations. Fitness improves from 0.40 to 0.95+ through sexual reproduction and natural selection.'
+            },
+            tree: {
+                title: '🌳 Family Tree',
+                description: 'Explore ancestry relationships. Click nodes to see parents and offspring. Complex family trees emerge showing dynasties and lineages.'
+            },
+            landscape: {
+                title: '🏔️ Fitness Landscape',
+                description: 'See evolution as gradient ascent. Morphisms climb toward fitness peaks through intelligent search, not random walk. Toggle 2D/3D views.'
+            },
+            speciation: {
+                title: '🦋 Speciation',
+                description: 'One population splits into 3-6 species through reproductive isolation. Each color represents a distinct species with unique adaptations.'
+            },
+            coevolution: {
+                title: '🦊🐰 Co-Evolution',
+                description: 'Predator-prey evolutionary arms race. Both species drive each other to evolve faster. Red Queen Hypothesis in action.'
+            }
+        };
+
+        let currentTab = 'playground';
+        let splitViewActive = false;
+
+        function switchTab(tab) {
+            if (splitViewActive) {
+                splitViewActive = false;
+                document.getElementById('split-view').classList.remove('active');
+            }
+
+            currentTab = tab;
+
+            // Update tabs
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.viz-container').forEach(v => {
+                v.classList.remove('active');
+            });
+            document.getElementById(tab).classList.add('active');
+
+            // Update info
+            updateInfo(tab);
+        }
+
+        function toggleSplitView() {
+            splitViewActive = !splitViewActive;
+
+            if (splitViewActive) {
+                // Hide single views
+                document.querySelectorAll('.viz-container').forEach(v => {
+                    v.classList.remove('active');
+                });
+
+                // Show split view
+                document.getElementById('split-view').classList.add('active');
+
+                // Update tab
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                document.querySelector('[data-tab="split"]').classList.add('active');
+
+                // Update info
+                document.getElementById('info-panel').innerHTML = `
+                    <h3>⚡ Split View</h3>
+                    <p class="info-text">
+                        Compare two visualizations side-by-side. Left: Playground, Right: Family Tree.
+                        Perfect for understanding how breeding creates ancestry.
+                    </p>
+                `;
+            } else {
+                // Return to single view
+                switchTab(currentTab);
+            }
+        }
+
+        function updateInfo(tab) {
+            const info = vizInfo[tab];
+            if (info) {
+                document.getElementById('info-panel').innerHTML = `
+                    <h3>${info.title}</h3>
+                    <p class="info-text">${info.description}</p>
+                `;
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '5') {
+                const tabs = ['playground', 'tree', 'landscape', 'speciation', 'coevolution'];
+                switchTab(tabs[parseInt(e.key) - 1]);
+            } else if (e.key.toLowerCase() === 's') {
+                toggleSplitView();
+            } else if (e.key.toLowerCase() === 'f') {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            } else if (e.key === '?') {
+                alert(`
+🌌 Evolutionary Dashboard - Keyboard Shortcuts
+
+1-5: Switch between visualizations
+  1: Playground
+  2: Family Tree
+  3: Landscape
+  4: Speciation
+  5: Co-Evolution
+
+S: Toggle split view
+F: Toggle fullscreen
+?: Show this help
+
+---
+
+Tips:
+- Each visualization runs independently
+- Split view shows two at once for comparison
+- All visualizations support interaction (click, drag, zoom)
+- Pure HTML/JS - no dependencies, works offline
+                `.trim());
+            }
+        });
+
+        // Initialize
+        updateInfo('playground');
+    </script>
+</body>
+</html>
