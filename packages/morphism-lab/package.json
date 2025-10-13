@@ -1,0 +1,38 @@
+{
+  "name": "@lambda-foundation/morphism-lab",
+  "version": "0.1.0",
+  "description": "Interactive playground where morphisms become tangible",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "@monaco-editor/react": "^4.6.0",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0"
+  },
+  "keywords": [
+    "morphism",
+    "composition",
+    "reactive",
+    "visual-programming",
+    "lambda-foundation",
+    "interactive",
+    "playground"
+  ],
+  "author": "chaoshex",
+  "license": "MIT"
+}
