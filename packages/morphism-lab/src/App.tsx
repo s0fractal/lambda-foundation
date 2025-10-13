@@ -22,9 +22,10 @@ function App() {
   };
 
   const handleDragStart = (morphism: Morphism) => (e: React.DragEvent) => {
+    console.log('Drag started:', morphism.name);
     setDraggedMorphism(morphism);
     e.dataTransfer.effectAllowed = 'copy';
-    e.dataTransfer.setData('application/json', JSON.stringify(morphism));
+    e.dataTransfer.setData('text/plain', JSON.stringify(morphism));
   };
 
   const handleDragEnd = () => {
@@ -50,6 +51,23 @@ function App() {
   const handleLoadExample = (example: ExamplePipeline) => {
     setPipelineNodes(example.nodes);
     setExecutionResult(null); // Reset execution when loading new pipeline
+  };
+
+  const handleAddToPipeline = (morphism: Morphism) => {
+    // Add morphism to center of canvas
+    const newNode: PipelineNode = {
+      morphismId: morphism.id,
+      position: {
+        x: 300 + Math.random() * 100, // Random offset to avoid overlapping
+        y: 150 + Math.random() * 100
+      },
+      connections: []
+    };
+
+    const updatedNodes = [...pipelineNodes, newNode];
+    setPipelineNodes(updatedNodes);
+    setSelectedMorphism(null); // Close modal
+    setExecutionResult(null); // Reset execution
   };
 
   return (
@@ -277,7 +295,7 @@ function App() {
               <button className="btn-secondary" onClick={() => setSelectedMorphism(null)}>
                 Close
               </button>
-              <button className="btn-primary">
+              <button className="btn-primary" onClick={() => handleAddToPipeline(selectedMorphism)}>
                 Add to Pipeline
               </button>
             </div>
