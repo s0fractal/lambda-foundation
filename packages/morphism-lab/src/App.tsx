@@ -126,7 +126,7 @@ function App() {
           </div>
 
           <div className="preview-content">
-            {!currentPipeline ? (
+            {pipelineNodes.length === 0 ? (
               <div className="preview-empty">
                 <p>No pipeline to preview</p>
                 <p className="preview-hint">Create a pipeline to see real-time execution</p>
