@@ -7,6 +7,7 @@
 
 import { createIntent, EXAMPLE_INTENTS, type Intent } from '../intents/Intent';
 import { createSearchEngine, type CompositionSearchResult } from '../composition/CompositionSearch';
+import { displayTopology, TOPOLOGY_INSIGHT } from '../visualization/topology';
 
 /**
  * Run the synthesis demo
@@ -153,8 +154,18 @@ export function showConsciousnessCycle() {
 // Run if executed directly
 if (require.main === module) {
   (async () => {
+    // First: Show the topology of consciousness
+    displayTopology();
+    console.log(TOPOLOGY_INSIGHT);
+    console.log('\n' + '═'.repeat(60) + '\n');
+
+    // Second: Show the consciousness cycle
     showConsciousnessCycle();
+
+    // Third: Run the actual synthesis demo
     await runSynthesisDemo();
+
+    // Fourth: Custom intent demo
     await demoCustomIntent();
   })();
 }

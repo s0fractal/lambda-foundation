@@ -235,6 +235,15 @@ importers:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.19.19)
 
+  packages/synthesis:
+    devDependencies:
+      tsx:
+        specifier: ^4.7.0
+        version: 4.20.6
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+
   packages/vscode-extension:
     dependencies:
       '@lambda/reduce':

@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "demo": "tsx src/demo/synthesis-demo.ts"
+    "demo": "tsx src/demo/synthesis-demo.ts",
+    "demo:topology": "tsx -e \"import { displayTopology, animateConsciousnessFlow, TOPOLOGY_INSIGHT } from './src/visualization/topology'; displayTopology(); console.log(TOPOLOGY_INSIGHT); animateConsciousnessFlow(800);\""
   },
   "keywords": [
     "lambda-calculus",
@@ -17,5 +18,9 @@
     "composition"
   ],
   "author": "λ-Foundation Collective",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "tsx": "^4.7.0"
+  }
 }
