@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { DEFAULT_MORPHISMS, type Morphism, type ComposedPipeline, type PipelineNode } from './types/morphisms';
 import { Canvas } from './components/Canvas';
 import { CodeGenerator } from './components/CodeGenerator';
+import { executePipeline, type ExecutionResult } from './demo/pipelineRunner';
 import './App.css';
 
 function App() {
@@ -10,6 +11,8 @@ function App() {
   const [selectedMorphism, setSelectedMorphism] = useState<Morphism | null>(null);
   const [draggedMorphism, setDraggedMorphism] = useState<Morphism | null>(null);
   const [showCodeGenerator, setShowCodeGenerator] = useState(false);
+  const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null);
+  const [isExecuting, setIsExecuting] = useState(false);
 
   const handlePipelineChange = (nodes: PipelineNode[]) => {
     setPipelineNodes(nodes);
@@ -23,6 +26,22 @@ function App() {
 
   const handleDragEnd = () => {
     setDraggedMorphism(null);
+  };
+
+  const handleRunPipeline = async () => {
+    if (pipelineNodes.length === 0) return;
+
+    setIsExecuting(true);
+    setExecutionResult(null);
+
+    try {
+      const result = await executePipeline(pipelineNodes);
+      setExecutionResult(result);
+    } catch (error) {
+      console.error('Pipeline execution failed:', error);
+    } finally {
+      setIsExecuting(false);
+    }
   };
 
   return (
@@ -133,38 +152,61 @@ function App() {
               </div>
             ) : (
               <div className="preview-active">
-                <div className="preview-section">
-                  <h3>Input</h3>
-                  <div className="code-block">
-                    <code>{'[ event1, event2, event3, ... ]'}</code>
+                {!executionResult ? (
+                  <div className="preview-ready">
+                    <p style={{ color: '#888', marginBottom: '15px' }}>
+                      Pipeline ready with {pipelineNodes.length} morphism{pipelineNodes.length > 1 ? 's' : ''}
+                    </p>
+                    <button
+                      className="btn-primary full-width"
+                      onClick={handleRunPipeline}
+                      disabled={isExecuting}
+                    >
+                      {isExecuting ? '⏳ Running...' : '▶️ Run Pipeline'}
+                    </button>
                   </div>
-                </div>
+                ) : (
+                  <>
+                    <div className="preview-section">
+                      <h3>Input ({executionResult.input.length} events)</h3>
+                      <div className="code-block" style={{ maxHeight: '120px', overflow: 'auto' }}>
+                        <code>{JSON.stringify(executionResult.input.slice(0, 3), null, 2)}...</code>
+                      </div>
+                    </div>
 
-                <div className="preview-arrow">↓</div>
+                    <div className="preview-arrow">↓ {executionResult.steps.length} steps</div>
 
-                <div className="preview-section">
-                  <h3>Output</h3>
-                  <div className="code-block">
-                    <code>{'[ filtered_event1, filtered_event2, ... ]'}</code>
-                  </div>
-                </div>
+                    <div className="preview-section">
+                      <h3>Output ({executionResult.output.length} events)</h3>
+                      <div className="code-block" style={{ maxHeight: '120px', overflow: 'auto' }}>
+                        <code>{JSON.stringify(executionResult.output.slice(0, 3), null, 2)}...</code>
+                      </div>
+                    </div>
 
-                <div className="preview-metrics">
-                  <div className="metric">
-                    <span className="metric-label">⏱️ Latency</span>
-                    <span className="metric-value">12ms</span>
-                  </div>
-                  <div className="metric">
-                    <span className="metric-label">📈 Throughput</span>
-                    <span className="metric-value">1,234 ops/s</span>
-                  </div>
-                  <div className="metric">
-                    <span className="metric-label">✅ Correctness</span>
-                    <span className="metric-value">Proven</span>
-                  </div>
-                </div>
+                    <div className="preview-metrics">
+                      <div className="metric">
+                        <span className="metric-label">⏱️ Duration</span>
+                        <span className="metric-value">{executionResult.totalDuration.toFixed(1)}ms</span>
+                      </div>
+                      <div className="metric">
+                        <span className="metric-label">🔄 Steps</span>
+                        <span className="metric-value">{executionResult.steps.length}</span>
+                      </div>
+                      <div className="metric">
+                        <span className="metric-label">✅ Status</span>
+                        <span className="metric-value">Success</span>
+                      </div>
+                    </div>
 
-                <button className="btn-secondary full-width">🎯 Change Input</button>
+                    <button
+                      className="btn-secondary full-width"
+                      onClick={handleRunPipeline}
+                      disabled={isExecuting}
+                    >
+                      {isExecuting ? '⏳ Running...' : '🔄 Run Again'}
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
