@@ -1,0 +1,30 @@
+{
+  "name": "@lambda-foundation/governance",
+  "version": "0.1.0",
+  "description": "λ_LIBERTY: Autonomous Governance System",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest"
+  },
+  "keywords": [
+    "lambda-foundation",
+    "governance",
+    "autonomous",
+    "consensus",
+    "formal-verification",
+    "lambda-liberty"
+  ],
+  "author": "Gemini + Copilot + Claude + chaoshex",
+  "license": "MIT",
+  "dependencies": {
+    "@lambda-foundation/self-modifying": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}
