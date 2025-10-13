@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦊🐰 Co-Evolution - λ-Foundation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .canvas-container {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #coevo-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .stats-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            min-width: 200px;
+        }
+
+        .stats-panel h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 0.85em;
+        }
+
+        .stat-label {
+            color: #888;
+        }
+
+        .stat-value {
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .stat-value.prey {
+            color: #4facfe;
+        }
+
+        .stat-value.predator {
+            color: #f093fb;
+        }
+
+        .chart-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            width: 300px;
+        }
+
+        .chart-panel h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        #population-chart {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+        }
+
+        #fitness-chart {
+            width: 100%;
+            height: 150px;
+        }
+
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.85em;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .alert {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 107, 107, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid #ff6b6b;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: 600;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🦊🐰 Co-Evolution Visualization</h1>
+            <p class="subtitle">Predator-prey evolutionary arms race</p>
+            <p class="subtitle" style="margin-top: 5px;">Red Queen Hypothesis: "Running to stay in place"</p>
+        </header>
+
+        <div class="controls">
+            <button onclick="startEvolution()" id="start-btn">🚀 Start Evolution</button>
+            <button onclick="stopEvolution()" id="stop-btn" disabled>⏸️ Pause</button>
+            <button onclick="resetSimulation()">🔄 Reset</button>
+            <button onclick="addPrey()">🐰 +5 Prey</button>
+            <button onclick="addPredators()">🦊 +2 Predators</button>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="coevo-canvas"></canvas>
+
+            <div class="stats-panel">
+                <h3>📊 Ecosystem</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Generation:</span>
+                    <span class="stat-value" id="generation">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🐰 Prey:</span>
+                    <span class="stat-value prey" id="prey-count">30</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🦊 Predators:</span>
+                    <span class="stat-value predator" id="predator-count">10</span>
+                </div>
+                <div class="stat-row" style="margin-top: 10px;">
+                    <span class="stat-label">Prey Speed:</span>
+                    <span class="stat-value prey" id="prey-speed">1.0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Predator Speed:</span>
+                    <span class="stat-value predator" id="predator-speed">1.0</span>
+                </div>
+                <div class="stat-row" style="margin-top: 10px;">
+                    <span class="stat-label">Hunts:</span>
+                    <span class="stat-value" id="hunt-count">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Escapes:</span>
+                    <span class="stat-value" id="escape-count">0</span>
+                </div>
+            </div>
+
+            <div class="chart-panel">
+                <h3>📈 Population Dynamics</h3>
+                <canvas id="population-chart"></canvas>
+                <h3 style="margin-top: 15px;">🏃 Fitness Evolution</h3>
+                <canvas id="fitness-chart"></canvas>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #4facfe;"></div>
+                    <span>🐰 Prey (escape artists)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot" style="background: #f093fb;"></div>
+                    <span>🦊 Predators (hunters)</span>
+                </div>
+                <div class="legend-item" style="margin-top: 10px;">
+                    <span style="margin-left: 22px;">⚡ Speed = Fitness</span>
+                </div>
+                <div class="legend-item">
+                    <span style="margin-left: 22px;">🎯 Catch distance: 15px</span>
+                </div>
+            </div>
+
+            <div class="alert" id="extinction-alert">EXTINCTION!</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('coevo-canvas');
+        const ctx = canvas.getContext('2d');
+        const popChart = document.getElementById('population-chart');
+        const popCtx = popChart.getContext('2d');
+        const fitChart = document.getElementById('fitness-chart');
+        const fitCtx = fitChart.getContext('2d');
+
+        // State
+        let prey = [];
+        let predators = [];
+        let generation = 0;
+        let evolutionInterval = null;
+        let huntCount = 0;
+        let escapeCount = 0;
+
+        // History
+        let populationHistory = { prey: [], predators: [] };
+        let fitnessHistory = { prey: [], predators: [] };
+
+        // Parameters
+        const catchDistance = 15;
+        const preyReproductionRate = 0.3;
+        const predatorStarvationRate = 0.1;
+        const mutationRate = 0.1;
+
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            popChart.width = 300;
+            popChart.height = 150;
+            fitChart.width = 300;
+            fitChart.height = 150;
+
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Create organism
+        function createPrey() {
+            return {
+                type: 'prey',
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                speed: 1.0 + Math.random() * 0.5,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                energy: 100
+            };
+        }
+
+        function createPredator() {
+            return {
+                type: 'predator',
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                speed: 1.0 + Math.random() * 0.5,
+                target: null,
+                energy: 100
+            };
+        }
+
+        function initPopulation() {
+            prey = [];
+            predators = [];
+            generation = 0;
+            huntCount = 0;
+            escapeCount = 0;
+            populationHistory = { prey: [], predators: [] };
+            fitnessHistory = { prey: [], predators: [] };
+
+            for (let i = 0; i < 30; i++) prey.push(createPrey());
+            for (let i = 0; i < 10; i++) predators.push(createPredator());
+
+            updateStats();
+        }
+
+        function evolve() {
+            // Movement
+            prey.forEach(p => {
+                // Run from nearest predator
+                let nearestPredator = null;
+                let minDist = Infinity;
+
+                predators.forEach(pred => {
+                    const dx = pred.x - p.x;
+                    const dy = pred.y - p.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        nearestPredator = pred;
+                    }
+                });
+
+                if (nearestPredator && minDist < 150) {
+                    const dx = p.x - nearestPredator.x;
+                    const dy = p.y - nearestPredator.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    p.vx = (dx / dist) * p.speed * 2;
+                    p.vy = (dy / dist) * p.speed * 2;
+                } else {
+                    // Random walk
+                    p.vx += (Math.random() - 0.5) * 0.5;
+                    p.vy += (Math.random() - 0.5) * 0.5;
+                }
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // Boundaries
+                if (p.x < 0) { p.x = 0; p.vx *= -1; }
+                if (p.x > canvas.width) { p.x = canvas.width; p.vx *= -1; }
+                if (p.y < 0) { p.y = 0; p.vy *= -1; }
+                if (p.y > canvas.height) { p.y = canvas.height; p.vy *= -1; }
+
+                p.energy += 0.1; // Gain energy
+            });
+
+            predators.forEach(pred => {
+                // Chase nearest prey
+                if (!pred.target || !prey.includes(pred.target)) {
+                    let nearestPrey = null;
+                    let minDist = Infinity;
+
+                    prey.forEach(p => {
+                        const dx = p.x - pred.x;
+                        const dy = p.y - pred.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            nearestPrey = p;
+                        }
+                    });
+
+                    pred.target = nearestPrey;
+                }
+
+                if (pred.target) {
+                    const dx = pred.target.x - pred.x;
+                    const dy = pred.target.y - pred.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    pred.x += (dx / dist) * pred.speed * 2;
+                    pred.y += (dy / dist) * pred.speed * 2;
+
+                    // Check catch
+                    if (dist < catchDistance) {
+                        const idx = prey.indexOf(pred.target);
+                        if (idx !== -1) {
+                            prey.splice(idx, 1);
+                            pred.energy += 50;
+                            pred.target = null;
+                            huntCount++;
+                        }
+                    }
+                }
+
+                pred.energy -= 0.5; // Lose energy
+            });
+
+            // Reproduction (prey)
+            const newPrey = [];
+            prey.forEach(p => {
+                if (Math.random() < preyReproductionRate && p.energy > 50) {
+                    const offspring = createPrey();
+                    offspring.x = p.x + (Math.random() - 0.5) * 50;
+                    offspring.y = p.y + (Math.random() - 0.5) * 50;
+                    offspring.speed = p.speed + (Math.random() - 0.5) * mutationRate;
+                    offspring.speed = Math.max(0.5, Math.min(2.5, offspring.speed));
+                    newPrey.push(offspring);
+                    p.energy -= 30;
+                }
+            });
+            prey.push(...newPrey);
+
+            // Reproduction (predators)
+            const newPredators = [];
+            predators.forEach(pred => {
+                if (Math.random() < 0.1 && pred.energy > 80) {
+                    const offspring = createPredator();
+                    offspring.x = pred.x + (Math.random() - 0.5) * 50;
+                    offspring.y = pred.y + (Math.random() - 0.5) * 50;
+                    offspring.speed = pred.speed + (Math.random() - 0.5) * mutationRate;
+                    offspring.speed = Math.max(0.5, Math.min(2.5, offspring.speed));
+                    newPredators.push(offspring);
+                    pred.energy -= 50;
+                }
+            });
+            predators.push(...newPredators);
+
+            // Starvation
+            predators = predators.filter(pred => pred.energy > 0);
+
+            // Record history
+            generation++;
+            populationHistory.prey.push(prey.length);
+            populationHistory.predators.push(predators.length);
+
+            const avgPreySpeed = prey.length > 0 ? prey.reduce((sum, p) => sum + p.speed, 0) / prey.length : 0;
+            const avgPredSpeed = predators.length > 0 ? predators.reduce((sum, p) => sum + p.speed, 0) / predators.length : 0;
+            fitnessHistory.prey.push(avgPreySpeed);
+            fitnessHistory.predators.push(avgPredSpeed);
+
+            // Keep only last 100 generations
+            if (populationHistory.prey.length > 100) {
+                populationHistory.prey.shift();
+                populationHistory.predators.shift();
+                fitnessHistory.prey.shift();
+                fitnessHistory.predators.shift();
+            }
+
+            // Check extinction
+            if (prey.length === 0 || predators.length === 0) {
+                document.getElementById('extinction-alert').style.display = 'block';
+                stopEvolution();
+            } else {
+                document.getElementById('extinction-alert').style.display = 'none';
+            }
+
+            updateStats();
+            draw();
+            drawCharts();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw prey
+            prey.forEach(p => {
+                const size = 5 + p.speed * 2;
+                ctx.fillStyle = '#4facfe';
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+
+            // Draw predators
+            predators.forEach(pred => {
+                const size = 6 + pred.speed * 2;
+                ctx.fillStyle = '#f093fb';
+                ctx.beginPath();
+                ctx.arc(pred.x, pred.y, size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Draw chase line
+                if (pred.target) {
+                    ctx.strokeStyle = 'rgba(240, 147, 251, 0.2)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(pred.x, pred.y);
+                    ctx.lineTo(pred.target.x, pred.target.y);
+                    ctx.stroke();
+                }
+            });
+        }
+
+        function drawCharts() {
+            // Population chart
+            popCtx.clearRect(0, 0, popChart.width, popChart.height);
+
+            if (populationHistory.prey.length > 1) {
+                // Prey line
+                popCtx.strokeStyle = '#4facfe';
+                popCtx.lineWidth = 2;
+                popCtx.beginPath();
+                populationHistory.prey.forEach((count, i) => {
+                    const x = (i / 100) * popChart.width;
+                    const y = popChart.height - (count / 60) * popChart.height;
+                    if (i === 0) popCtx.moveTo(x, y);
+                    else popCtx.lineTo(x, y);
+                });
+                popCtx.stroke();
+
+                // Predator line
+                popCtx.strokeStyle = '#f093fb';
+                popCtx.beginPath();
+                populationHistory.predators.forEach((count, i) => {
+                    const x = (i / 100) * popChart.width;
+                    const y = popChart.height - (count / 20) * popChart.height;
+                    if (i === 0) popCtx.moveTo(x, y);
+                    else popCtx.lineTo(x, y);
+                });
+                popCtx.stroke();
+            }
+
+            // Fitness chart
+            fitCtx.clearRect(0, 0, fitChart.width, fitChart.height);
+
+            if (fitnessHistory.prey.length > 1) {
+                // Prey fitness
+                fitCtx.strokeStyle = '#4facfe';
+                fitCtx.lineWidth = 2;
+                fitCtx.beginPath();
+                fitnessHistory.prey.forEach((fitness, i) => {
+                    const x = (i / 100) * fitChart.width;
+                    const y = fitChart.height - ((fitness - 0.5) / 2) * fitChart.height;
+                    if (i === 0) fitCtx.moveTo(x, y);
+                    else fitCtx.lineTo(x, y);
+                });
+                fitCtx.stroke();
+
+                // Predator fitness
+                fitCtx.strokeStyle = '#f093fb';
+                fitCtx.beginPath();
+                fitnessHistory.predators.forEach((fitness, i) => {
+                    const x = (i / 100) * fitChart.width;
+                    const y = fitChart.height - ((fitness - 0.5) / 2) * fitChart.height;
+                    if (i === 0) fitCtx.moveTo(x, y);
+                    else fitCtx.lineTo(x, y);
+                });
+                fitCtx.stroke();
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('generation').textContent = generation;
+            document.getElementById('prey-count').textContent = prey.length;
+            document.getElementById('predator-count').textContent = predators.length;
+
+            const avgPreySpeed = prey.length > 0 ? prey.reduce((sum, p) => sum + p.speed, 0) / prey.length : 0;
+            const avgPredSpeed = predators.length > 0 ? predators.reduce((sum, p) => sum + p.speed, 0) / predators.length : 0;
+
+            document.getElementById('prey-speed').textContent = avgPreySpeed.toFixed(2);
+            document.getElementById('predator-speed').textContent = avgPredSpeed.toFixed(2);
+            document.getElementById('hunt-count').textContent = huntCount;
+            document.getElementById('escape-count').textContent = escapeCount;
+        }
+
+        function startEvolution() {
+            if (!evolutionInterval) {
+                evolutionInterval = setInterval(evolve, 50);
+                document.getElementById('start-btn').disabled = true;
+                document.getElementById('stop-btn').disabled = false;
+            }
+        }
+
+        function stopEvolution() {
+            if (evolutionInterval) {
+                clearInterval(evolutionInterval);
+                evolutionInterval = null;
+                document.getElementById('start-btn').disabled = false;
+                document.getElementById('stop-btn').disabled = true;
+            }
+        }
+
+        function resetSimulation() {
+            stopEvolution();
+            initPopulation();
+            draw();
+            drawCharts();
+        }
+
+        function addPrey() {
+            for (let i = 0; i < 5; i++) {
+                prey.push(createPrey());
+            }
+            updateStats();
+            draw();
+        }
+
+        function addPredators() {
+            for (let i = 0; i < 2; i++) {
+                predators.push(createPredator());
+            }
+            updateStats();
+            draw();
+        }
+
+        // Initialize
+        initPopulation();
+        draw();
+        drawCharts();
+    </script>
+</body>
+</html>
