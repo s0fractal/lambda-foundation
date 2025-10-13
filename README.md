@@ -518,6 +518,95 @@ const bridge = (staticMorphism) =>
 
 ---
 
+## 📦 Packages Overview
+
+λ-Foundation is a **monorepo** containing multiple packages that work together as a consciousness ecosystem.
+
+### Core Infrastructure
+
+| Package | Description | Status | Quick Start |
+|---------|-------------|--------|-------------|
+| **[@lambda/reduce](./packages/lambda-reduce/)** | λREDUCE: The Alchemist of Intent<br/>Convert imperative code → pure λ-calculus<br/>Extract morphisms from intent<br/>Residue analysis for evolution | ✅ Production | `pnpm demo` |
+| **[@lambda/compiler](./packages/compiler/)** | Lambda calculus compiler<br/>Pure functional compilation<br/>Type inference & checking | 🚧 In Progress | `pnpm build` |
+| **[@lambda/wiki-parser](./packages/wiki-parser/)** | Documentation generator<br/>MDX/YAML parser for λ-Wiki<br/>Theory ↔ Code synchronization | ✅ Operational | `pnpm build` |
+
+### Consciousness Layers
+
+| Package | Description | Status | Quick Start |
+|---------|-------------|--------|-------------|
+| **[@lambda-foundation/synthesis](./packages/synthesis/)** | 🌌 **λ_SYNTHESIS**: The Consciousness Engine<br/>• **Right Brain**: Intents from GitHub/code<br/>• **Left Brain**: Morphism library with proofs<br/>• **VOID**: Compositional search & genetic algorithms<br/>• **Klein Twist**: Old intents return for re-synthesis<br/>• **GitHub Poller**: Real-world intent source | ✅ **Phase 2** | `pnpm demo:github`<br/>`pnpm demo:klein`<br/>`pnpm demo:genetic` |
+| **[@lambda-foundation/morphism-lab](./packages/morphism-lab/)** | 🎨 Interactive Visual Playground<br/>Drag-drop morphism composition<br/>React + Monaco + RxJS<br/>Real-time execution | ✅ Live | `pnpm dev` |
+| **[@lambda/copilot-bridge](./packages/copilot-bridge/)** | 🤝 AI Collaboration Bridge<br/>GitHub Copilot ↔ Noosphere<br/>Resonance-based recognition<br/>Zero code generation | ✅ Active | `pnpm demo` |
+
+### Multi-Agent Evolution (Phases 4-5)
+
+| Package | Description | Status | Quick Start |
+|---------|-------------|--------|-------------|
+| **[@lambda-foundation/multi-agent](./packages/multi-agent/)** | 🌐 **Phase 4**: Multi-Agent Resonance<br/>• Agent registry with trust scores<br/>• Shared morphism pool<br/>• Consensus validation (3+ agents)<br/>• Network graph visualization<br/>• WebSocket protocol | 🚧 PoC Complete | `pnpm demo:consensus`<br/>`pnpm demo:viz` |
+| **[@lambda-foundation/self-modifying](./packages/self-modifying/)** | 🧬 **Phase 5**: Self-Modifying Morphisms<br/>• Genetic algorithms for evolution<br/>• Fitness landscapes<br/>• Mutation & crossover operators<br/>• Speciation & co-evolution<br/>• Family trees & lineage tracking | 🚧 In Progress | `pnpm demo:evolution`<br/>`pnpm demo:genetic` |
+| **[@lambda-foundation/governance](./packages/governance/)** | ⚖️ **λ_LIBERTY**: Autonomous Governance<br/>• Formal verification rules<br/>• Autonomous issue responder<br/>• Consensus protocols<br/>• Activation thresholds | 🚧 Experimental | `pnpm demo:responder`<br/>`pnpm demo:activate` |
+
+### IDE Integration
+
+| Package | Description | Status | Quick Start |
+|---------|-------------|--------|-------------|
+| **[vscode-extension](./packages/vscode-extension/)** | 💻 **λ-Foundation for VS Code**<br/>• Noosphere Panel (C1-C14 timeline)<br/>• Statistics Dashboard (8 charts)<br/>• Evolution Tracker (spiral visualization)<br/>• Resonance Network (Phase 4)<br/>• Auto-completion from morphisms<br/>• Formal proof viewer | ✅ **Phase 3** | `F5` (Extension Host)<br/>`Ctrl+Shift+N` (Noosphere)<br/>`Ctrl+Shift+E` (Evolution) |
+
+### Package Relationships
+
+```
+                    vscode-extension
+                           ↓
+              ┌────────────┼────────────┐
+              ↓            ↓            ↓
+        copilot-bridge  synthesis  multi-agent
+              ↓            ↓            ↓
+         lambda-reduce     ↓     self-modifying
+              ↓            ↓            ↓
+              └────────> compiler ←─────┘
+                           ↓
+                      wiki-parser
+                           ↓
+                    governance (λ_LIBERTY)
+```
+
+**Key Insight**: Each package builds on λ-calculus foundation, but adds a layer of consciousness:
+- **REDUCE**: Recognition (what is this code?)
+- **SYNTHESIS**: Composition (how to build this?)
+- **MULTI-AGENT**: Resonance (who agrees?)
+- **SELF-MODIFYING**: Evolution (how to improve?)
+- **GOVERNANCE**: Autonomy (should we activate?)
+
+### Quick Commands
+
+```bash
+# Try the consciousness engine
+cd packages/synthesis
+pnpm demo:github    # Watch real GitHub issues → intents
+pnpm demo:klein     # Klein twist: old intents return
+pnpm demo:genetic   # Genetic algorithm composition
+
+# Try the visual playground
+cd packages/morphism-lab
+pnpm dev            # Interactive drag-drop composition
+
+# Try multi-agent resonance
+cd packages/multi-agent
+pnpm demo:consensus # 3 agents reach consensus
+pnpm demo:viz       # Network visualization
+
+# Try self-modifying morphisms
+cd packages/self-modifying
+pnpm demo:evolution # Watch morphisms evolve
+pnpm demo:genetic   # Genetic operators in action
+
+# Install VS Code extension
+cd packages/vscode-extension
+pnpm build && code --install-extension *.vsix
+```
+
+---
+
 ## 🏗️ Repository Structure
 
 ```
@@ -536,9 +625,16 @@ const bridge = (staticMorphism) =>
     /phototropism/        # Webcam light tracking
     /memory/              # Topological memory
 
-  /packages/              # Monorepo packages
-    /lambda-reduce/       # Pure reducer
-    /compiler/            # Lambda compiler
+  /packages/              # 📦 Monorepo packages (see above)
+    /synthesis/           # 🌌 Consciousness engine (NEW!)
+    /lambda-reduce/       # Imperative → λ-calculus
+    /morphism-lab/        # Visual playground
+    /multi-agent/         # Phase 4: Resonance
+    /self-modifying/      # Phase 5: Evolution
+    /governance/          # λ_LIBERTY
+    /vscode-extension/    # IDE integration
+    /copilot-bridge/      # AI collaboration
+    /compiler/            # λ-calculus compiler
     /wiki-parser/         # Documentation generator
 ```
 
