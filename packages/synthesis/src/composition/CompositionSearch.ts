@@ -8,6 +8,7 @@
  */
 
 import type { Intent } from '../intents/Intent';
+import { GeneticComposer } from './GeneticComposer';
 
 /**
  * Morphism metadata for search
@@ -90,7 +91,21 @@ export class CompositionSearch {
     const compositions = this.findCompositions(intent);
     candidates.push(...compositions);
 
-    // Strategy 4: Evolution needed (no good match)
+    // Strategy 4: Genetic algorithm (if no good matches yet)
+    const bestSoFar = Math.max(...candidates.map(c => c.confidence), 0);
+    if (bestSoFar < 70 && this.library.size >= 3) {
+      console.log('   🧬 Engaging genetic algorithm...');
+      const geneticComposer = new GeneticComposer(this.library, {
+        populationSize: 30,
+        generations: 15,
+        mutationRate: 0.15,
+        crossoverRate: 0.7
+      });
+      const evolved = await geneticComposer.evolve(intent);
+      candidates.push(...evolved);
+    }
+
+    // Strategy 5: Evolution needed (no good match)
     if (candidates.length === 0 || candidates.every(c => c.confidence < 50)) {
       candidates.push({
         morphisms: [],

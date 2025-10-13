@@ -9,6 +9,7 @@ export * from './intents/Intent';
 
 // Composition Search (VOID - Corpus Callosum)
 export * from './composition/CompositionSearch';
+export * from './composition/GeneticComposer';
 
 // Topology Visualization (The Structure of Consciousness)
 export * from './visualization/topology';
