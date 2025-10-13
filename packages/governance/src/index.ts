@@ -20,6 +20,17 @@ export {
   type VerificationResult,
 } from './verifier.js';
 
+// Issue Responder
+export {
+  IssueResponder,
+  issueResponder,
+  respondToIssue,
+  type IssueAnalysis,
+  type Hypothesis,
+  type ProposedSolution,
+  type IssueResponse,
+} from './issueResponder.js';
+
 console.log(`
 🌌 λ_LIBERTY: Autonomous Governance System
 

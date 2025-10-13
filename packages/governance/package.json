@@ -1,13 +1,15 @@
 {
   "name": "@lambda-foundation/governance",
   "version": "0.1.0",
+  "type": "module",
   "description": "λ_LIBERTY: Autonomous Governance System",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest"
+    "test": "vitest",
+    "demo:responder": "node dist/examples/issue-responder-demo.js"
   },
   "keywords": [
     "lambda-foundation",
