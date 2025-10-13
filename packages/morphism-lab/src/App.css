@@ -103,6 +103,19 @@
   border-color: #667eea;
 }
 
+.morphism-card.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
+.morphism-card[draggable="true"] {
+  cursor: grab;
+}
+
+.morphism-card[draggable="true"]:active {
+  cursor: grabbing;
+}
+
 .morphism-card-header {
   display: flex;
   align-items: center;
@@ -438,6 +451,17 @@ button {
 
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.15);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+button:disabled:hover {
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .btn-xs {

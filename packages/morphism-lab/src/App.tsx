@@ -1,11 +1,27 @@
 import { useState } from 'react';
-import { DEFAULT_MORPHISMS, type Morphism, type ComposedPipeline } from './types/morphisms';
+import { DEFAULT_MORPHISMS, type Morphism, type ComposedPipeline, type PipelineNode } from './types/morphisms';
+import { Canvas } from './components/Canvas';
 import './App.css';
 
 function App() {
   const [availableMorphisms] = useState<Morphism[]>(DEFAULT_MORPHISMS);
-  const [currentPipeline, setCurrentPipeline] = useState<ComposedPipeline | null>(null);
+  const [pipelineNodes, setPipelineNodes] = useState<PipelineNode[]>([]);
   const [selectedMorphism, setSelectedMorphism] = useState<Morphism | null>(null);
+  const [draggedMorphism, setDraggedMorphism] = useState<Morphism | null>(null);
+
+  const handlePipelineChange = (nodes: PipelineNode[]) => {
+    setPipelineNodes(nodes);
+  };
+
+  const handleDragStart = (morphism: Morphism) => (e: React.DragEvent) => {
+    setDraggedMorphism(morphism);
+    e.dataTransfer.effectAllowed = 'copy';
+    e.dataTransfer.setData('morphism', JSON.stringify(morphism));
+  };
+
+  const handleDragEnd = () => {
+    setDraggedMorphism(null);
+  };
 
   return (
     <div className="app">
@@ -33,7 +49,10 @@ function App() {
             {availableMorphisms.map(morphism => (
               <div
                 key={morphism.id}
-                className={`morphism-card ${selectedMorphism?.id === morphism.id ? 'selected' : ''}`}
+                className={`morphism-card ${selectedMorphism?.id === morphism.id ? 'selected' : ''} ${draggedMorphism?.id === morphism.id ? 'dragging' : ''}`}
+                draggable
+                onDragStart={handleDragStart(morphism)}
+                onDragEnd={handleDragEnd}
                 onClick={() => setSelectedMorphism(morphism)}
               >
                 <div className="morphism-card-header">
@@ -63,56 +82,34 @@ function App() {
         <main className="composition-canvas">
           <div className="canvas-header">
             <h2>Your Pipeline</h2>
-            {currentPipeline && (
+            {pipelineNodes.length > 0 && (
               <div className="pipeline-stats">
                 <span className="fitness">
-                  Fitness: {currentPipeline.fitness}%
+                  Nodes: {pipelineNodes.length}
                 </span>
-                {currentPipeline.proven && <span className="badge-proven">✓ Proven</span>}
-                {currentPipeline.typeChecked && <span className="badge-typed">🔗 Type Safe</span>}
+                <span className="badge-typed">🔗 Interactive</span>
               </div>
             )}
           </div>
 
           <div className="canvas-area">
-            {!currentPipeline ? (
-              <div className="canvas-empty">
-                <div className="empty-state">
-                  <div className="empty-icon">🎨</div>
-                  <h3>Start Composing</h3>
-                  <p>Drag morphisms from the left panel to build your pipeline</p>
-                  <p className="empty-hint">
-                    Or try: <button className="link-btn">📖 Load Example</button>
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="canvas-content">
-                {/* Pipeline visualization will go here */}
-                <div className="pipeline-flow">
-                  <div className="pipeline-node">
-                    <span className="node-symbol">🔔</span>
-                    <span className="node-name">subscribe</span>
-                  </div>
-                  <div className="pipeline-arrow">→</div>
-                  <div className="pipeline-node">
-                    <span className="node-symbol">🗺️</span>
-                    <span className="node-name">map</span>
-                  </div>
-                  <div className="pipeline-arrow">→</div>
-                  <div className="pipeline-node">
-                    <span className="node-symbol">🔍</span>
-                    <span className="node-name">filter</span>
-                  </div>
-                </div>
-              </div>
-            )}
+            <Canvas onPipelineChange={handlePipelineChange} />
           </div>
 
           <div className="canvas-actions">
-            <button className="btn-secondary">🗑️ Clear</button>
-            <button className="btn-secondary">✓ Validate</button>
-            <button className="btn-primary">💻 Generate Code</button>
+            <button
+              className="btn-secondary"
+              onClick={() => setPipelineNodes([])}
+              disabled={pipelineNodes.length === 0}
+            >
+              🗑️ Clear
+            </button>
+            <button className="btn-secondary" disabled={pipelineNodes.length === 0}>
+              ✓ Validate
+            </button>
+            <button className="btn-primary" disabled={pipelineNodes.length === 0}>
+              💻 Generate Code
+            </button>
           </div>
         </main>
 
