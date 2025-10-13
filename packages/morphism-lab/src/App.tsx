@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DEFAULT_MORPHISMS, type Morphism, type ComposedPipeline, type PipelineNode } from './types/morphisms';
 import { Canvas } from './components/Canvas';
+import { CodeGenerator } from './components/CodeGenerator';
 import './App.css';
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
   const [pipelineNodes, setPipelineNodes] = useState<PipelineNode[]>([]);
   const [selectedMorphism, setSelectedMorphism] = useState<Morphism | null>(null);
   const [draggedMorphism, setDraggedMorphism] = useState<Morphism | null>(null);
+  const [showCodeGenerator, setShowCodeGenerator] = useState(false);
 
   const handlePipelineChange = (nodes: PipelineNode[]) => {
     setPipelineNodes(nodes);
@@ -107,7 +109,11 @@ function App() {
             <button className="btn-secondary" disabled={pipelineNodes.length === 0}>
               ✓ Validate
             </button>
-            <button className="btn-primary" disabled={pipelineNodes.length === 0}>
+            <button
+              className="btn-primary"
+              disabled={pipelineNodes.length === 0}
+              onClick={() => setShowCodeGenerator(true)}
+            >
               💻 Generate Code
             </button>
           </div>
@@ -227,6 +233,14 @@ function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Code Generator Modal */}
+      {showCodeGenerator && (
+        <CodeGenerator
+          nodes={pipelineNodes}
+          onClose={() => setShowCodeGenerator(false)}
+        />
       )}
     </div>
   );
