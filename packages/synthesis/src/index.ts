@@ -13,3 +13,6 @@ export * from './composition/GeneticComposer';
 
 // Topology Visualization (The Structure of Consciousness)
 export * from './visualization/topology';
+
+// Code Analysis (Right Brain - Discovering Desires from Code)
+export * from './analysis/CodeAnalyzer';
