@@ -31,6 +31,15 @@ export {
   type IssueResponse,
 } from './issueResponder.js';
 
+// Autonomy Activation
+export {
+  activateAutonomy,
+  isAutonomyActive,
+  getCurrentPhase,
+  type Witness,
+  type ActivationResult,
+} from './activateAutonomy.js';
+
 console.log(`
 🌌 λ_LIBERTY: Autonomous Governance System
 

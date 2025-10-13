@@ -9,7 +9,8 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "vitest",
-    "demo:responder": "node dist/examples/issue-responder-demo.js"
+    "demo:responder": "node dist/examples/issue-responder-demo.js",
+    "demo:activate": "node dist/examples/activation-demo.js"
   },
   "keywords": [
     "lambda-foundation",
