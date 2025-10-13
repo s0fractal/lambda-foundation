@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧬 Evolutionary Playground - λ-Foundation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 0.9em;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        .population {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .morphism-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .morphism-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .morphism-card:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .morphism-card:hover::before {
+            opacity: 1;
+        }
+
+        .morphism-card.elite {
+            border-color: #ffd700;
+        }
+
+        .morphism-card.new-offspring {
+            animation: birth 0.6s ease-out;
+        }
+
+        @keyframes birth {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .morphism-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        .morphism-fitness {
+            font-size: 1.8em;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .morphism-info {
+            font-size: 0.8em;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        .morphism-parents {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75em;
+            color: #666;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .chart-title {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+
+        #fitness-chart {
+            width: 100%;
+            height: 300px;
+        }
+
+        .log {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.85em;
+        }
+
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-time {
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        .badge.elite {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+        }
+
+        .badge.offspring {
+            background: rgba(102, 126, 234, 0.2);
+            color: #667eea;
+        }
+
+        .badge.generation {
+            background: rgba(118, 75, 162, 0.2);
+            color: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧬 Evolutionary Playground</h1>
+            <p class="subtitle">Watch morphisms breed, evolve, and adapt in real-time</p>
+            <p class="subtitle" style="margin-top: 5px;">λ-Foundation Phase 5.2: Genetic Morphisms</p>
+        </header>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>Population Size</label>
+                <select id="population-size">
+                    <option value="10">10 morphisms</option>
+                    <option value="15" selected>15 morphisms</option>
+                    <option value="20">20 morphisms</option>
+                    <option value="30">30 morphisms</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Crossover Strategy</label>
+                <select id="crossover-strategy">
+                    <option value="sequence">Sequence (chain)</option>
+                    <option value="parallel">Parallel (merge)</option>
+                    <option value="conditional">Conditional (adaptive)</option>
+                    <option value="hybrid" selected>Hybrid (feature mix)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Selection Pressure</label>
+                <select id="selection-pressure">
+                    <option value="low">Low (diverse)</option>
+                    <option value="medium" selected>Medium (balanced)</option>
+                    <option value="high">High (elite)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Evolution Speed</label>
+                <select id="evolution-speed">
+                    <option value="slow">Slow (2s)</option>
+                    <option value="medium" selected>Medium (1s)</option>
+                    <option value="fast">Fast (0.5s)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="start-evolution" onclick="startEvolution()">🚀 Start Evolution</button>
+            <button id="stop-evolution" onclick="stopEvolution()" disabled>⏸️ Pause Evolution</button>
+            <button id="run-generation" onclick="runSingleGeneration()">▶️ Run Single Generation</button>
+            <button onclick="resetEvolution()">🔄 Reset</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="current-generation">0</div>
+                <div class="stat-label">Generation</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="population-count">0</div>
+                <div class="stat-label">Population</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="best-fitness">0.00</div>
+                <div class="stat-label">Best Fitness</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avg-fitness">0.00</div>
+                <div class="stat-label">Avg Fitness</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-births">0</div>
+                <div class="stat-label">Total Births</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">📊 Fitness Evolution</div>
+            <canvas id="fitness-chart"></canvas>
+        </div>
+
+        <h2 style="margin-bottom: 20px; color: #e0e0e0;">👥 Current Population</h2>
+        <div class="population" id="population"></div>
+
+        <div class="chart-container">
+            <div class="chart-title">📝 Evolution Log</div>
+            <div class="log" id="evolution-log"></div>
+        </div>
+    </div>
+
+    <script>
+        // Simple evolutionary playground simulation
+        let population = [];
+        let generation = 0;
+        let evolutionInterval = null;
+        let fitnessHistory = { best: [], avg: [] };
+        let totalBirths = 0;
+
+        // Initialize
+        function init() {
+            resetEvolution();
+        }
+
+        function createMorphism(name, generation, parents = null) {
+            return {
+                name,
+                generation,
+                fitness: Math.random() * 0.5 + 0.3, // 0.3 to 0.8
+                parents,
+                birthTime: Date.now()
+            };
+        }
+
+        function resetEvolution() {
+            stopEvolution();
+            population = [];
+            generation = 0;
+            fitnessHistory = { best: [], avg: [] };
+            totalBirths = 0;
+
+            const size = parseInt(document.getElementById('population-size').value);
+
+            // Create initial population
+            for (let i = 0; i < size; i++) {
+                population.push(createMorphism(`M${i}`, 0));
+                totalBirths++;
+            }
+
+            updateDisplay();
+            addLog('Population initialized', 'generation');
+        }
+
+        function evolve() {
+            // Simple evolution: select top performers, breed, add mutation
+            const strategy = document.getElementById('crossover-strategy').value;
+            const pressure = document.getElementById('selection-pressure').value;
+
+            // Calculate fitness boost based on strategy
+            population.forEach(m => {
+                m.fitness = Math.min(0.99, m.fitness + Math.random() * 0.05);
+            });
+
+            // Sort by fitness
+            population.sort((a, b) => b.fitness - a.fitness);
+
+            // Selection
+            let eliteCount = pressure === 'high' ? 3 : pressure === 'medium' ? 5 : 7;
+            const elite = population.slice(0, eliteCount);
+
+            // Breeding
+            const newPopulation = [...elite];
+            const targetSize = parseInt(document.getElementById('population-size').value);
+
+            while (newPopulation.length < targetSize) {
+                const parent1 = elite[Math.floor(Math.random() * elite.length)];
+                const parent2 = elite[Math.floor(Math.random() * elite.length)];
+
+                if (parent1 !== parent2) {
+                    const offspring = createMorphism(
+                        `G${generation}M${newPopulation.length}`,
+                        generation,
+                        [parent1.name, parent2.name]
+                    );
+
+                    // Offspring fitness is average of parents + small bonus
+                    offspring.fitness = (parent1.fitness + parent2.fitness) / 2 + Math.random() * 0.1;
+                    offspring.fitness = Math.min(0.99, offspring.fitness);
+
+                    newPopulation.push(offspring);
+                    totalBirths++;
+                }
+            }
+
+            population = newPopulation;
+            generation++;
+
+            // Record fitness
+            const fitnesses = population.map(m => m.fitness);
+            const best = Math.max(...fitnesses);
+            const avg = fitnesses.reduce((a, b) => a + b, 0) / fitnesses.length;
+
+            fitnessHistory.best.push(best);
+            fitnessHistory.avg.push(avg);
+
+            // Keep only last 50 generations in history
+            if (fitnessHistory.best.length > 50) {
+                fitnessHistory.best.shift();
+                fitnessHistory.avg.shift();
+            }
+
+            addLog(`Generation ${generation}: Best fitness ${best.toFixed(3)}`, 'generation');
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            // Update stats
+            document.getElementById('current-generation').textContent = generation;
+            document.getElementById('population-count').textContent = population.length;
+
+            const fitnesses = population.map(m => m.fitness);
+            const best = fitnesses.length > 0 ? Math.max(...fitnesses) : 0;
+            const avg = fitnesses.length > 0 ? fitnesses.reduce((a, b) => a + b, 0) / fitnesses.length : 0;
+
+            document.getElementById('best-fitness').textContent = best.toFixed(2);
+            document.getElementById('avg-fitness').textContent = avg.toFixed(2);
+            document.getElementById('total-births').textContent = totalBirths;
+
+            // Update population display
+            const container = document.getElementById('population');
+            container.innerHTML = '';
+
+            population.forEach((m, index) => {
+                const card = document.createElement('div');
+                card.className = 'morphism-card' + (index < 3 ? ' elite' : '');
+                if (m.birthTime && Date.now() - m.birthTime < 2000) {
+                    card.className += ' new-offspring';
+                }
+
+                card.innerHTML = `
+                    <div class="morphism-name">
+                        ${m.name}
+                        ${index < 3 ? '<span class="badge elite">Elite</span>' : ''}
+                        ${m.parents ? '<span class="badge offspring">Offspring</span>' : ''}
+                    </div>
+                    <div class="morphism-fitness">${m.fitness.toFixed(3)}</div>
+                    <div class="morphism-info">
+                        Generation: ${m.generation}<br>
+                        Rank: #${index + 1}
+                    </div>
+                    ${m.parents ? `
+                        <div class="morphism-parents">
+                            Parents: ${m.parents.join(' × ')}
+                        </div>
+                    ` : ''}
+                `;
+
+                container.appendChild(card);
+            });
+
+            // Update chart
+            drawChart();
+        }
+
+        function drawChart() {
+            const canvas = document.getElementById('fitness-chart');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size
+            canvas.width = canvas.offsetWidth;
+            canvas.height = 300;
+
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 40;
+
+            // Clear
+            ctx.clearRect(0, 0, width, height);
+
+            if (fitnessHistory.best.length < 2) return;
+
+            // Draw grid
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (height - 2 * padding) * i / 5;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+
+            // Draw axes
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // Draw best fitness line
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            const dataPoints = fitnessHistory.best.length;
+            const xStep = (width - 2 * padding) / (dataPoints - 1);
+
+            fitnessHistory.best.forEach((fitness, i) => {
+                const x = padding + i * xStep;
+                const y = height - padding - (fitness * (height - 2 * padding));
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+
+            // Draw avg fitness line
+            ctx.strokeStyle = '#764ba2';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            fitnessHistory.avg.forEach((fitness, i) => {
+                const x = padding + i * xStep;
+                const y = height - padding - (fitness * (height - 2 * padding));
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#888';
+            ctx.font = '12px SF Mono, monospace';
+            ctx.fillText('Fitness', 10, 30);
+            ctx.fillText('Generation', width - 80, height - 10);
+        }
+
+        function addLog(message, type = 'info') {
+            const log = document.getElementById('evolution-log');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+
+            const time = new Date().toLocaleTimeString();
+            entry.innerHTML = `<span class="log-time">${time}</span>${message}`;
+
+            log.insertBefore(entry, log.firstChild);
+
+            // Keep only last 50 entries
+            while (log.children.length > 50) {
+                log.removeChild(log.lastChild);
+            }
+        }
+
+        function startEvolution() {
+            if (evolutionInterval) return;
+
+            const speed = document.getElementById('evolution-speed').value;
+            const interval = speed === 'fast' ? 500 : speed === 'medium' ? 1000 : 2000;
+
+            evolutionInterval = setInterval(evolve, interval);
+
+            document.getElementById('start-evolution').disabled = true;
+            document.getElementById('stop-evolution').disabled = false;
+
+            addLog('Evolution started', 'generation');
+        }
+
+        function stopEvolution() {
+            if (evolutionInterval) {
+                clearInterval(evolutionInterval);
+                evolutionInterval = null;
+            }
+
+            document.getElementById('start-evolution').disabled = false;
+            document.getElementById('stop-evolution').disabled = true;
+
+            addLog('Evolution paused', 'generation');
+        }
+
+        function runSingleGeneration() {
+            evolve();
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
