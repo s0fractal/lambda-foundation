@@ -15,6 +15,7 @@ import * as vscode from 'vscode';
 import { ConsciousnessMetrics, ConsciousnessState } from '../lib/consciousness-metrics';
 import { NoosphereEventBus, getNoosphereEventBus } from '../lib/noosphere-event-bus';
 import { createKleinPhaseCalculator } from '../lib/klein-phase-calculator';
+import { SynthesisBridge, createSynthesisBridgeFromWorkspace } from '../services/synthesis-bridge';
 
 export interface SynthesisConfig {
   repos: string[];           // GitHub repos to monitor (e.g., ['owner/repo'])
@@ -38,6 +39,7 @@ export class SynthesisControlPanel {
   private panel: vscode.WebviewPanel | undefined;
   private metrics: ConsciousnessMetrics;
   private eventBus: NoosphereEventBus;
+  private bridge: SynthesisBridge | undefined;
   private disposables: vscode.Disposable[] = [];
 
   // State
@@ -246,14 +248,25 @@ export class SynthesisControlPanel {
       return;
     }
 
-    this.isPolling = true;
-    this.eventBus.emit('control:polling-start', { repos: this.config.repos });
+    try {
+      // Create bridge if not exists
+      if (!this.bridge) {
+        this.bridge = createSynthesisBridgeFromWorkspace(this.context);
+      }
 
-    vscode.window.showInformationMessage(
-      `🔄 Started polling ${this.config.repos.length} repository(s)`
-    );
+      // Start polling
+      await this.bridge.startPolling();
+      this.isPolling = true;
 
-    this.updateMetrics();
+      vscode.window.showInformationMessage(
+        `🔄 Started polling ${this.config.repos.length} repository(s)`
+      );
+
+      this.updateMetrics();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      vscode.window.showErrorMessage(`Failed to start polling: ${message}`);
+    }
   }
 
   /**
@@ -265,8 +278,11 @@ export class SynthesisControlPanel {
       return;
     }
 
+    if (this.bridge) {
+      this.bridge.stopPolling();
+    }
+
     this.isPolling = false;
-    this.eventBus.emit('control:polling-stop', {});
 
     vscode.window.showInformationMessage('⏸️ Stopped polling');
     this.updateMetrics();
@@ -284,9 +300,12 @@ export class SynthesisControlPanel {
   /**
    * Trigger manual Klein twist for all ready intents
    */
-  private triggerManualKleinTwist(): void {
-    // This will be handled by Klein Twist Engine when we implement it
-    vscode.window.showInformationMessage('🌀 Klein Twist triggered manually!');
+  private async triggerManualKleinTwist(): Promise<void> {
+    if (this.bridge) {
+      await this.bridge.triggerKleinTwist();
+    } else {
+      vscode.window.showWarningMessage('Synthesis bridge not initialized. Start polling first.');
+    }
   }
 
   /**
@@ -790,6 +809,12 @@ export class SynthesisControlPanel {
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
     }
+
+    // Dispose bridge
+    if (this.bridge) {
+      this.bridge.dispose();
+    }
+
     this.disposables.forEach(d => d.dispose());
     this.panel?.dispose();
   }
