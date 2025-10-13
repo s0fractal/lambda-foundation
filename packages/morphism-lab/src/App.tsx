@@ -140,7 +140,43 @@ function App() {
             )}
           </div>
 
-          <div className="canvas-area">
+          <div
+            className="canvas-area"
+            onDragEnter={(e) => {
+              e.preventDefault();
+              console.log('Drag entered canvas-area!');
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = 'copy';
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              console.log('DROP on canvas-area!');
+
+              if (!draggedMorphism) {
+                console.warn('No morphism dragged');
+                return;
+              }
+
+              // Calculate position relative to canvas-area
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+
+              console.log('Drop position:', x, y);
+
+              // Add node directly
+              const newNode: PipelineNode = {
+                morphismId: draggedMorphism.id,
+                position: { x, y },
+                connections: []
+              };
+
+              const updatedNodes = [...pipelineNodes, newNode];
+              setPipelineNodes(updatedNodes);
+            }}
+          >
             <Canvas
               onPipelineChange={handlePipelineChange}
               draggedMorphism={draggedMorphism}
