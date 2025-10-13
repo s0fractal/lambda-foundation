@@ -17,3 +17,6 @@ export * from './visualization/topology';
 
 // Code Analysis (Right Brain - Discovering Desires from Code)
 export * from './analysis/CodeAnalyzer';
+
+// External Sources (Right Brain - Reading from Reality)
+export * from './sources/GitHubPoller';
