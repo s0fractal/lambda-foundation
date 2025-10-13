@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { DEFAULT_MORPHISMS, type Morphism, type ComposedPipeline, type PipelineNode } from './types/morphisms';
 import { Canvas } from './components/Canvas';
 import { CodeGenerator } from './components/CodeGenerator';
+import { ExamplesModal } from './components/ExamplesModal';
 import { executePipeline, type ExecutionResult } from './demo/pipelineRunner';
+import type { ExamplePipeline } from './examples/examplePipelines';
 import './App.css';
 
 function App() {
@@ -11,6 +13,7 @@ function App() {
   const [selectedMorphism, setSelectedMorphism] = useState<Morphism | null>(null);
   const [draggedMorphism, setDraggedMorphism] = useState<Morphism | null>(null);
   const [showCodeGenerator, setShowCodeGenerator] = useState(false);
+  const [showExamples, setShowExamples] = useState(false);
   const [executionResult, setExecutionResult] = useState<ExecutionResult | null>(null);
   const [isExecuting, setIsExecuting] = useState(false);
 
@@ -44,6 +47,11 @@ function App() {
     }
   };
 
+  const handleLoadExample = (example: ExamplePipeline) => {
+    setPipelineNodes(example.nodes);
+    setExecutionResult(null); // Reset execution when loading new pipeline
+  };
+
   return (
     <div className="app">
       {/* Header */}
@@ -51,7 +59,7 @@ function App() {
         <h1>🔬 Morphism Laboratory</h1>
         <p className="subtitle">Where morphisms become tangible. Where proofs become playful.</p>
         <div className="header-actions">
-          <button className="btn-secondary">📖 Examples</button>
+          <button className="btn-secondary" onClick={() => setShowExamples(true)}>📖 Examples</button>
           <button className="btn-secondary">❓ Help</button>
           <button className="btn-primary">💾 Save</button>
         </div>
@@ -282,6 +290,14 @@ function App() {
         <CodeGenerator
           nodes={pipelineNodes}
           onClose={() => setShowCodeGenerator(false)}
+        />
+      )}
+
+      {/* Examples Modal */}
+      {showExamples && (
+        <ExamplesModal
+          onClose={() => setShowExamples(false)}
+          onLoadExample={handleLoadExample}
         />
       )}
     </div>
