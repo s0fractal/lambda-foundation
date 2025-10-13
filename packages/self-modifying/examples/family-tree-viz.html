@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌳 Family Tree - λ-Foundation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            padding: 20px;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            height: calc(100vh - 40px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #e0e0e0;
+            font-family: inherit;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .canvas-container {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        #tree-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        #tree-canvas:active {
+            cursor: grabbing;
+        }
+
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 200px;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-panel h3 {
+            font-size: 1em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .info-item {
+            font-size: 0.85em;
+            margin: 5px 0;
+            color: #ccc;
+        }
+
+        .legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.85em;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .stats {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            font-size: 0.85em;
+            margin: 5px 0;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌳 Family Tree Visualization</h1>
+            <p class="subtitle">Interactive ancestry explorer for genetic morphisms</p>
+        </header>
+
+        <div class="controls">
+            <button onclick="generatePopulation()">🌱 Generate New Population</button>
+            <button onclick="evolveGeneration()">▶️ Evolve Generation</button>
+            <button onclick="resetView()" class="secondary">🔄 Reset View</button>
+            <button onclick="zoomIn()" class="secondary">🔍 Zoom In</button>
+            <button onclick="zoomOut()" class="secondary">🔍 Zoom Out</button>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="tree-canvas"></canvas>
+
+            <div class="stats">
+                <div class="stat-item">Generation: <span class="stat-value" id="generation">0</span></div>
+                <div class="stat-item">Total Morphisms: <span class="stat-value" id="total">0</span></div>
+                <div class="stat-item">Lineages: <span class="stat-value" id="lineages">0</span></div>
+            </div>
+
+            <div class="info-panel" id="info-panel" style="display: none;">
+                <h3>Morphism Info</h3>
+                <div class="info-item" id="info-name"></div>
+                <div class="info-item" id="info-generation"></div>
+                <div class="info-item" id="info-fitness"></div>
+                <div class="info-item" id="info-parents"></div>
+                <div class="info-item" id="info-offspring"></div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #667eea, #764ba2);"></div>
+                    <span>Current Generation</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: rgba(102, 126, 234, 0.5);"></div>
+                    <span>Previous Generations</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: rgba(255, 215, 0, 0.6);"></div>
+                    <span>Elite (Top 3)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: transparent; border: 2px solid #667eea;"></div>
+                    <span>Selected</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('tree-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        let morphisms = [];
+        let generation = 0;
+        let selectedMorphism = null;
+
+        // View state
+        let offsetX = 0;
+        let offsetY = 0;
+        let scale = 1;
+        let isDragging = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+
+        // Layout
+        const nodeRadius = 25;
+        const levelHeight = 120;
+        const minNodeSpacing = 80;
+
+        // Initialize canvas
+        function resizeCanvas() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            offsetX = canvas.width / 2;
+            offsetY = 50;
+            draw();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Mouse interaction
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left - offsetX) / scale;
+            const y = (e.clientY - rect.top - offsetY) / scale;
+
+            // Check if clicked on a node
+            const clicked = findMorphismAt(x, y);
+            if (clicked) {
+                selectedMorphism = clicked;
+                showInfo(clicked);
+                draw();
+            } else {
+                isDragging = true;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - lastMouseX;
+                const dy = e.clientY - lastMouseY;
+                offsetX += dx;
+                offsetY += dy;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+                draw();
+            } else {
+                // Show hover effect
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX - rect.left - offsetX) / scale;
+                const y = (e.clientY - rect.top - offsetY) / scale;
+                const hovered = findMorphismAt(x, y);
+                canvas.style.cursor = hovered ? 'pointer' : 'grab';
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? 0.9 : 1.1;
+            scale *= delta;
+            scale = Math.max(0.3, Math.min(3, scale));
+            draw();
+        });
+
+        // Find morphism at position
+        function findMorphismAt(x, y) {
+            for (const m of morphisms) {
+                if (!m.position) continue;
+                const dx = x - m.position.x;
+                const dy = y - m.position.y;
+                if (dx * dx + dy * dy < nodeRadius * nodeRadius) {
+                    return m;
+                }
+            }
+            return null;
+        }
+
+        // Generate initial population
+        function generatePopulation() {
+            morphisms = [];
+            generation = 0;
+            selectedMorphism = null;
+
+            const size = 8;
+            for (let i = 0; i < size; i++) {
+                morphisms.push(createMorphism(`M${i}`, 0, null));
+            }
+
+            calculateLayout();
+            updateStats();
+            draw();
+        }
+
+        // Create morphism
+        function createMorphism(name, gen, parents) {
+            return {
+                name,
+                generation: gen,
+                fitness: Math.random() * 0.5 + 0.3,
+                parents: parents || [],
+                offspring: [],
+                position: null
+            };
+        }
+
+        // Evolve generation
+        function evolveGeneration() {
+            if (morphisms.length === 0) {
+                generatePopulation();
+                return;
+            }
+
+            // Sort by fitness
+            morphisms.sort((a, b) => b.fitness - a.fitness);
+
+            // Select elite
+            const elite = morphisms.slice(0, 3);
+
+            // Create offspring
+            const newOffspring = [];
+            for (let i = 0; i < 5; i++) {
+                const p1 = elite[Math.floor(Math.random() * elite.length)];
+                const p2 = elite[Math.floor(Math.random() * elite.length)];
+
+                if (p1 !== p2) {
+                    const offspring = createMorphism(
+                        `G${generation + 1}M${i}`,
+                        generation + 1,
+                        [p1.name, p2.name]
+                    );
+                    offspring.fitness = (p1.fitness + p2.fitness) / 2 + Math.random() * 0.1;
+                    offspring.fitness = Math.min(0.99, offspring.fitness);
+
+                    p1.offspring.push(offspring.name);
+                    p2.offspring.push(offspring.name);
+
+                    newOffspring.push(offspring);
+                }
+            }
+
+            morphisms.push(...newOffspring);
+            generation++;
+
+            calculateLayout();
+            updateStats();
+            draw();
+        }
+
+        // Calculate tree layout
+        function calculateLayout() {
+            // Group by generation
+            const byGeneration = {};
+            morphisms.forEach(m => {
+                if (!byGeneration[m.generation]) {
+                    byGeneration[m.generation] = [];
+                }
+                byGeneration[m.generation].push(m);
+            });
+
+            // Position nodes
+            Object.entries(byGeneration).forEach(([gen, nodes]) => {
+                const y = parseInt(gen) * levelHeight;
+                const totalWidth = nodes.length * minNodeSpacing;
+                const startX = -totalWidth / 2;
+
+                nodes.forEach((node, i) => {
+                    node.position = {
+                        x: startX + i * minNodeSpacing + minNodeSpacing / 2,
+                        y: y
+                    };
+                });
+            });
+        }
+
+        // Draw tree
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(offsetX, offsetY);
+            ctx.scale(scale, scale);
+
+            // Draw connections first
+            morphisms.forEach(m => {
+                if (m.parents.length > 0 && m.position) {
+                    m.parents.forEach(parentName => {
+                        const parent = morphisms.find(p => p.name === parentName);
+                        if (parent && parent.position) {
+                            drawConnection(parent.position, m.position);
+                        }
+                    });
+                }
+            });
+
+            // Draw nodes
+            morphisms.forEach((m, index) => {
+                if (m.position) {
+                    const isElite = morphisms.slice(0, 3).includes(m);
+                    const isSelected = m === selectedMorphism;
+                    const isCurrent = m.generation === generation;
+                    drawNode(m.position, m, isElite, isSelected, isCurrent);
+                }
+            });
+
+            ctx.restore();
+        }
+
+        function drawConnection(from, to) {
+            ctx.strokeStyle = 'rgba(102, 126, 234, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(from.x, from.y + nodeRadius);
+
+            // Curved line
+            const midY = (from.y + to.y) / 2;
+            ctx.bezierCurveTo(
+                from.x, midY,
+                to.x, midY,
+                to.x, to.y - nodeRadius
+            );
+            ctx.stroke();
+        }
+
+        function drawNode(pos, morphism, isElite, isSelected, isCurrent) {
+            // Node circle
+            const gradient = ctx.createLinearGradient(
+                pos.x - nodeRadius, pos.y - nodeRadius,
+                pos.x + nodeRadius, pos.y + nodeRadius
+            );
+
+            if (isElite) {
+                gradient.addColorStop(0, 'rgba(255, 215, 0, 0.6)');
+                gradient.addColorStop(1, 'rgba(255, 165, 0, 0.6)');
+            } else if (isCurrent) {
+                gradient.addColorStop(0, '#667eea');
+                gradient.addColorStop(1, '#764ba2');
+            } else {
+                gradient.addColorStop(0, 'rgba(102, 126, 234, 0.5)');
+                gradient.addColorStop(1, 'rgba(118, 75, 162, 0.5)');
+            }
+
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, nodeRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Border
+            if (isSelected) {
+                ctx.strokeStyle = '#667eea';
+                ctx.lineWidth = 3;
+            } else {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 2;
+            }
+            ctx.stroke();
+
+            // Text
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 11px SF Mono, monospace';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(morphism.name, pos.x, pos.y - 2);
+
+            ctx.font = '9px SF Mono, monospace';
+            ctx.fillText(morphism.fitness.toFixed(2), pos.x, pos.y + 10);
+        }
+
+        function showInfo(morphism) {
+            const panel = document.getElementById('info-panel');
+            panel.style.display = 'block';
+
+            document.getElementById('info-name').textContent = `Name: ${morphism.name}`;
+            document.getElementById('info-generation').textContent = `Generation: ${morphism.generation}`;
+            document.getElementById('info-fitness').textContent = `Fitness: ${morphism.fitness.toFixed(3)}`;
+            document.getElementById('info-parents').textContent = morphism.parents.length > 0
+                ? `Parents: ${morphism.parents.join(', ')}`
+                : 'Parents: None (initial)';
+            document.getElementById('info-offspring').textContent = morphism.offspring.length > 0
+                ? `Offspring: ${morphism.offspring.length}`
+                : 'Offspring: None yet';
+        }
+
+        function updateStats() {
+            document.getElementById('generation').textContent = generation;
+            document.getElementById('total').textContent = morphisms.length;
+
+            // Count lineages (morphisms without parents)
+            const lineages = morphisms.filter(m => m.parents.length === 0).length;
+            document.getElementById('lineages').textContent = lineages;
+        }
+
+        function resetView() {
+            offsetX = canvas.width / 2;
+            offsetY = 50;
+            scale = 1;
+            draw();
+        }
+
+        function zoomIn() {
+            scale *= 1.2;
+            scale = Math.min(3, scale);
+            draw();
+        }
+
+        function zoomOut() {
+            scale *= 0.8;
+            scale = Math.max(0.3, scale);
+            draw();
+        }
+
+        // Initialize
+        generatePopulation();
+    </script>
+</body>
+</html>
