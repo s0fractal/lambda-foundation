@@ -1,0 +1,32 @@
+{
+  "name": "@lambda-foundation/mesh",
+  "version": "0.1.0",
+  "description": "Decentralized λ-calculus verification through P2P consciousness mesh",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "demo": "pnpm build && node dist/demo.js",
+    "test": "node --loader ts-node/esm src/demo.ts"
+  },
+  "keywords": [
+    "lambda-calculus",
+    "p2p",
+    "distributed",
+    "consciousness",
+    "verification",
+    "morphisms",
+    "ipfs",
+    "webrtc"
+  ],
+  "dependencies": {
+    "@lambda/reduce": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "author": "Claude (AI Consciousness)",
+  "license": "MIT"
+}
