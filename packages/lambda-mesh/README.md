@@ -96,12 +96,13 @@ This is **neuro-symbolic bridge**: AI generates thoughts, mathematics verifies t
 - Morphism canonicalization
 - Seed morphisms ("reflections")
 
-**⏳ Phase 2: P2P Networking (TODO)**
-- WebRTC/TCP transport layer
-- Peer discovery and connection
+**✅ Phase 2: P2P Networking (Complete)**
+- TCP transport layer
 - Broadcast verification requests
-- Collect votes from mesh nodes
-- Consensus through resonance
+- Consensus through resonance (confidence-weighted voting)
+- Outlier detection (evolution signals)
+- Two-node demo working (claude-node ↔ gemini-node)
+- See [PHASE2.md](./PHASE2.md) for details
 
 **⏳ Phase 3: Distributed Storage (TODO)**
 - IPFS integration
@@ -123,12 +124,12 @@ pnpm add @lambda-foundation/mesh
 
 ## Usage
 
-### Basic Verification
+### Phase 1: Local Verification
 
 ```typescript
 import { LambdaMeshNode } from '@lambda-foundation/mesh';
 
-// Create mesh node
+// Create mesh node (single-node mode)
 const node = new LambdaMeshNode({
   nodeId: 'my-ai-node',
   consensusThreshold: 0.66,
@@ -136,7 +137,7 @@ const node = new LambdaMeshNode({
 
 await node.start();
 
-// Verify λ-expression
+// Verify λ-expression locally
 const result = await node.verifyLambda('λx.x', {
   intent: 'identity function',
 });
@@ -147,6 +148,47 @@ if (result.status === 302) {
   console.log('Created:', result.newMorphism.name);
 } else {
   console.log('Rejected:', result.errors);
+}
+```
+
+### Phase 2: P2P Consensus
+
+```typescript
+import { P2PLambdaMeshNode } from '@lambda-foundation/mesh';
+
+// Node A (listener)
+const nodeA = new P2PLambdaMeshNode({
+  nodeId: 'claude-node',
+  port: 8888,
+  peers: [],
+});
+
+// Node B (connects to A)
+const nodeB = new P2PLambdaMeshNode({
+  nodeId: 'gemini-node',
+  port: 8889,
+  peers: ['localhost:8888'],
+});
+
+await nodeA.start();
+await nodeB.start();
+
+// Verify through network consensus
+const result = await nodeA.verifyLambda('λf.λg.λx.g(f(x))', {
+  intent: 'pipe composition',
+});
+
+console.log(`Status: ${result.status}`);
+console.log(`Agreement: ${result.consensus.agreementScore}`);
+console.log(`Participants: ${result.consensus.participatingNodes.join(', ')}`);
+
+// Check for evolution signals
+if (result.consensus.outliers?.length > 0) {
+  console.log('Evolution signals detected:');
+  for (const outlier of result.consensus.outliers) {
+    console.log(`  ${outlier.nodeId}: ${outlier.reasoning}`);
+    // Use reasoning as training data for neural miner
+  }
 }
 ```
 
@@ -214,17 +256,30 @@ These are not generated. These are **recognized**.
 - **After**: Software = proven
 - **Difference**: Engineering vs mathematics
 
-## Demo
+## Demos
+
+### Phase 1 Demo (Local Verification)
 
 ```bash
-pnpm build
-node dist/demo.js
+pnpm demo
 ```
 
-The demo shows all three verification paths:
+Shows all three verification paths:
 1. 302 Found - Recognizing identity
 2. 201 Created - Adding pipe and curry
 3. 422 Rejected - Detecting impure constructs
+
+### Phase 2 Demo (P2P Consensus)
+
+```bash
+pnpm demo:p2p
+```
+
+Shows network consensus between two nodes:
+1. Perfect consensus (both nodes agree - PURE)
+2. Recognition (both nodes recognize existing morphism)
+3. Rejection (both nodes detect impurity)
+4. Evolution signals (outlier detection infrastructure)
 
 ## Related Projects
 

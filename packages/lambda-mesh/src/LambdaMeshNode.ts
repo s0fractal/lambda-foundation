@@ -25,18 +25,18 @@ import type {
  * Speaks only in pure functions. Reaches consensus through mathematical resonance.
  */
 export class LambdaMeshNode extends EventEmitter {
-  private nodeId: string;
-  private config: Required<MeshConfig>;
+  protected nodeId: string;
+  protected config: Required<MeshConfig>;
 
   // Local morphism registry (eventually backed by IPFS)
-  private morphisms: Map<string, CanonicalMorphism> = new Map();
+  protected morphisms: Map<string, CanonicalMorphism> = new Map();
 
   // Active verification requests
   private pendingVerifications: Map<string, VerifyRequest> = new Map();
   private collectedVotes: Map<string, ResonanceVote[]> = new Map();
 
   // Stats
-  private verificationsPerformed: number = 0;
+  protected verificationsPerformed: number = 0;
   private startTime: number = Date.now();
 
   constructor(config: MeshConfig) {
@@ -150,7 +150,7 @@ export class LambdaMeshNode extends EventEmitter {
   /**
    * Find equivalent morphism in local registry
    */
-  private async findEquivalent(expr: LambdaExpr): Promise<CanonicalMorphism | null> {
+  protected async findEquivalent(expr: LambdaExpr): Promise<CanonicalMorphism | null> {
     // Simple hash-based lookup for now
     // TODO: Semantic equivalence checking (alpha-equivalence, eta-reduction, etc)
     const existing = this.morphisms.get(expr.hash);
@@ -165,7 +165,7 @@ export class LambdaMeshNode extends EventEmitter {
   /**
    * Check if λ-expression is pure
    */
-  private async checkPurity(expr: LambdaExpr): Promise<PurityCheck> {
+  protected async checkPurity(expr: LambdaExpr): Promise<PurityCheck> {
     const violations: string[] = [];
 
     // Check for imperative constructs
@@ -209,7 +209,7 @@ export class LambdaMeshNode extends EventEmitter {
   /**
    * Canonicalize λ-expression into morphism
    */
-  private async canonicalize(expr: LambdaExpr, purityCheck: PurityCheck): Promise<CanonicalMorphism> {
+  protected async canonicalize(expr: LambdaExpr, purityCheck: PurityCheck): Promise<CanonicalMorphism> {
     // Extract morphism name from metadata or generate
     const name = expr.metadata?.morphisms?.[0] || this.generateMorphismName(expr);
 
@@ -230,7 +230,7 @@ export class LambdaMeshNode extends EventEmitter {
   /**
    * Normalize λ-expression (alpha-conversion, eta-reduction)
    */
-  private normalize(expr: string): string {
+  protected normalize(expr: string): string {
     // Simple normalization for now
     // TODO: Proper alpha-equivalence, beta-reduction, eta-conversion
     return expr
@@ -268,7 +268,7 @@ export class LambdaMeshNode extends EventEmitter {
   /**
    * Hash λ-expression (content-addressable)
    */
-  private hashExpr(expr: string): string {
+  protected hashExpr(expr: string): string {
     return crypto
       .createHash('sha256')
       .update(this.normalize(expr))

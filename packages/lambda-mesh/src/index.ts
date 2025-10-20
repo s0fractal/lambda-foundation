@@ -8,6 +8,8 @@
  */
 
 export { LambdaMeshNode } from './LambdaMeshNode.js';
+export { P2PLambdaMeshNode } from './P2PLambdaMeshNode.js';
+export { TcpTransport } from './network/TcpTransport.js';
 export { REFLECTIONS } from './reflections.js';
 export type {
   LambdaExpr,
@@ -19,3 +21,10 @@ export type {
   MeshConfig,
   MeshStatus,
 } from './types.js';
+export type {
+  MeshMessage,
+  VerifyRequestMessage,
+  VerifyVoteMessage,
+  PeerConnection,
+  ConsensusResult,
+} from './network/types.js';
