@@ -351,7 +351,7 @@ export class P2PLambdaMeshNode extends LambdaMeshNode {
   /**
    * Handle incoming network messages
    */
-  private async handleMessage(message: MeshMessage): Promise<void> {
+  protected async handleMessage(message: MeshMessage): Promise<void> {
     switch (message.type) {
       case 'VERIFY_REQUEST':
         await this.handleVerifyRequest(message);
@@ -367,6 +367,15 @@ export class P2PLambdaMeshNode extends LambdaMeshNode {
           from: this.nodeId,
           timestamp: Date.now(),
         });
+        break;
+
+      case 'MORPHISM_ANNOUNCE':
+      case 'MORPHISM_SYNC_REQUEST':
+      case 'MORPHISM_SYNC_RESPONSE':
+        // Delegate to storage handler (if overridden by subclass)
+        if (typeof (this as any).handleStorageMessage === 'function') {
+          await (this as any).handleStorageMessage(message);
+        }
         break;
 
       default:

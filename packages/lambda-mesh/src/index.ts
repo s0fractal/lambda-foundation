@@ -9,7 +9,9 @@
 
 export { LambdaMeshNode } from './LambdaMeshNode.js';
 export { P2PLambdaMeshNode } from './P2PLambdaMeshNode.js';
+export { IpfsLambdaMeshNode } from './IpfsLambdaMeshNode.js';
 export { TcpTransport } from './network/TcpTransport.js';
+export { IpfsStorage } from './storage/IpfsStorage.js';
 export { REFLECTIONS } from './reflections.js';
 export type {
   LambdaExpr,
