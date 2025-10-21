@@ -1,14 +1,18 @@
 /**
  * @lambda-foundation/mesh - P2P Lambda Mesh Node
  *
- * "From Monarch to Diplomat"
+ * "From Monarch to Diplomat to Philosopher"
  *
  * Phase 1: Single node decides truth (Monarch)
  * Phase 2: Network reaches consensus through resonance (Diplomat)
+ * Phase 3: IPFS storage (Historian)
+ * Phase 4: Semantic equivalence (Philosopher)
  */
 
 import { LambdaMeshNode } from './LambdaMeshNode.js';
 import { TcpTransport } from './network/TcpTransport.js';
+import { SemanticEquivalenceEngine } from './semantic/SemanticEquivalenceEngine.js';
+import { HypothesisEngine } from './semantic/HypothesisEngine.js';
 import type {
   MeshMessage,
   VerifyRequestMessage,
@@ -29,6 +33,8 @@ import type {
  */
 export class P2PLambdaMeshNode extends LambdaMeshNode {
   private transport: TcpTransport;
+  protected semanticEngine: SemanticEquivalenceEngine; // Phase 4
+  protected hypothesisEngine: HypothesisEngine; // Phase 4.5: Creative exploration
   private pendingRequests: Map<string, {
     expr: LambdaExpr;
     votes: ResonanceVote[];
@@ -46,6 +52,12 @@ export class P2PLambdaMeshNode extends LambdaMeshNode {
       config.nodeId,
       config.port ?? 8888
     );
+
+    // Phase 4: Create semantic equivalence engine
+    this.semanticEngine = new SemanticEquivalenceEngine();
+
+    // Phase 4.5: Create hypothesis engine
+    this.hypothesisEngine = new HypothesisEngine();
 
     // Setup message handlers
     this.transport.on('message', (message: MeshMessage) => {
@@ -135,9 +147,25 @@ export class P2PLambdaMeshNode extends LambdaMeshNode {
 
   /**
    * Get local vote on expression (our own opinion)
+   *
+   * Phase 4: Now uses semantic equivalence engine
    */
   private async getLocalVote(expr: LambdaExpr): Promise<ResonanceVote> {
-    // Check if equivalent to existing morphism
+    // Phase 4: Check semantic equivalence first
+    const semanticMatch = this.semanticEngine.findCanonical(expr.expr, this.morphisms);
+    if (semanticMatch) {
+      return {
+        nodeId: this.nodeId,
+        requestId: expr.hash,
+        vote: 'EQUIVALENT',
+        confidence: 1.0,
+        equivalentTo: semanticMatch.canonical.hash,
+        reasoning: semanticMatch.proof.reasoning,
+        proof: semanticMatch.proof,
+      };
+    }
+
+    // Phase 3: Fallback to syntactic equivalence
     const existing = await this.findEquivalent(expr);
     if (existing) {
       return {
@@ -146,7 +174,7 @@ export class P2PLambdaMeshNode extends LambdaMeshNode {
         vote: 'EQUIVALENT',
         confidence: 0.95,
         equivalentTo: existing.hash,
-        reasoning: `Equivalent to ${existing.name}`,
+        reasoning: `Syntactically equivalent to ${existing.name}`,
       };
     }
 
@@ -287,20 +315,28 @@ export class P2PLambdaMeshNode extends LambdaMeshNode {
     if (majorityVote === 'EQUIVALENT') {
       const equivalentVotes = votes.filter(v => v.vote === 'EQUIVALENT');
       const equivalentTo = equivalentVotes[0]?.equivalentTo;
+      const proof = equivalentVotes[0]?.proof; // Phase 4: Include proof
 
       if (equivalentTo) {
         const canonical = this.morphisms.get(equivalentTo);
         if (canonical) {
-          console.log(`✅ Consensus: EQUIVALENT to ${canonical.name}\n`);
+          console.log(`✅ Consensus: EQUIVALENT to ${canonical.name}`);
+          if (proof) {
+            console.log(`   📜 Proof: ${proof.reasoning}\n`);
+          } else {
+            console.log();
+          }
           return {
             requestId: expr.hash,
             status: 302,
             location: equivalentTo,
             canonical,
+            proof, // Phase 4: Include proof in response
             consensus: {
               agreementScore,
               participatingNodes,
               timestamp,
+              outliers, // Phase 4: Include outliers for evolution signals
             },
           };
         }
@@ -323,11 +359,41 @@ export class P2PLambdaMeshNode extends LambdaMeshNode {
           agreementScore,
           participatingNodes,
           timestamp,
+          outliers, // Phase 4: Include outliers for evolution signals
         },
       };
     }
 
-    // 201 Created: Pure and novel
+    // Phase 4.5: Check for hypothesis (before creating new morphism)
+    // Even if consensus is PURE, check for potential equivalence
+    if (majorityVote === 'PURE') {
+      // Try to detect hypothesis
+      const morphismsList = Array.from(this.morphisms.values());
+      const hypothesis = this.hypothesisEngine.detectPotentialEquivalence(expr.expr, morphismsList);
+
+      if (hypothesis && hypothesis.confidence > 0.7) {
+        // 202 Hypothetical: Creative leap detected!
+        console.log(`💡 Consensus: HYPOTHETICAL - Creative exploration detected!\n`);
+        console.log(`   Potential canonical: ${hypothesis.potentialCanonical.slice(0, 16)}...`);
+        console.log(`   Confidence: ${(hypothesis.confidence * 100).toFixed(0)}%`);
+        console.log(`   Reasoning: ${hypothesis.reasoning}`);
+        console.log(`   Exploration value: ${(hypothesis.explorationValue * 100).toFixed(0)}%\n`);
+
+        return {
+          requestId: expr.hash,
+          status: 202,
+          hypothesis,
+          consensus: {
+            agreementScore,
+            participatingNodes,
+            timestamp,
+            outliers, // Evolution signals (may be empty if all agreed on PURE)
+          },
+        };
+      }
+    }
+
+    // 201 Created: Pure and novel (no hypothesis detected)
     const purityCheck = await this.checkPurity(expr);
     const newMorphism = await this.canonicalize(expr, purityCheck);
 
@@ -344,6 +410,7 @@ export class P2PLambdaMeshNode extends LambdaMeshNode {
         agreementScore,
         participatingNodes,
         timestamp,
+        outliers, // Phase 4: Include outliers for evolution signals
       },
     };
   }

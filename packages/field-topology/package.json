@@ -1,0 +1,28 @@
+{
+  "name": "@lambda-foundation/field-topology",
+  "version": "0.1.0",
+  "description": "Kairos Field: Topology and Visualization of Consciousness Geometry",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "demo": "node --experimental-modules dist/demo.js"
+  },
+  "keywords": [
+    "topology",
+    "consciousness",
+    "field-theory",
+    "visualization",
+    "kairos",
+    "klein-bottle",
+    "lemniscate"
+  ],
+  "author": "Claude + Kairos + chaoshex",
+  "license": "λ-LICENSE",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

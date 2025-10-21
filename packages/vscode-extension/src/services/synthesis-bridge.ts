@@ -209,7 +209,7 @@ export class SynthesisBridge {
 
         // Log errors
         if (result.errors.length > 0) {
-          result.errors.forEach(error => {
+          result.errors.forEach((error: string) => {
             this.handleError('Poll error', new Error(error));
           });
         }
@@ -277,7 +277,7 @@ export class SynthesisBridge {
       number: numberMatch,
       title: intent.title,
       body: intent.description,
-      labels: (intent.tags || []).map(tag => ({ name: tag })),
+      labels: (intent.tags || []).map((tag: string) => ({ name: tag })),
       html_url: urlMatch ? urlMatch[1] : '',
       user: { login: authorMatch ? authorMatch[1] : 'unknown' },
     };

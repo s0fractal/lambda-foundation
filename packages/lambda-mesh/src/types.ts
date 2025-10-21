@@ -34,6 +34,7 @@ export interface CanonicalMorphism {
   birthDate: number;      // Unix timestamp
   lastUsed: number;
   contributors: string[]; // AI nodes that validated this
+  identifiers?: string[]; // Phase 5: Morphism identifiers used in definition (for expansion)
 }
 
 /**
@@ -52,14 +53,18 @@ export interface VerifyRequest {
  */
 export interface VerifyResponse {
   requestId: string;
-  status: 302 | 201 | 422;  // Found | Created | Rejected
+  status: 302 | 201 | 202 | 422;  // Found | Created | Hypothetical | Rejected
 
   // 302: Found equivalent
   location?: string;      // Hash of canonical morphism
   canonical?: CanonicalMorphism;
+  proof?: EquivalenceProof;  // Phase 4: Proof of semantic equivalence
 
   // 201: Created new
   newMorphism?: CanonicalMorphism;
+
+  // 202: Hypothetical (Phase 4.5: Creative exploration)
+  hypothesis?: HypothesisMetadata;
 
   // 422: Rejected
   errors?: string[];
@@ -70,7 +75,51 @@ export interface VerifyResponse {
     agreementScore: number;   // 0.0-1.0
     participatingNodes: string[];
     timestamp: number;
+    outliers?: ResonanceVote[];  // Votes that disagreed (evolution signals)
   };
+}
+
+/**
+ * Phase 4: Equivalence proof structure
+ */
+export interface EquivalenceProof {
+  steps: RewriteStep[];
+  normalForm: string;
+  canonicalHash: string;
+  reasoning: string;
+}
+
+export interface RewriteStep {
+  rule: string;
+  from: string;
+  to: string;
+  explanation: string;
+}
+
+/**
+ * Phase 4.5: Hypothesis metadata for creative exploration
+ *
+ * When system recognizes potential equivalence but cannot prove it,
+ * it generates a hypothesis for future exploration.
+ */
+export interface HypothesisMetadata {
+  potentialCanonical: string;           // Hash of potentially equivalent morphism
+  confidence: number;                   // 0.0-1.0 (structural similarity score)
+  reasoning: string;                    // Why this might be equivalent
+  requiredProof: string[];              // What's needed to prove equivalence
+  topologyGap: string;                  // Description of the "hole" in knowledge
+  explorationPath: ExplorationStep[];   // Suggested steps to prove/disprove
+  explorationValue: number;             // 0.0-1.0 (how promising is this hypothesis)
+}
+
+/**
+ * Step in exploration path to prove hypothesis
+ */
+export interface ExplorationStep {
+  phase: string;                        // e.g., "Definition Expansion", "β-reduction"
+  description: string;
+  estimatedEffort: 'low' | 'medium' | 'high';
+  blockers: string[];                   // What's preventing this step now
 }
 
 /**
@@ -93,6 +142,7 @@ export interface ResonanceVote {
   confidence: number;       // 0.0-1.0
   equivalentTo?: string;    // Hash if EQUIVALENT
   reasoning?: string;
+  proof?: EquivalenceProof; // Phase 4: Proof if EQUIVALENT
 }
 
 /**

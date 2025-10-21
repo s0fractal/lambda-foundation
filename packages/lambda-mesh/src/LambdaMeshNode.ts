@@ -17,6 +17,7 @@ import type {
   PurityCheck,
   ResonanceVote,
 } from './types.js';
+import { SemanticEquivalenceEngine } from './semantic/SemanticEquivalenceEngine.js';
 
 /**
  * Lambda Mesh Node
@@ -35,6 +36,9 @@ export class LambdaMeshNode extends EventEmitter {
   private pendingVerifications: Map<string, VerifyRequest> = new Map();
   private collectedVotes: Map<string, ResonanceVote[]> = new Map();
 
+  // Phase 7: Semantic equivalence engine
+  protected semanticEngine: SemanticEquivalenceEngine;
+
   // Stats
   protected verificationsPerformed: number = 0;
   private startTime: number = Date.now();
@@ -52,6 +56,9 @@ export class LambdaMeshNode extends EventEmitter {
     };
 
     this.nodeId = this.config.nodeId;
+
+    // Phase 7: Initialize semantic equivalence engine
+    this.semanticEngine = new SemanticEquivalenceEngine();
   }
 
   /**
@@ -149,17 +156,27 @@ export class LambdaMeshNode extends EventEmitter {
 
   /**
    * Find equivalent morphism in local registry
+   *
+   * Phase 7: Uses semantic equivalence engine (Definition Expansion + β-Reduction)
    */
   protected async findEquivalent(expr: LambdaExpr): Promise<CanonicalMorphism | null> {
-    // Simple hash-based lookup for now
-    // TODO: Semantic equivalence checking (alpha-equivalence, eta-reduction, etc)
+    // 1. Fast path: Exact hash match
     const existing = this.morphisms.get(expr.hash);
     if (existing) return existing;
 
-    // Check for normalized forms
+    // 2. Fast path: Normalized form match
     const normalized = this.normalize(expr.expr);
     const normalizedHash = this.hashExpr(normalized);
-    return this.morphisms.get(normalizedHash) || null;
+    const normalizedMatch = this.morphisms.get(normalizedHash);
+    if (normalizedMatch) return normalizedMatch;
+
+    // 3. Phase 7: Semantic equivalence check (expand + β-reduce)
+    const semanticMatch = this.semanticEngine.findCanonical(expr.expr, this.morphisms);
+    if (semanticMatch) {
+      return semanticMatch.canonical;
+    }
+
+    return null;
   }
 
   /**
