@@ -326,6 +326,93 @@ flatMap(x => flatMap(y => [g(y)])(f(x)))(xs)
 
 **Implication**: **Not all functions are pure, but all effects can be compositional.**
 
+### Fold/Unfold Duality (Recursion Schemes)
+
+**The fundamental duality of structure transformation**
+
+fold and unfold are **categorical duals** — if fold **consumes** structure, unfold **creates** it.
+
+**Type signatures**:
+```
+fold   :: (B × A → B) → B → [A] → B    -- Catamorphism (consumes)
+unfold :: (B → Maybe (A × B)) → B → [A] -- Anamorphism (creates)
+```
+
+**Duality theorem**:
+```
+fold   знищує структуру, переходячи від рекурсивного до базового
+unfold будує структуру, переходячи від базового до рекурсивного
+
+fold   : F-algebra → μF → A      (initial algebra, least fixed point)
+unfold : A → F-coalgebra → νF    (terminal coalgebra, greatest fixed point)
+```
+
+**Examples**:
+
+✅ **fold (consumption)**:
+```javascript
+// Sum: [1,2,3,4,5] → 15
+fold((acc, x) => acc + x)(0)([1, 2, 3, 4, 5])
+```
+
+✅ **unfold (creation)**:
+```javascript
+// Range: 0 → [0,1,2,3,4]
+unfold(i => i < 5 ? [i, i + 1] : null)(0)
+```
+
+✅ **Hylomorphism (composition)**:
+```javascript
+// factorial(5) = fold(*)(1)(unfold(range)(5))
+// Step 1 (unfold): 5 → [5, 4, 3, 2, 1]
+// Step 2 (fold):   [5, 4, 3, 2, 1] → 120
+const factorial = n => {
+  const rangeN = unfold(i => i > 0 ? [i, i - 1] : null)(n);
+  return fold((acc, x) => acc * x)(1)(rangeN);
+};
+```
+
+**Why duality matters**:
+
+1. **Complete transformation cycle**:
+   ```
+   Seed → unfold → Structure → fold → Result
+     B  →        →    [A]     →      →   B'
+   ```
+
+2. **While loops eliminated**: Every imperative iteration can be expressed as unfold
+   ```javascript
+   // ❌ Imperative (mutation)
+   const result = [];
+   let n = 5;
+   while (n > 0) {
+     result.push(n);
+     n--;
+   }
+
+   // ✅ Functional (unfold)
+   unfold(n => n > 0 ? [n, n - 1] : null)(5)
+   ```
+
+3. **State machines become pure**: Game loops, simulations, iterators
+   ```javascript
+   const gameTicks = (update, initialState, maxTicks) => unfold(
+     ({ state, tick }) =>
+       tick < maxTicks
+         ? [state, { state: update(state), tick: tick + 1 }]
+         : null
+   )({ state: initialState, tick: 0 });
+   ```
+
+4. **Hylomorphism optimization**: Create then consume = efficient transformation
+   - Fusion law allows eliminating intermediate structure
+   - More efficient than separate unfold + fold
+
+**Theorem 27 (Duality Closure)**:
+> With both fold and unfold, the system can express any structural transformation as a composition of creation and consumption. No imperative iteration patterns remain necessary.
+
+**Implication**: **Structure manipulation is now complete. All loops are obsolete.**
+
 ### Purity Rule
 
 **All morphisms MUST be pure**:

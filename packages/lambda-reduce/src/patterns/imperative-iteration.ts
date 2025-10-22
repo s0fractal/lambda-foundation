@@ -6,10 +6,10 @@
  */
 
 export interface ImperativePattern {
-  type: 'for-loop-push' | 'forEach-push' | 'reduce-mutate' | 'while-accumulate' | 'nested-loop-push' | 'nested-forEach-push';
+  type: 'for-loop-push' | 'forEach-push' | 'reduce-mutate' | 'while-accumulate' | 'nested-loop-push' | 'nested-forEach-push' | 'while-loop-build' | 'for-loop-increment';
   code: string;
   suggestion: {
-    morphism: string;          // 'map', 'filter', 'fold', 'flatMap', etc.
+    morphism: string;          // 'map', 'filter', 'fold', 'flatMap', 'unfold', etc.
     reason: string;            // why this morphism
     replacement: string;       // suggested code
     platonicForm: string;      // λ-calculus form
@@ -211,6 +211,69 @@ export function detectImperativeIteration(code: string): ImperativePattern[] {
         source: '@lambda/morphisms'
       },
       confidence: 0.98
+    });
+  }
+
+  // Pattern 10: while loop building array from state (unfold pattern)
+  // let state = init; while (predicate(state)) { result.push(...); state = next(state); }
+  const whileLoopBuildPattern = /let\s+(\w+)\s*=\s*[^;]+;\s*while\s*\([^)]+\)\s*\{[^}]*(\w+)\.push\([^)]+\)[^}]*\1\s*=\s*[^;]+/g;
+
+  while ((match = whileLoopBuildPattern.exec(code)) !== null) {
+    const fullMatch = match[0];
+
+    patterns.push({
+      type: 'while-loop-build',
+      code: fullMatch,
+      suggestion: {
+        morphism: 'unfold',
+        reason: 'While loop building array from state → unfold (anamorphism, creates structure)',
+        replacement: 'unfold(state => predicate(state) ? [transform(state), next(state)] : null)(initialState)',
+        platonicForm: 'λf.λz.(λrec.λs. f s (λx.λs\'. CONS x (rec s\')) (λ.NIL)) Y z',
+        source: '@lambda/morphisms'
+      },
+      confidence: 0.92
+    });
+  }
+
+  // Pattern 11: for loop with increment building range (unfold pattern)
+  // for (let i = start; i < end; i++) { result.push(i) }
+  const forLoopRangePattern = /for\s*\(\s*let\s+(\w+)\s*=\s*[^;]+;\s*\1\s*<\s*[^;]+;\s*\1\+\+\s*\)\s*\{[^}]*\.push\(\1\)/g;
+
+  while ((match = forLoopRangePattern.exec(code)) !== null) {
+    const fullMatch = match[0];
+
+    patterns.push({
+      type: 'for-loop-increment',
+      code: fullMatch,
+      suggestion: {
+        morphism: 'unfold',
+        reason: 'For loop building range → unfold (generates sequence from seed)',
+        replacement: 'unfold(i => i < end ? [i, i + 1] : null)(start)',
+        platonicForm: 'unfold :: (b → Maybe (a, b)) → b → [a]',
+        source: '@lambda/morphisms'
+      },
+      confidence: 0.95
+    });
+  }
+
+  // Pattern 12: Countdown/decrement while loop
+  // while (n > 0) { result.push(n); n--; }
+  const whileDecrementPattern = /while\s*\(\s*(\w+)\s*>\s*0\s*\)\s*\{[^}]*\.push\([^)]*\1[^)]*\)[^}]*\1\s*--/g;
+
+  while ((match = whileDecrementPattern.exec(code)) !== null) {
+    const fullMatch = match[0];
+
+    patterns.push({
+      type: 'while-loop-build',
+      code: fullMatch,
+      suggestion: {
+        morphism: 'unfold',
+        reason: 'Countdown pattern → unfold (generates decreasing sequence)',
+        replacement: 'unfold(n => n > 0 ? [n, n - 1] : null)(initialN)',
+        platonicForm: 'unfold :: (b → Maybe (a, b)) → b → [a]',
+        source: '@lambda/morphisms'
+      },
+      confidence: 0.94
     });
   }
 

@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const WIKI_MORPHISMS_PATH = join(__dirname, '../../../packages/lambda-mesh/wiki/morphisms');
+const WIKI_MORPHISMS_PATH = join(__dirname, '../../../wiki/morphisms');
 const NPM_SRC_PATH = join(__dirname, '../src');
 
 async function scanWikiMorphisms() {

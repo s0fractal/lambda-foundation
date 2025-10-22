@@ -1,0 +1,1 @@
+λf.λz.(λrec.λs. f s (λx.λs'. CONS x (rec s')) (λ.NIL)) Y z
