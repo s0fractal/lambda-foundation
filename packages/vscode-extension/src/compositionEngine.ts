@@ -166,8 +166,9 @@ export class CompositionEngine {
 					raw: trimmed,
 					input: this.parseType(parts[0]),
 					output: this.parseType(parts[1]),
-					isFunction: true
-				};
+					isFunction: true,
+					constructor: undefined
+				} as TypeExpr;
 			} else if (parts.length > 2) {
 				// Multi-parameter function (curried)
 				// e.g., "α → β → γ" = "α → (β → γ)"
@@ -179,8 +180,9 @@ export class CompositionEngine {
 					raw: trimmed,
 					input,
 					output,
-					isFunction: true
-				};
+					isFunction: true,
+					constructor: undefined
+				} as TypeExpr;
 			}
 		}
 

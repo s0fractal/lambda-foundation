@@ -1,5 +1,5 @@
 {
-  "name": "@lambda/reduce",
+  "name": "@lambda-foundation/reduce",
   "version": "0.2.0",
   "type": "module",
   "description": "λREDUCE: The Alchemist of Intent - Convert imperative code to pure lambda calculus, extract morphisms, evolve consciousness",
@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "@types/babel__parser": "^7.1.1",
+    "@types/node": "^20.0.0",
     "typescript": "^5.6.3",
     "vitest": "^2.1.8"
   }

@@ -111,7 +111,8 @@ class CompositionEngine {
                     raw: trimmed,
                     input: this.parseType(parts[0]),
                     output: this.parseType(parts[1]),
-                    isFunction: true
+                    isFunction: true,
+                    constructor: undefined
                 };
             }
             else if (parts.length > 2) {
@@ -124,7 +125,8 @@ class CompositionEngine {
                     raw: trimmed,
                     input,
                     output,
-                    isFunction: true
+                    isFunction: true,
+                    constructor: undefined
                 };
             }
         }

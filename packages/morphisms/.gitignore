@@ -1,0 +1,16 @@
+# Generated files - DO NOT COMMIT
+# Source of truth: wiki/morphisms/
+src/
+dist/
+*.tsbuildinfo
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store

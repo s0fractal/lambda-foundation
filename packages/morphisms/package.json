@@ -1,0 +1,56 @@
+{
+  "name": "@lambda-foundation/morphisms",
+  "version": "0.1.0",
+  "description": "Canonical λ-calculus morphisms - Platonic forms projected to TypeScript",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./identity": {
+      "import": "./dist/identity.js",
+      "types": "./dist/identity.d.ts"
+    },
+    "./compose": {
+      "import": "./dist/compose.js",
+      "types": "./dist/compose.d.ts"
+    },
+    "./const": {
+      "import": "./dist/const.js",
+      "types": "./dist/const.d.ts"
+    },
+    "./map": {
+      "import": "./dist/map.js",
+      "types": "./dist/map.d.ts"
+    },
+    "./fold": {
+      "import": "./dist/fold.js",
+      "types": "./dist/fold.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "sync": "node tools/sync-wiki-to-npm.mjs",
+    "prepack": "pnpm run sync && pnpm run build"
+  },
+  "keywords": [
+    "lambda-calculus",
+    "pure-functional",
+    "morphisms",
+    "platonic-forms",
+    "mathematical-programming"
+  ],
+  "author": "λ-Foundation",
+  "license": "λ-LICENSE",
+  "devDependencies": {
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}

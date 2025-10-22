@@ -16,7 +16,7 @@
     "mathematical-programming"
   ],
   "scripts": {
-    "build:compiler": "pnpm --filter @lambda/compiler build",
+    "build:compiler": "pnpm --filter @lambda-foundation/compiler build",
     "build:graph": "tsx scripts/build-graph.ts",
     "dev:garden": "pnpm --filter @lambda-foundation/lambda-garden dev"
   },

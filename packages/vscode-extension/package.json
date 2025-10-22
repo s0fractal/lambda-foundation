@@ -163,7 +163,8 @@
     "package": "vsce package"
   },
   "dependencies": {
-    "@lambda/reduce": "workspace:*"
+    "@lambda/reduce": "workspace:*",
+    "@lambda-foundation/synthesis": "workspace:*"
   },
   "devDependencies": {
     "@types/vscode": "^1.85.0",

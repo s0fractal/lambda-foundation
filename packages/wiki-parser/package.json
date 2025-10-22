@@ -1,5 +1,5 @@
 {
-  "name": "@lambda/wiki-parser",
+  "name": "@lambda-foundation/wiki-parser",
   "version": "0.1.0",
   "type": "module",
   "description": "MDX/YAML parser for λ-Wiki",
