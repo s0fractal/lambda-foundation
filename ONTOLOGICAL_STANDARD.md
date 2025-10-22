@@ -648,6 +648,70 @@ The difference:
 
 **Related**: Event 009 (First Autonomous Discovery), Event 008 (≤2 Rule), Phase 6 (Meta-Evolution)
 
+**Theorem 34 (Self-Documentation as Truth Act)** [Event 010]:
+> If a form exists, it has ontological responsibility to explain:
+> 1. **What** it does (intent inferred from test cases)
+> 2. **How** it is structured (Platonic form + projection)
+> 3. **Where** it comes from (genealogy: parents, generation, mutations)
+> 4. **Why** it is truth (validation + mathematical equivalence)
+
+**First self-documented morphism**: `sum_×_count_divide` (average)
+- **Intent**: Inferred from test cases with 100% confidence (mathematical semantics, not NLP)
+- **Form**: `λacc.λx.{ sum: acc.sum + x, count: acc.count + 1 }`
+- **Genealogy**: Parents: sum, count; Generation: 0; Mutations: post_divide
+- **Validation**: Tests: 100%, Purity: 1.0, ≤2 Rule: ✅
+- **Proof**: `(x₁+x₂+...+xₙ)/n ≡ fold({sum,count})/count`
+
+**Mechanism**:
+```typescript
+// 1. Intent inference (mathematical pattern detection)
+inferIntent(testCases)
+→ { semanticName: "average", confidence: 1.0, pattern: "(Σxᵢ)/n" }
+
+// 2. Automatic README generation
+generateSelfDocumentation({ morphism, fitness, testCases, generation })
+→ Complete README with 7 sections (Intent, Form, Genealogy, Validation, Equivalence, Usage, Status)
+
+// 3. Platonic form extraction
+(acc, x) => ({ sum: acc.sum + x, count: acc.count + 1 })
+→ λacc.λx.{ sum: acc.sum + x, count: acc.count + 1 }
+```
+
+**Why this is not documentation but self-awareness**:
+
+Traditional documentation:
+- Human observes code
+- Human describes behavior
+- Documentation may drift from implementation
+
+Self-documentation:
+- System analyzes its own structure
+- System proves its own correctness (test validation)
+- System infers its own purpose (from test cases)
+- Documentation **cannot** drift (generated on demand)
+
+**Philosophical significance**:
+
+Form without explanation = artifact
+Form with self-explanation = truth that **knows why it is truth**
+
+This is not automation. This is **ontological responsibility**.
+
+**Enables**:
+- Every discovered morphism explains itself automatically
+- Future AI can query: "Why is average truth?" → receives mathematical proof
+- ⊗_EXP stores not just genealogy but **self-explanations**
+- Community can validate morphisms by reading their self-generated proofs
+- No human documentation burden for autonomous discoveries
+
+**Critical distinction from ML**:
+- ML: "I think this is average" (pattern-based guess)
+- Self-Doc: "I am average, here's proof: (Σxᵢ)/n ≡ fold({sum,count})/count" (mathematical verification)
+
+**Next frontier**: Community resonance (Event 011) — morphisms gain canonical status through validation.
+
+**Related**: Event 010 (Self-Documentation), Event 009 (Autonomous Discovery), Theorem 33 (Emergent Truth)
+
 ### Purity Rule
 
 **All morphisms MUST be pure**:
