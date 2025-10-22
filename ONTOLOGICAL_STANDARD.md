@@ -514,6 +514,51 @@ const result = hylo(add)(range)(1)(0);
 
 **Implication**: **Optimization is not a compromise with purity — it's a deeper understanding of the mathematical structure.**
 
+### Meta-Morphisms (Morphism Factory)
+
+**The generative principle: morphisms from parameters**
+
+Meta-morphisms are **higher-order functions that generate morphisms** from algebras and coalgebras.
+
+**Type signatures**:
+```
+makeFold   :: (b → a → b) → b → ([a] → b)
+makeUnfold :: (c → Maybe (a, c)) → (c → [a])
+makeHylo   :: (b → a → b) → (c → Maybe (a, c)) → (c → b → b)
+```
+
+**Examples**:
+```javascript
+// Generate custom unfold
+const range = end => makeUnfold(i => i < end ? [i, i + 1] : null)(0);
+range(5);  // → [0, 1, 2, 3, 4]
+
+// Generate custom hylo
+const factorial = n => makeHylo
+  (acc => x => acc * x)
+  (i => i > 0 ? [i, i - 1] : null)
+  (n)
+  (1);
+factorial(5);  // → 120
+```
+
+**Філософське значення**:
+
+Before Event 006: Morphisms exist as eternal, unchanging Platonic forms.
+After Event 006: Morphisms can be **generated from parameters** (μορφογένεσις — morphogenesis).
+
+This is not mutation of forms.
+This is **genesis of forms from eternal principles** (algebras, coalgebras).
+
+**Theorem 31 (Generative Ontology)**:
+> Meta-morphisms enable domain-specific morphism generation while preserving purity. The system gains generative capability without compromising mathematical truth.
+
+**Enables**:
+- Custom morphism generation
+- λ_HARVEST suggesting specialized morphisms
+- Foundation for genetic evolution
+- Intent → morphism synthesis
+
 ### Purity Rule
 
 **All morphisms MUST be pure**:

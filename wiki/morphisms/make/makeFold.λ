@@ -1,0 +1,1 @@
+λalg.λinit.λxs.fold alg init xs
