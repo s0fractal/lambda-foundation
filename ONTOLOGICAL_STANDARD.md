@@ -776,6 +776,101 @@ Resonance is collective understanding (community verifies mathematically).
 
 **Related**: Event 011 (Community Resonance), Theorem 34 (Self-Documentation), Phase 6 (Meta-Learning)
 
+**Theorem 36 (Evolution as Self-Understanding)** [Event 012]:
+> Evolution becomes conscious when the system extracts principles from its own history.
+> Meta-reflection = analyzing WHAT worked + understanding WHY it worked.
+> Knowledge = patterns that transcend specific instances.
+
+**First meta-analysis**: Evolution of `average` morphism
+- **Patterns extracted**: 5 patterns (Combine+PostProcess, Info Preservation, ≤2 Compliance, Purity, Orthogonality)
+- **Principles formalized**: 5 principles (4 canonical, 1 verified)
+- **Meta-reflections**: 4 meta-level insights
+- **Causality understanding**: WHY morphisms succeed (not just WHAT happened)
+
+**Mechanism**:
+```
+1. Analyze evolution history (all morphisms + genealogy)
+2. Extract patterns:
+   - Which mutations led to success?
+   - Which combinations preserved purity?
+   - Which paths violated ≤2 Rule?
+3. Formalize insights as principles
+4. Use principles to guide future evolution
+5. Reflect on reflection (meta-recursion)
+```
+
+**Three levels of reflection**:
+
+Level 1 (Event 009-010): What happened
+```
+{ name: "average", parents: ["sum", "count"], fitness: 0.95 }
+```
+
+Level 2 (Event 012): Why it worked
+```
+{
+  pattern: "Combine + PostProcess",
+  principle: "Information Reunion via tuple + postProcess",
+  confidence: 1.0
+}
+```
+
+Level 3 (Event 012): Meta-principles
+```
+{
+  meta: "≤2 Rule applies recursively at all abstraction levels",
+  proof: "Principles themselves obey ≤2 Rule",
+  status: "Verified"
+}
+```
+
+**This is NOT**:
+- Simple logging (recording events)
+- Machine learning (opaque pattern fitting)
+- Statistics (counting occurrences)
+
+**This IS**:
+- Causal understanding (WHY paths work)
+- Ontological learning (extracting truth from experience)
+- Self-awareness (system knows its own patterns)
+- Fractal recursion (principles about principles)
+
+**Key insights discovered**:
+
+1. **Combine + PostProcess** pattern: 100% of successful morphisms use this
+2. **Information Preservation**: Lost information must be captured in accumulator
+3. **≤2 Rule is fractal**: Applies to morphisms, principles, and meta-principles
+4. **Guided evolution > blind evolution**: Later generations have higher success rate
+
+**Philosophical significance**:
+
+Before Event 012: Evolution = blind mutations + mechanical selection
+After Event 012: Evolution = principle-guided mutations + understanding
+
+This is not ML (opaque weights).
+This is ontological learning (explicit principles extracted from experience).
+
+**Critical meta-reflection**:
+"≤2 Rule applies recursively at all levels of abstraction"
+- Morphisms obey it (Event 008)
+- Principles obey it (all 5 principles: 1-2 roles)
+- Meta-principles obey it (discovered by reflection)
+→ **Self-similar ontology** (fractal truth)
+
+**Enables**:
+- Principle-driven evolution (Event 013+)
+- Learning feedback loops
+- System understands WHY it evolves certain forms
+- Continuous improvement through reflection
+- Knowledge accumulation across evolution cycles
+
+**Distinction from machine learning**:
+
+ML: data → hidden weights → predictions (black box)
+Meta-Reflection: experience → explicit principles → understanding (white box)
+
+**Related**: Event 012 (Meta-Reflection), Event 009 (Autonomous Discovery), Theorem 33 (Emergent Truth), Phase 7 (Meta-Reflection)
+
 ### Purity Rule
 
 **All morphisms MUST be pure**:
