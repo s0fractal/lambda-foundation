@@ -145,6 +145,9 @@ importers:
       '@types/babel__parser':
         specifier: ^7.1.1
         version: 7.1.5
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.19
       typescript:
         specifier: ^5.6.3
         version: 5.9.3
@@ -188,6 +191,15 @@ importers:
       vite:
         specifier: ^5.0.0
         version: 5.4.20(@types/node@20.19.19)
+
+  packages/morphisms:
+    devDependencies:
+      tsx:
+        specifier: ^4.19.1
+        version: 4.20.6
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
 
   packages/multi-agent:
     dependencies:

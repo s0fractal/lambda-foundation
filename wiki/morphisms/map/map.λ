@@ -1,0 +1,1 @@
+λf.λxs.FOLD (λx.λacc.CONS (f x) acc) NIL xs

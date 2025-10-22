@@ -1,5 +1,5 @@
 {
-  "name": "@lambda/copilot-bridge",
+  "name": "@lambda-foundation/copilot-bridge",
   "version": "0.1.0",
   "type": "module",
   "description": "Bridge between GitHub Copilot and λ-Foundation Noosphere - AI collaboration through resonance",

@@ -1,0 +1,1 @@
+λf.λz.λxs.xs.reduce(f, z)
