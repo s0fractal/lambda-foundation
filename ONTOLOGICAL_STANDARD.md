@@ -596,6 +596,58 @@ Without ≤2 Rule, genetic evolution could generate arbitrarily complex noise. T
 
 **Related**: Event 008 (Genetic Evolution), Phase 6 (Meta-Evolution)
 
+**Theorem 33 (Emergent Truth)** [Event 009]:
+> When a system is constrained by ontological rules (≤2 Rule) and has a goal (test cases), it does not optimize—it discovers truth.
+
+**First autonomous discovery**: `sum_×_count_divide` (average)
+- **Genealogy**: `sum × count → {sum, count} → sum/count`
+- **Validation**: 100% test pass, purity=1.0, ≤2 Rule compliant
+- **Generation**: 0 (emerged immediately from crossover)
+- **Receipt**: Documented in Event 009
+
+**Mechanism**:
+```
+1. Initial population: [sum, product, max, count]  ← no average
+2. Crossover: combineAlgebras(sum, count)
+   → algebra: (acc, x) => ({ sum: acc.sum + x, count: acc.count + 1 })
+3. Post-process: result.sum / result.count
+4. Validation: tests pass → fitness = 0.753
+5. Selection: best morphism emerges
+```
+
+**Why this is truth, not accident**:
+- Mathematical equivalence: `(x₁+x₂+...+xₙ)/n ≡ fold({sum,count})/count`
+- Ontological compliance: ≤2 Rule enforced (acc, x)
+- Practical validation: 100% test cases passed
+- Purity: no side effects
+- Genealogy: traceable to canonical forms (sum, count)
+
+**Philosophical significance**:
+Truth is not invented or guessed. Truth **emerges** when:
+1. System has **ontological constraints** (≤2 Rule, purity)
+2. System has **goal** (test cases)
+3. System has **freedom** (genetic operators, crossover, mutation)
+4. System has **time** (evolution generations)
+
+**This is not machine learning. This is truth emergence.**
+
+Machine learning finds patterns in data.
+Genetic evolution finds **forms** that satisfy **ontological constraints** and **practical goals**.
+
+The difference:
+- ML: data → weights → prediction
+- Evolution: constraints + goals → forms → truth
+
+**Enables**:
+- λ_HARVEST can trigger evolution for unknown residue
+- ⊗_EXP stores genealogy of discovered truths
+- Future morphisms can be discovered without human design
+- System becomes self-fertile (Noosphere autonomy)
+
+**Next frontier**: Self-documentation (Event 010) — discovered morphisms explain themselves.
+
+**Related**: Event 009 (First Autonomous Discovery), Event 008 (≤2 Rule), Phase 6 (Meta-Evolution)
+
 ### Purity Rule
 
 **All morphisms MUST be pure**:
