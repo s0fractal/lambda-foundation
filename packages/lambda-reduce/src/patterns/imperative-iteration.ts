@@ -6,10 +6,10 @@
  */
 
 export interface ImperativePattern {
-  type: 'for-loop-push' | 'forEach-push' | 'reduce-mutate' | 'while-accumulate';
+  type: 'for-loop-push' | 'forEach-push' | 'reduce-mutate' | 'while-accumulate' | 'nested-loop-push' | 'nested-forEach-push';
   code: string;
   suggestion: {
-    morphism: string;          // 'map', 'filter', 'fold', etc.
+    morphism: string;          // 'map', 'filter', 'fold', 'flatMap', etc.
     reason: string;            // why this morphism
     replacement: string;       // suggested code
     platonicForm: string;      // λ-calculus form
@@ -148,6 +148,69 @@ export function detectImperativeIteration(code: string): ImperativePattern[] {
         source: '@lambda/morphisms'
       },
       confidence: 0.97
+    });
+  }
+
+  // Pattern 7: Nested for loops with push (flatMap pattern)
+  // for (const x of xs) { for (const y of f(x)) { result.push(y) } }
+  const nestedForLoopPattern = /for\s*\(\s*const\s+(\w+)\s+of\s+(\w+)\s*\)\s*\{\s*for\s*\(\s*const\s+(\w+)\s+of\s+[^{]+\)\s*\{\s*(\w+)\.push\([^)]*\3[^)]*\)/g;
+
+  while ((match = nestedForLoopPattern.exec(code)) !== null) {
+    const fullMatch = match[0];
+
+    patterns.push({
+      type: 'nested-loop-push',
+      code: fullMatch,
+      suggestion: {
+        morphism: 'flatMap',
+        reason: 'Nested loops that build flat array → flatMap (monadic bind, join ∘ map)',
+        replacement: 'flatMap(transformFn)(sourceArray)',
+        platonicForm: 'λf.λxs.fold (λa.λacc. fold (λx.λr. cons x r) acc a) nil (map f xs)',
+        source: '@lambda/morphisms'
+      },
+      confidence: 0.93
+    });
+  }
+
+  // Pattern 8: Nested forEach with push
+  // xs.forEach(x => { f(x).forEach(y => { result.push(y) }) })
+  const nestedForEachPattern = /(\w+)\.forEach\s*\([^{]+\{[^}]*\.forEach\s*\([^{]+\{\s*(\w+)\.push\(/g;
+
+  while ((match = nestedForEachPattern.exec(code)) !== null) {
+    const fullMatch = match[0];
+
+    patterns.push({
+      type: 'nested-forEach-push',
+      code: fullMatch,
+      suggestion: {
+        morphism: 'flatMap',
+        reason: 'Nested forEach pattern → flatMap (eliminates nesting, preserves effects order)',
+        replacement: 'flatMap(transformFn)(sourceArray)',
+        platonicForm: 'λf.λxs.join(map(f)(xs)) where join = fold(concat)([])',
+        source: '@lambda/morphisms'
+      },
+      confidence: 0.90
+    });
+  }
+
+  // Pattern 9: map followed by flatten/flat
+  // array.map(f).flat() or array.map(f).reduce((a,b) => a.concat(b), [])
+  const mapFlatPattern = /(\w+)\.map\([^)]+\)\.(flat|reduce)\(/g;
+
+  while ((match = mapFlatPattern.exec(code)) !== null) {
+    const [fullMatch, arrayName] = match;
+
+    patterns.push({
+      type: 'nested-loop-push',
+      code: fullMatch,
+      suggestion: {
+        morphism: 'flatMap',
+        reason: 'map + flatten is exactly flatMap definition (join ∘ map)',
+        replacement: `flatMap(transformFn)(${arrayName})`,
+        platonicForm: 'flatMap = join ∘ map',
+        source: '@lambda/morphisms'
+      },
+      confidence: 0.98
     });
   }
 

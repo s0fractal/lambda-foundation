@@ -74,6 +74,14 @@ function inferTypesFromPlatonicForm(name, platonicForm, implementation) {
     );
   }
 
+  // Pattern 7: λf.λxs.xs.flatMap(f) (flatMap - monad)
+  if (name === 'flatMap' || /^λ\w\.λ\w+\.\w+\.flatMap\(\w+\)$/.test(normalized)) {
+    return implementation.replace(
+      new RegExp(`export const ${name} = (\\w+) => (\\w+) => \\2\\.flatMap\\(\\1\\);`),
+      `export const ${name} = <A, B>(f: (a: A) => B[]) => (xs: A[]): B[] => xs.flatMap(f);`
+    );
+  }
+
   // Default: return as-is (will need manual type annotation)
   console.warn(`⚠️  No type pattern match for ${name} (${platonicForm})`);
   return implementation;

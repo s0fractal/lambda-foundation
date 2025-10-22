@@ -274,6 +274,58 @@ complexFunction = λf. λg. λx. ...
 
 **When in doubt**: If you can't explain the morphism in one sentence, it's probably too complex.
 
+### Monad ≤2 Rule (Effectful Composition)
+
+**Extension of ≤2 Rule for monadic operations**
+
+Any monadic operation must contain **no more than two semantic roles**:
+1. **Effect** (function returning context: `f: A → M<B>`)
+2. **Context** (data within context: `M<A>`)
+
+**Associativity guarantees** that composition of effects doesn't depend on grouping.
+
+**Examples**:
+
+✅ **Valid** (2 roles):
+```λ
+flatMap = λf. λxs. ...
+  - f: effect (returns context M<B>)
+  - xs: context (data M<A>)
+```
+
+✅ **Valid** (Kleisli composition):
+```λ
+(>=>) = λf. λg. λx. flatMap g (f x)
+  - f: A → M<B> (first effect)
+  - g: B → M<C> (second effect)
+  → Result: A → M<C> (composed effect)
+```
+
+**Why Monad ≤2 Rule matters**:
+
+Nested loops violate compositionality:
+```javascript
+// ❌ 3+ roles (not compositional)
+for (const x of xs) {           // outer iteration
+  for (const y of f(x)) {       // inner iteration (effect)
+    result.push(g(y));          // transformation
+  }
+}
+```
+
+flatMap restores ≤2:
+```javascript
+// ✅ 2 roles (compositional)
+flatMap(x => flatMap(y => [g(y)])(f(x)))(xs)
+// Role 1: effect (x => flatMap(...))
+// Role 2: context (xs)
+```
+
+**Theorem 26 (Monad Guidance)**:
+> When the system can detect violation of associativity through nested loops, and propose `flatMap` as the only compositional alternative, it becomes a guide into the world of effects.
+
+**Implication**: **Not all functions are pure, but all effects can be compositional.**
+
 ### Purity Rule
 
 **All morphisms MUST be pure**:
