@@ -1,0 +1,1 @@
+λphi.λpsi.λz.λinit.(λrec.λstate. psi state (λval.λnewState. phi val (rec newState)) (λ.init)) Y z

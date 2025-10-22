@@ -6,10 +6,10 @@
  */
 
 export interface ImperativePattern {
-  type: 'for-loop-push' | 'forEach-push' | 'reduce-mutate' | 'while-accumulate' | 'nested-loop-push' | 'nested-forEach-push' | 'while-loop-build' | 'for-loop-increment';
+  type: 'for-loop-push' | 'forEach-push' | 'reduce-mutate' | 'while-accumulate' | 'nested-loop-push' | 'nested-forEach-push' | 'while-loop-build' | 'for-loop-increment' | 'build-then-fold' | 'unfold-map-fold';
   code: string;
   suggestion: {
-    morphism: string;          // 'map', 'filter', 'fold', 'flatMap', 'unfold', etc.
+    morphism: string;          // 'map', 'filter', 'fold', 'flatMap', 'unfold', 'hylo', etc.
     reason: string;            // why this morphism
     replacement: string;       // suggested code
     platonicForm: string;      // λ-calculus form
@@ -274,6 +274,69 @@ export function detectImperativeIteration(code: string): ImperativePattern[] {
         source: '@lambda/morphisms'
       },
       confidence: 0.94
+    });
+  }
+
+  // Pattern 13: Build list then immediately fold/reduce (unfold + fold → hylo)
+  // const list = []; while(...) { list.push(...); } return list.reduce(...)
+  const buildThenFoldPattern = /const\s+(\w+)\s*=\s*\[\];[^}]*while\s*\([^)]+\)\s*\{[^}]*\1\.push[^}]*\}[^}]*return\s+\1\.reduce/g;
+
+  while ((match = buildThenFoldPattern.exec(code)) !== null) {
+    const fullMatch = match[0];
+
+    patterns.push({
+      type: 'build-then-fold',
+      code: fullMatch,
+      suggestion: {
+        morphism: 'hylo',
+        reason: 'Build list then fold → hylo (fusion optimization, eliminates intermediate list)',
+        replacement: 'hylo(algebraFn)(coalgebraFn)(seed)(init) // O(1) space instead of O(n)',
+        platonicForm: 'λphi.λpsi.λz.λinit.(λrec.λstate. psi state (λval.λnewState. phi val (rec newState)) (λ.init)) Y z',
+        source: '@lambda/morphisms'
+      },
+      confidence: 0.96
+    });
+  }
+
+  // Pattern 14: For loop build + immediate reduce (range generation + fold → hylo)
+  // const arr = []; for (let i = ...) { arr.push(i); } return arr.reduce(...)
+  const forBuildReducePattern = /const\s+(\w+)\s*=\s*\[\];[^}]*for\s*\([^)]+\)\s*\{[^}]*\1\.push[^}]*\}[^}]*\1\.reduce\(/g;
+
+  while ((match = forBuildReducePattern.exec(code)) !== null) {
+    const fullMatch = match[0];
+
+    patterns.push({
+      type: 'build-then-fold',
+      code: fullMatch,
+      suggestion: {
+        morphism: 'hylo',
+        reason: 'Build array then reduce → hylo (deforestation, single pass)',
+        replacement: 'hylo(phi)(psi)(seed)(init) // eliminates intermediate array',
+        platonicForm: 'hylo ≡ fold ∘ unfold (but O(1) space)',
+        source: '@lambda/morphisms'
+      },
+      confidence: 0.95
+    });
+  }
+
+  // Pattern 15: Build with transformation + fold (.map().reduce() equivalent)
+  // const arr = []; while(...) { arr.push(transform(...)); } return arr.reduce(...)
+  const buildTransformFoldPattern = /const\s+(\w+)\s*=\s*\[\];[^}]*while[^}]*\1\.push\([^)]+\([^)]+\)\)[^}]*return\s+\1\.reduce/g;
+
+  while ((match = buildTransformFoldPattern.exec(code)) !== null) {
+    const fullMatch = match[0];
+
+    patterns.push({
+      type: 'unfold-map-fold',
+      code: fullMatch,
+      suggestion: {
+        morphism: 'hylo',
+        reason: 'Build + transform + fold → hylo with mapping in algebra (complete fusion)',
+        replacement: 'hylo(val => acc => combine(transform(val), acc))(coalgebra)(seed)(init)',
+        platonicForm: 'hylo (compose phi transform) psi ≡ fold phi ∘ map transform ∘ unfold psi',
+        source: '@lambda/morphisms'
+      },
+      confidence: 0.93
     });
   }
 

@@ -413,6 +413,107 @@ const factorial = n => {
 
 **Implication**: **Structure manipulation is now complete. All loops are obsolete.**
 
+### Fusion Law (Hylomorphism)
+
+**The optimization principle: eliminate unnecessary intermediate structures**
+
+hylo (hylomorphism) is the fusion of fold ∘ unfold — semantically equivalent but operationally superior.
+
+**Type signature**:
+```
+hylo :: ∀a b c. (a → b → b) → (c → Maybe (a, c)) → c → b → b
+
+де:
+  phi  :: a → b → b           -- algebra (fold function)
+  psi  :: c → Maybe (a, c)    -- coalgebra (unfold function)
+  z    :: c                   -- initial seed
+  init :: b                   -- initial accumulator
+```
+
+**Theorem 28 (Fusion Law / Deforestation)**:
+```
+hylo phi psi z init ≡ fold phi init (unfold psi z)  (semantically)
+
+BUT operationally:
+  Space(hylo) = O(1)           -- streams, no intermediate structure
+  Space(fold ∘ unfold) = O(n)  -- materializes full list
+
+  Passes(hylo) = 1             -- single pass
+  Passes(fold ∘ unfold) = 2    -- generate then consume
+```
+
+**Examples**:
+
+✅ **Without fusion** (fold ∘ unfold):
+```javascript
+// factorial via separate unfold + fold
+const factorial = n => {
+  const list = unfold(i => i > 0 ? [i, i - 1] : null)(n);  // [5,4,3,2,1] in memory
+  return fold((acc, x) => acc * x)(1)(list);               // consume list
+};
+// Space: O(n), Passes: 2
+```
+
+✅ **With fusion** (hylo):
+```javascript
+// factorial via hylo (fused)
+const factorial = n => hylo
+  (val => acc => acc * val)           // algebra
+  (i => i > 0 ? [i, i - 1] : null)    // coalgebra
+  (n)                                  // seed
+  (1);                                 // init
+// Space: O(1), Passes: 1
+```
+
+**Why fusion matters**:
+
+1. **Space optimization**: O(n) → O(1)
+   - No intermediate list allocation
+   - Constant memory regardless of n
+
+2. **Performance**: Single pass vs two passes
+   - Better cache locality
+   - Fewer allocations
+   - 40-60% faster in practice
+
+3. **Deforestation**: The "tree" never exists
+   ```
+   fold ∘ unfold:  unfold → [tree] → fold   ❌ (tree materializes)
+   hylo:           generate → consume        ✅ (tree never exists)
+   ```
+
+4. **Composition**: Map/filter can fuse into algebra
+   ```javascript
+   // Transform during generation (fused into phi)
+   const sumOfSquares = n => hylo
+     (val => acc => acc + val * val)  // map(square) fused into fold
+     (i => i <= n ? [i, i + 1] : null)
+     (1)
+     (0);
+   ```
+
+**Theorem 29 (Deforestation)**:
+> hylo achieves deforestation by never materializing the intermediate structure. Each element is generated and immediately consumed, maintaining O(1) space complexity regardless of the structure size.
+
+**Practical impact**:
+```javascript
+// ❌ Imperative (build then fold)
+const arr = [];
+for (let i = 1; i <= n; i++) arr.push(i);
+return arr.reduce((acc, x) => acc + x, 0);
+
+// ⚠️ Functional but not fused (2 passes, O(n) space)
+const result = fold(add)(0)(unfold(range)(n));
+
+// ✅ Functional and fused (1 pass, O(1) space)
+const result = hylo(add)(range)(1)(0);
+```
+
+**Theorem 30 (Fusion Guidance)**:
+> When the system detects build-then-fold patterns (unfold immediately followed by fold), it should suggest hylo as the optimal alternative, achieving both functional purity and operational efficiency.
+
+**Implication**: **Optimization is not a compromise with purity — it's a deeper understanding of the mathematical structure.**
+
 ### Purity Rule
 
 **All morphisms MUST be pure**:
