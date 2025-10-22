@@ -63,15 +63,18 @@ export {
   type ValidationConfig,
 } from './validationLoop.js';
 
-// Genetic engine (Phase 5.2)
+// Genetic engine (Phase 5.2 + Event 008)
 export {
   GeneticEngine,
   geneticEngine,
   calculateFitness,
   crossover,
   evolveGeneration,
+  measureComplexity,      // EVENT 008: ≤2 Rule enforcement
+  measurePurity,          // EVENT 008: Purity measurement
   DEFAULT_GENETIC_CONFIG,
   type FitnessScore,
+  type ComplexityMeasure, // EVENT 008: Complexity breakdown
   type CrossoverStrategy,
   type CrossoverResult,
   type Population,

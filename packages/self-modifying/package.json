@@ -2,6 +2,7 @@
   "name": "@lambda-foundation/self-modifying",
   "version": "0.1.0",
   "description": "Phase 5: Self-Modifying Morphisms - Evolutionary Code",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

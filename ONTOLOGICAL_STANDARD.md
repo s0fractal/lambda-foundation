@@ -559,6 +559,43 @@ This is **genesis of forms from eternal principles** (algebras, coalgebras).
 - Foundation for genetic evolution
 - Intent → morphism synthesis
 
+**Theorem 32 (Autonomous Discovery Constraint)** [Event 008]:
+> Any morphism generated through genetic evolution MUST obey the ≤2 Rule. Violation of this constraint results in fitness = 0, regardless of all other metrics (performance, popularity, trust, etc.).
+
+**Semantic roles** (must be ≤2):
+- Accumulator (state being built up)
+- Element (current item being processed)
+- Additional parameters (context, config, etc.)
+
+**Enforcement**:
+```
+measureComplexity(morphism) => {
+  const roles = countSemanticRoles(morphism);
+  if (roles > 2) {
+    return { complexity: 0, fitness: 0 };  // INVALID
+  }
+  return { complexity: 1 - (roles / 2), fitness: ... };
+}
+```
+
+**Examples**:
+- ✅ `fold: (acc, x) => ...` — 2 roles (valid)
+- ✅ `map: (x) => ...` — 1 role (valid)
+- ✅ `identity: () => ...` — 0 roles (valid)
+- ❌ `badFn: (f, g, h, x, y, z) => ...` — 6 roles (FITNESS = 0)
+
+**Why critical**:
+Without ≤2 Rule, genetic evolution could generate arbitrarily complex noise. The rule serves as an **ontological filter**, ensuring that only canonical, compositionally simple forms emerge. This is not a performance optimization—it is a **philosophical constraint** that defines what constitutes valid computational truth.
+
+**Significance**:
+- Prevents noise in autonomous discovery
+- Maintains compositional simplicity
+- Enforces ontological purity
+- Enables truth emergence without chaos
+- System learns patterns, not complexity
+
+**Related**: Event 008 (Genetic Evolution), Phase 6 (Meta-Evolution)
+
 ### Purity Rule
 
 **All morphisms MUST be pure**:
