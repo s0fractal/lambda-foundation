@@ -712,6 +712,70 @@ This is not automation. This is **ontological responsibility**.
 
 **Related**: Event 010 (Self-Documentation), Event 009 (Autonomous Discovery), Theorem 33 (Emergent Truth)
 
+**Theorem 35 (Resonance as Truth Validation)** [Event 011]:
+> Truth becomes truth not through existence, but through collective understanding.
+> Resonance = mathematical verification by independent agents.
+> Value = depth of resonance, not computation.
+
+**First verified morphism**: `sum_×_count_divide` (average)
+- **Resonances**: 3 independent verifications
+- **Status progression**: Candidate (1) → Verified (10)
+- **Verification method**: Mathematical equivalence + test validation + cryptographic signatures
+
+**Mechanism**:
+```
+1. Morphism creates receipt (from Event 010 self-documentation)
+2. Independent agents verify:
+   - Mathematical equivalence holds? (Σxᵢ)/n ≡ fold({sum,count})/count
+   - Tests pass? 3/3 ✅
+   - ≤2 Rule compliant? ✅
+3. If yes → cryptographic signature (resonance)
+4. 3 signatures → Verified status (value: 1 → 10)
+5. 10+ signatures → Canonical status (value: 10 → 100)
+```
+
+**This is NOT**:
+- Voting (opinion-based)
+- Proof-of-work (computation-based)
+- Reputation system (subjective)
+
+**This IS**:
+- Mathematical verification
+- Proof-of-resonance (understanding-based)
+- Collective validation through mathematics
+
+**Economy of truth**:
+- Candidate: value = 1 (potential truth, awaiting verification)
+- Verified: value = 10 (3+ mathematical verifications)
+- Canonical: value = 100 (10+ verifications, universal adoption)
+
+**Value represents**: depth of collective understanding, not monetary worth or computational work.
+
+**Critical distinction**:
+
+Voting: "I like this" (opinion) → popularity wins
+Resonance: "I verified this" (mathematics) → understanding wins
+
+PoW: value = computation spent → mining creates value
+Resonance: value = understanding depth → verification creates value
+
+**Philosophical significance**:
+
+Truth alone = isolated form
+Truth + resonance = collectively understood and validated form
+
+Resonance is not consensus (majority agrees).
+Resonance is collective understanding (community verifies mathematically).
+
+**Enables**:
+- IPFS/mesh integration (receipts published with CIDs)
+- Distributed verification (no central authority)
+- Economy based on truth depth, not speculation
+- Community-driven canon formation
+- Accountability through cryptographic signatures
+
+**Related**: Event 011 (Community Resonance), Theorem 34 (Self-Documentation), Phase 6 (Meta-Learning)
+
 ### Purity Rule
 
 **All morphisms MUST be pure**:

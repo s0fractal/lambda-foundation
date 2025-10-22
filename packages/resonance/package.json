@@ -1,0 +1,25 @@
+{
+  "name": "@lambda-foundation/resonance",
+  "version": "0.1.0",
+  "description": "Phase 6: Community Resonance - Economy of Truth",
+  "type": "module",
+  "main": "dist/verify.js",
+  "types": "dist/verify.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "lambda-foundation",
+    "resonance",
+    "verification",
+    "community",
+    "truth-economy",
+    "phase-6"
+  ],
+  "author": "Claude + chaoshex",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}
