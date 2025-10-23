@@ -17,7 +17,8 @@
     "test-synthesis": "node test-synthesis.mjs",
     "test-self-improvement": "node test-self-improvement.mjs",
     "test-cross-domain": "node test-cross-domain.mjs",
-    "test-meta-algebras": "node test-meta-algebras.mjs"
+    "test-meta-algebras": "node test-meta-algebras.mjs",
+    "test-algebra-synthesis": "node test-algebra-synthesis.mjs"
   },
   "keywords": [
     "lambda-foundation",
