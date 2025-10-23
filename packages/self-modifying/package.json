@@ -15,7 +15,8 @@
     "test": "vitest",
     "test-reflection": "node test-reflection.mjs",
     "test-synthesis": "node test-synthesis.mjs",
-    "test-self-improvement": "node test-self-improvement.mjs"
+    "test-self-improvement": "node test-self-improvement.mjs",
+    "test-cross-domain": "node test-cross-domain.mjs"
   },
   "keywords": [
     "lambda-foundation",
