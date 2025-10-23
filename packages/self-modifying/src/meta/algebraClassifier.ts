@@ -6,6 +6,9 @@ import type { Algebra } from '../evolution/operators.js';
 import type { AlgebraProperties } from './algebraProperties.js';
 import { detectProperties } from './algebraProperties.js';
 
+// Re-export for external use
+export type { AlgebraProperties } from './algebraProperties.js';
+
 /**
  * Ontological hierarchy of algebraic structures
  *
