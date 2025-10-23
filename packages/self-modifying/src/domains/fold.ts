@@ -92,4 +92,5 @@ export const algebras = {
   min: (acc: number, val: number) => Math.min(acc, val),
   concat: (acc: string, val: string) => acc + val,
   collect: <T>(acc: T[], val: T) => [...acc, val],
+  first: <T>(acc: T | null, val: T) => acc === null ? val : acc,  // Non-associative
 };
