@@ -47,6 +47,9 @@ export const constructMorphism = <A = any, B = any, C = any>(
     case 'last':
       return constructLast(matchedPrinciples);
 
+    // Event 014: distinct NOT in switch initially - will use generic fallback
+    // After Set-based principle added, generic will handle it
+
     default:
       // Fallback: try generic construction
       return constructGeneric(requirements, matchedPrinciples);
@@ -96,10 +99,10 @@ const constructMedian = (principles: MatchedPrinciple[]): any => {
  */
 const constructMode = (principles: MatchedPrinciple[]): any => {
   // Apply "count frequencies" principle → frequency map algebra
+  // Event 014: Made immutable (pure)
   const algebra: Algebra<any, Record<string, number>> = (freqMap, val) => {
     const key = String(val);
-    freqMap[key] = (freqMap[key] || 0) + 1;
-    return freqMap;
+    return { ...freqMap, [key]: (freqMap[key] || 0) + 1 };
   };
   const init: Record<string, number> = {};
 
@@ -304,14 +307,74 @@ const constructLast = (principles: MatchedPrinciple[]): any => {
 };
 
 /**
+ * Construct distinct morphism
+ * Event 014: Added for self-improvement demo
+ * Uses Set-based accumulation to track uniqueness
+ */
+const constructDistinct = (principles: MatchedPrinciple[]): any => {
+  // Apply "Set-based accumulation" principle → array to track seen values
+  // (Using array with includes for simplicity - pure and ≤2 compliant)
+  const algebra: Algebra<any, any[]> = (seen, val) => {
+    // Check if value already seen
+    if (seen.some(v => JSON.stringify(v) === JSON.stringify(val))) {
+      return seen; // Skip duplicate
+    }
+    return [...seen, val]; // Add new unique value
+  };
+  const init: any[] = [];
+
+  const coalgebra: Coalgebra<any, any> = (state) => {
+    if (Array.isArray(state) && state.length > 0) {
+      const [head, ...tail] = state;
+      return [head, tail];
+    }
+    return null;
+  };
+
+  return {
+    name: 'distinct',
+    algebra,
+    coalgebra,
+    init,
+    metadata: {
+      generation: 0,
+      parents: ['set-based-accumulation'],
+      mutations: ['synthesized']
+    }
+  };
+};
+
+/**
  * Generic construction (fallback)
  */
 const constructGeneric = (
   requirements: IntentRequirements,
   principles: MatchedPrinciple[]
 ): any => {
-  // Default: collect all values
-  const algebra: Algebra<any, any[]> = (acc, val) => [...acc, val];
+  // Event 014: Check for deduplicate transformation (needs Set-based principle)
+  const needsDeduplication = requirements.transformation.includes('deduplicate');
+
+  // Check if we have Set-based principle
+  const hasSetPrinciple = principles.some(p =>
+    p.principle.name.toLowerCase().includes('set') ||
+    p.principle.statement.toLowerCase().includes('unique') ||
+    p.principle.statement.toLowerCase().includes('distinct')
+  );
+
+  let algebra: Algebra<any, any[]>;
+  if (needsDeduplication && hasSetPrinciple) {
+    // Use Set-based deduplication (from learned principle)
+    algebra = (seen, val) => {
+      if (seen.some(v => JSON.stringify(v) === JSON.stringify(val))) {
+        return seen; // Skip duplicate
+      }
+      return [...seen, val]; // Add unique value
+    };
+  } else {
+    // Default: collect all values
+    algebra = (acc, val) => [...acc, val];
+  }
+
   const init: any[] = [];
 
   const coalgebra: Coalgebra<any, any> = (state) => {

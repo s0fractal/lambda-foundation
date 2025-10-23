@@ -12,7 +12,10 @@
     "demo:evolution": "tsx examples/evolution-scenario.ts",
     "demo:validation": "tsx examples/validation-demo.ts",
     "demo:genetic": "tsx examples/genetic-demo.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "test-reflection": "node test-reflection.mjs",
+    "test-synthesis": "node test-synthesis.mjs",
+    "test-self-improvement": "node test-self-improvement.mjs"
   },
   "keywords": [
     "lambda-foundation",

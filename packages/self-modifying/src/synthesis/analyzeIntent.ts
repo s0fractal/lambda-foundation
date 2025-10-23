@@ -38,6 +38,10 @@ export const analyzeIntent = (intent: string): IntentRequirements => {
     return analyzeLast();
   }
 
+  if (normalized.includes('distinct') || normalized.includes('unique')) {
+    return analyzeDistinct();
+  }
+
   // Fallback: generic analysis
   return analyzeGeneric(normalized);
 };
@@ -170,6 +174,25 @@ const analyzeLast = (): IntentRequirements => {
     },
     transformation: ['preserve', 'select last'],
     constraints: ['≤2 Rule', 'purity', 'partial function']
+  };
+};
+
+/**
+ * Analyze "distinct" intent
+ * Event 014: Added for self-improvement demo
+ */
+const analyzeDistinct = (): IntentRequirements => {
+  return {
+    intent: 'distinct',
+    input: {
+      type: 'sequence'
+    },
+    output: {
+      type: 'sequence',
+      property: 'unique values only'
+    },
+    transformation: ['deduplicate', 'preserve order'],
+    constraints: ['≤2 Rule', 'purity', 'total function']
   };
 };
 

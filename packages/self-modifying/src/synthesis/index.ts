@@ -71,10 +71,15 @@ export const synthesize = (
 
     if (!validation.valid) {
       console.log(`  ❌ Validation failed: ${validation.reason}`);
+      // Event 014: Include morphism for failure analysis
       return {
         intent,
         reason: `Validation failed: ${validation.reason}`,
-        fallback: 'guided_evolution'
+        fallback: 'guided_evolution',
+        morphism,
+        validation: validation as any,
+        plan,
+        confidence
       };
     }
 
@@ -232,3 +237,8 @@ export * from './types.js';
 export { analyzeIntent } from './analyzeIntent.js';
 export { matchPrinciples } from './matchPrinciples.js';
 export { constructMorphism } from './construct.js';
+
+// Event 014: Self-Improvement from Failure
+export { analyzeFailure } from './analyzeFailure.js';
+export type { FailureAnalysis } from './analyzeFailure.js';
+export { extractPrincipleFromFailure } from './extractFromFailure.js';

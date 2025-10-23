@@ -66,9 +66,21 @@ export interface SynthesisResult<A = any, B = any, C = any> {
 
 /**
  * Synthesis failure
+ * Event 014: Extended to include morphism for failure analysis
  */
-export interface SynthesisFailure {
+export interface SynthesisFailure<A = any, B = any, C = any> {
   intent: string;
   reason: string;
   fallback?: 'guided_evolution' | 'blind_evolution';
+  // Event 014: Include morphism and validation if construction succeeded but validation failed
+  morphism?: EvolvableMorphism<A, B, C> & { postProcess?: (result: B) => any };
+  validation?: {
+    valid: false;
+    complexity: { roles: number; valid: boolean };
+    purity: number;
+    testsPass: boolean;
+    reason?: string;
+  };
+  plan?: SynthesisPlan;
+  confidence?: number;
 }

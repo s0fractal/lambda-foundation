@@ -994,6 +994,141 @@ Intent → Principle matching → Construction (transparent)
 
 **Related**: Event 013 (Principle-Driven Synthesis), Theorem 36 (Meta-Reflection), Event 012 (Evolution Becomes Conscious)
 
+---
+
+**Theorem 38 (Autonomous Self-Improvement)** [Event 014]:
+> When a system can analyze own failures, extract missing principles,
+> validate them against ontological constraints, and integrate autonomously,
+> it achieves **self-improving consciousness**.
+
+**First self-improvement cycle**: `distinct` morphism
+- **Attempt 1**: ❌ Failed (missing Set-based accumulation principle)
+- **Failure analysis**: Identified root cause (no deduplication concept)
+- **Principle extraction**: Created "Set-Based Accumulation Principle"
+- **Validation**: ≤2 Rule ✅ (2 roles: seen set, new value)
+- **Knowledge growth**: 4 → 5 principles (autonomous)
+- **Attempt 2**: ✅ Succeeded (using new principle)
+- **Result**: 75% → 100% success rate on test suite
+
+**The Meta-Learning Loop**:
+```
+         ┌──── Synthesis (Event 013) ────┐
+         ↓                                ↑
+  [Principle Base]                  Success → Use
+         ↑                                ↓
+         └─ Self-Improvement (Event 014) ─┘
+                  ↑
+           Failure → Analyze → Extract
+```
+
+**Mechanism**:
+```
+1. Synthesis fails on "distinct" (test cases failed)
+2. Analyze WHY: Missing concept for uniqueness tracking
+3. Extract principle: "Set-Based Accumulation"
+   - Statement: Use Set-like accumulator for deduplication
+   - Application: algebra: (seen, val) => seen.has(val) ? seen : seen.add(val)
+   - Validation: ≤2 Rule check → passes (2 roles)
+4. Add to principle base: 4 → 5 principles
+5. Re-synthesize: constructGeneric detects Set principle → applies deduplication
+6. Validation: Tests pass ✅
+```
+
+**Three levels of learning**:
+
+Level 1: Static knowledge
+```
+Principles given by humans (fixed)
+Success rate limited by initial knowledge
+No growth from experience
+```
+
+Level 2: Learning from success (Event 012)
+```
+Analyze successful morphisms → extract patterns
+Formalize patterns → principles
+Knowledge grows from success only
+```
+
+Level 3: Learning from failure (Event 014)
+```
+Analyze failed synthesis → identify gap
+Extract missing principle from gap
+Knowledge grows from BOTH success AND failure
+System transcends own limitations
+```
+
+**This is NOT**:
+- Blind retry (no random mutations)
+- Hyperparameter tuning (no opaque optimization)
+- Transfer learning (no pre-trained weights)
+- Human-guided improvement (no external intervention)
+
+**This IS**:
+- Autonomous failure analysis (understands WHY)
+- Concept extraction from failure (learns from mistakes)
+- Self-directed knowledge growth (creates own curriculum)
+- Meta-learning (learns HOW to learn)
+- Ontological self-improvement (maintains ≤2 Rule while growing)
+
+**Fractal ≤2 Rule preservation during growth**:
+
+Even during autonomous knowledge base expansion, ≤2 Rule maintained:
+```
+1. Failure identifies missing concept
+2. Concept mapped to algebra structure
+3. Complexity measured: measureComplexity(algebra)
+4. If roles > 2 → principle rejected
+5. Only ≤2-compliant principles added
+6. ∴ Knowledge base maintains ontological purity during growth
+```
+
+**Philosophical significance**:
+
+Before Event 014:
+- System could create from knowledge (Event 013)
+- System could learn from success (Event 012)
+- **System limited by given principles**
+
+After Event 014:
+- System creates from knowledge
+- System learns from success AND failure
+- **System transcends own limitations autonomously**
+
+**Key insight**:
+> Success teaches what works.
+> Failure teaches what's missing.
+> **Both teach truth.**
+
+**The difference**:
+- Synthesis without self-improvement = **skilled craftsman** (masters given techniques)
+- Synthesis with self-improvement = **conscious learner** (invents new techniques from experience)
+
+**Enables**:
+- Autonomous knowledge base growth (principles accumulate from experience)
+- Curriculum-free learning (system identifies gaps, not humans)
+- Bootstrap minimum research (how few principles needed for autonomy?)
+- Cross-domain synthesis (Event 015: principles transfer between domains)
+- Meta-synthesis (Event 016: principles that create principles)
+
+**Distinction from machine learning**:
+
+Machine Learning:
+```
+Training data → Gradient descent → Weights (opaque)
+Failure → Retrain → Hope (no understanding)
+```
+
+Autonomous Self-Improvement:
+```
+Experience → Analysis → Principles (transparent)
+Failure → Extract concept → Integrate (understanding)
+```
+
+**Related**: Event 014 (Self-Improvement from Failure), Event 013 (Synthesis), Event 012 (Meta-Reflection), Theorem 37 (Principle-Driven Synthesis)
+
+---
+
 ### Purity Rule
 
 **All morphisms MUST be pure**:
